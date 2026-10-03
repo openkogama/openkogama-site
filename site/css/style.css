@@ -1,0 +1,163 @@
+@font-face {
+  font-family: "OpenKogama";
+  src: url(../fonts/OpenKogama.woff2) format("woff2");
+  font-display: swap;
+}
+
+:root {
+  --page: #ffffff;
+  --text: #1b1b1f;
+  --heading: #1e3460;
+  --brand: #2a5a8e;
+  --tagline: #1e3460;
+  --download: #3b5e8c;
+  --download-dark: #243f66;
+  --play: #3a7a80;
+  --play-dark: #23565b;
+  --donate: #5c5794;
+  --donate-dark: #3d3970;
+  --backdrop: #749ac8 url(../img/background-light.png);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --page: #111214;
+    --text: #ececef;
+    --heading: #ffffff;
+    --brand: #6b9fdc;
+    --tagline: #ffffff;
+    --backdrop: #20334c url(../img/background-dark.png);
+  }
+}
+
+* { box-sizing: border-box; }
+
+html { background: var(--backdrop) center / cover fixed; }
+
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 24px 16px 20px;
+  font: 16px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  color: var(--text);
+}
+
+.hero {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-bottom: 6vh;
+}
+
+h1 {
+  margin: 0 0 16px;
+  font: 400 4.6rem/1 "OpenKogama", system-ui, sans-serif;
+  color: var(--heading);
+  text-align: center;
+}
+
+.tagline {
+  max-width: 520px;
+  margin: 0 auto 28px;
+  font-size: 1.1rem;
+  line-height: 1.5;
+  text-align: center;
+  color: var(--tagline);
+}
+
+.links {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  margin-top: 28px;
+}
+
+.icon {
+  display: block;
+  height: 26px;
+  background: var(--heading);
+  opacity: 0.8;
+  -webkit-mask: var(--image) center / contain no-repeat;
+  mask: var(--image) center / contain no-repeat;
+}
+
+.icon:hover { opacity: 1; }
+.icon.github { --image: url(../img/github.svg); width: 27px; }
+.icon.discord { --image: url(../img/discord.svg); width: 34px; }
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+}
+
+.button {
+  --corner: 7px;
+  --edge: 2px;
+  --cut: var(--corner);
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 26px;
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 400;
+  color: #fff;
+  text-decoration: none;
+  background: var(--dark);
+}
+
+.button::before {
+  --cut: calc(var(--corner) - 0.586 * var(--edge));
+  content: "";
+  position: absolute;
+  inset: var(--edge);
+  z-index: -1;
+  background: var(--fill);
+}
+
+.button, .button::before {
+  clip-path: polygon(
+    var(--cut) 0, calc(100% - var(--cut)) 0,
+    100% var(--cut), 100% calc(100% - var(--cut)),
+    calc(100% - var(--cut)) 100%, var(--cut) 100%,
+    0 calc(100% - var(--cut)), 0 var(--cut)
+  );
+}
+
+.button.download { --fill: var(--download); --dark: var(--download-dark); }
+.button.play { --fill: var(--play); --dark: var(--play-dark); }
+.button.donate { --fill: var(--donate); --dark: var(--donate-dark); }
+
+.button:hover { filter: brightness(1.1); }
+
+footer {
+  padding-top: 32px;
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--tagline);
+}
+
+footer p { margin: 4px 0 0; }
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font: 400 1.5rem/1 "OpenKogama", system-ui, sans-serif;
+  color: var(--heading);
+}
+
+.brand img {
+  height: 28px;
+}
+
+@media (max-width: 600px) {
+  h1 { font-size: 3rem; }
+}

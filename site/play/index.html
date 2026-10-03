@@ -1,0 +1,715 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OpenKogama</title>
+<link rel="icon" href="../favicon.ico">
+<link rel="stylesheet" href="../css/style.css">
+<style>
+  body { justify-content: center; align-items: center; gap: 12px; padding: 16px; }
+  #game { position: relative; width: min(940px, 100%); aspect-ratio: 940 / 482; background: #000; box-shadow: 0 10px 40px rgba(0, 0, 0, .35); }
+  #unity, #unity canvas, #canvas { display: block; width: 100%; height: 100%; }
+  :root { --window: radial-gradient(circle at 50% 45%, #5f86b8, #24406c 85%); --window-text: #dbe7f5; }
+  @media (prefers-color-scheme: dark) { :root { --window: radial-gradient(circle at 50% 45%, #42607f, #0f1828 85%); } }
+  #launch, .panel { position: absolute; inset: 0; background: var(--window); }
+  #launch { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; }
+  #launch[hidden], .panel[hidden], [hidden].toolbar, #world-form[hidden] { display: none; }
+  #launch h2, .panel h2 { margin: 0; font: 400 3.2rem/1 "OpenKogama", system-ui, sans-serif; color: #fff; }
+  #current { margin-top: -6px; font-size: 1.1rem; color: var(--window-text); }
+  #game .button { border: 0; cursor: pointer; }
+  #game .button:disabled { opacity: .5; cursor: default; filter: none; }
+  .panel { z-index: 2; display: flex; flex-direction: column; gap: 14px; padding: 20px 24px; }
+  .panel header { display: flex; gap: 12px; align-items: center; }
+  .panel h2 { flex: 1; font-size: 2rem; }
+  .line { width: 220px; padding: 4px 2px; font: inherit; font-size: .95rem; color: #fff; background: none; border: 0; border-bottom: 1px solid rgba(255, 255, 255, .45); outline: 0; }
+  .line::placeholder { color: rgba(255, 255, 255, .6); }
+  .line:focus { border-bottom-color: #fff; }
+  .line::-webkit-search-cancel-button { -webkit-appearance: none; appearance: none; }
+  .close { padding: 0 4px; font-size: 2rem; line-height: 1; color: #fff; background: none; border: 0; cursor: pointer; opacity: .85; }
+  .close:hover { opacity: 1; }
+  .scroll { flex: 1; overflow-y: auto; padding-right: 8px; scrollbar-width: thin; scrollbar-color: rgba(255, 255, 255, .35) transparent; }
+  .scroll::-webkit-scrollbar { width: 8px; }
+  .scroll::-webkit-scrollbar-track { background: transparent; }
+  .scroll::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, .35); }
+  .scroll::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, .55); }
+  #list h3 { margin: 14px 0 8px; font: 400 1.4rem/1 "OpenKogama", system-ui, sans-serif; color: #fff; }
+  #list h3:first-child { margin-top: 0; }
+  #world-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); align-content: start; gap: 16px 12px; }
+  .tile { display: grid; gap: 6px; padding: 0; font: inherit; font-size: .95rem; color: #fff; text-align: center; background: none; border: 0; cursor: pointer; }
+  .tile:hover { filter: brightness(1.1); }
+  .thumb, .thumb span { clip-path: polygon(var(--cut) 0, calc(100% - var(--cut)) 0, 100% var(--cut), 100% calc(100% - var(--cut)), calc(100% - var(--cut)) 100%, var(--cut) 100%, 0 calc(100% - var(--cut)), 0 var(--cut)); }
+  .thumb { --corner: 7px; --edge: 3px; --cut: var(--corner); display: block; padding: var(--edge); background: var(--download-dark); }
+  .thumb span { --cut: calc(var(--corner) - 0.586 * var(--edge)); display: block; aspect-ratio: 5 / 2; background: var(--download) center / cover no-repeat; }
+  .tile.selected .thumb { background: #fff; }
+  .tile .name, .tile .line { display: block; width: 100%; height: 32px; margin: 0; padding: 4px 2px; font: inherit; font-size: .95rem; line-height: 23px; text-align: center; border: 0; border-bottom: 1px solid transparent; }
+  .tile .name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .tile .line { border-bottom-color: #fff; }
+  .toolbar { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; }
+  .toolbar .actions { gap: 8px; }
+  .toolbar { align-items: center; }
+  .toolbar .button { padding: 8px 18px; }
+  .toolbar .manage .button { padding: 6px 12px; font-size: .85rem; }
+  #world-form { display: grid; gap: 12px; justify-items: start; }
+  #world-form .line { width: 320px; }
+  .templates { display: flex; flex-wrap: wrap; gap: 8px; }
+  .templates[hidden] { display: none; }
+  .templates .button { padding: 6px 14px; }
+  .note { min-height: 1.4em; margin: 0; font-size: .9rem; color: #fff; }
+  #below { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 12px; width: min(940px, 100%); min-height: 1.8em; }
+  #below #back { justify-self: end; }
+  #below .brand { font-size: 1.1rem; text-decoration: none; }
+  #below .brand img { height: 22px; }
+  .versions { display: grid; grid-template-columns: repeat(auto-fill, minmax(118px, 1fr)); gap: 8px; }
+  .versions .button { justify-content: center; padding: 6px 8px; }
+  .empty { color: var(--window-text); }
+  #action { display: grid; place-items: center; width: min(360px, 80%); margin-top: 8px; }
+  #action > * { grid-area: 1 / 1; }
+  #action > [hidden] { visibility: hidden; }
+  #progress { width: 100%; display: grid; gap: 8px; text-align: center; font-size: .9rem; color: var(--window-text); }
+  #error { max-width: 80%; min-height: 1.4em; margin: 0; text-align: center; font-size: .9rem; color: #fff; overflow-wrap: anywhere; }
+  #bar { height: 8px; background: var(--download-dark); overflow: hidden; }
+  #fill { width: 0; height: 100%; background: var(--play); transition: width .2s; }
+  .link { font: inherit; font-size: .95rem; color: var(--heading); background: none; border: 0; padding: 0; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+  #status { color: var(--heading); font-size: .9rem; text-align: center; }
+  #below .brand { justify-self: start; }
+</style>
+</head>
+<body>
+<div id="game">
+  <div id="unity"></div>
+  <div id="launch">
+    <h2>OPENKOGAMA</h2>
+    <div id="current">KoGaMa <span id="current-version"></span></div>
+    <div id="action">
+      <div class="actions" id="buttons">
+        <button class="button play" id="play">Play</button>
+        <button class="button download" id="change">Change version</button>
+      </div>
+      <div id="progress" hidden><div id="bar"><div id="fill"></div></div><span id="progress-text"></span></div>
+    </div>
+    <p id="error"></p>
+  </div>
+  <div id="versions" class="panel" hidden>
+    <header>
+      <h2>Versions</h2>
+      <input id="search" class="line" type="search" placeholder="Search version" aria-label="Search version" autocomplete="off">
+      <button class="close" id="close" aria-label="Close">&times;</button>
+    </header>
+    <div id="list" class="scroll"></div>
+  </div>
+  <div id="worlds" class="panel" hidden>
+    <header>
+      <h2>Worlds</h2>
+      <button class="close" id="worlds-close" aria-label="Close">&times;</button>
+    </header>
+    <div id="world-list" class="scroll"></div>
+    <form id="world-form" hidden>
+      <input id="world-name" class="line" placeholder="World name" maxlength="64" autocomplete="off" aria-label="World name">
+      <div id="templates" class="templates"></div>
+      <div class="actions">
+        <button class="button play" id="world-save" type="submit">Create</button>
+        <button class="button download" id="world-cancel" type="button">Cancel</button>
+      </div>
+    </form>
+    <p class="note" id="world-note"></p>
+    <div class="toolbar" id="world-actions">
+      <div class="actions">
+        <button class="button play" id="world-play">Play</button>
+        <button class="button download" id="world-build">Build</button>
+        <button class="button download" id="world-avatar">Avatar editor</button>
+      </div>
+      <div class="actions manage">
+        <button class="button download" id="world-new">New world</button>
+        <button class="button download" id="world-import">Import</button>
+        <button class="button download" id="world-rename">Rename</button>
+        <button class="button download" id="world-delete">Delete</button>
+      </div>
+    </div>
+    <input id="world-file" type="file" accept=".kgmap,.kgm" hidden>
+  </div>
+</div>
+<div id="below"><a class="brand" href="../"><img src="../img/icon-192.png" alt="">OPENKOGAMA</a><div id="status"></div><button class="link" id="back" hidden>Back to worlds</button></div>
+<script src="../js/webgl-compat.js"></script>
+<script src="../js/offline.js"></script>
+<script src="../js/server.js"></script>
+<script>
+  const query = new URLSearchParams(location.search);
+  const external = query.get("server");
+  const server = external || "http://127.0.0.1:8080";
+  if (!external) OpenKogamaServer.install();
+  const status = document.getElementById("status");
+  const launch = document.getElementById("launch");
+  const currentVersion = document.getElementById("current-version");
+  const change = document.getElementById("change");
+  const panel = document.getElementById("versions");
+  const search = document.getElementById("search");
+  const buttons = document.getElementById("buttons");
+  const errorText = document.getElementById("error");
+  const list = document.getElementById("list");
+  const play = document.getElementById("play");
+  const progress = document.getElementById("progress");
+  const fill = document.getElementById("fill");
+  const progressText = document.getElementById("progress-text");
+  const ready = OpenKogamaOffline.register();
+  const DEFAULT_VERSION = "1.47.4";
+  let versions = [];
+  let selected = null;
+  let sessionMode = query.get("mode");
+  let sessionWorld = query.get("world");
+
+  function remembered() {
+    try { return localStorage.getItem("openkogama-version"); } catch { return null; }
+  }
+
+  function remember(version) {
+    try { localStorage.setItem("openkogama-version", version); } catch {}
+  }
+
+  function sendToGame(target, method, value) {
+    if (window.gameInstance) gameInstance.SendMessage(target, method, value);
+    else SendMessage(target, method, value);
+  }
+
+  function reply(request, data, error) {
+    const callbackId = JSON.parse(request).callbackId;
+    const message = JSON.stringify(error ? { callbackId, error } : { callbackId, data });
+    setTimeout(() => sendToGame("BrowserComm", "ExternalCallback", message), 0);
+  }
+
+  function sessionUrl() {
+    return server + "/session?" + new URLSearchParams({
+      mode: sessionMode || "edit",
+      world: sessionWorld || "0",
+      profile: query.get("profile") || "1",
+      client: selected.version,
+      transport: "ws",
+    });
+  }
+
+  window.UNITY_sendPlayerParams = request => {
+    clearInterval(creeping);
+    launch.hidden = true;
+    if (external) status.textContent = "Connecting to " + server;
+    fetch(sessionUrl())
+      .then(response => response.text())
+      .then(text => { status.textContent = ""; reply(request, text); })
+      .catch(error => { status.textContent = "Cannot reach the server at " + server; reply(request, null, String(error)); });
+  };
+  window.UNITY_sendLoadStats = request => reply(request, JSON.stringify({ DOMReady: 0, PluginInit: 0 }));
+  window.get_browser_version = () => {
+    const chrome = navigator.userAgent.match(/Chrome\/(\d+)/);
+    setTimeout(() => sendToGame("BrowserComm", "GiveBrowserInfo", (chrome ? "Chrome," + chrome[1] : "Other,0")), 0);
+  };
+  for (const name of ["gotoConvertToSilver", "gotoDisconnectedPage", "gotoIdlePage", "gotoLogin", "gotoPurchaseGold",
+    "gotoSignout", "gotoSignup", "gotoSignupWithXP", "increaseXP", "readyForAd", "refreshCredentials",
+    "requestGoldVideoAd", "requestVideoAd", "resetAFKtimer", "showGoldVideoAd", "showVideoAd", "sendStatHatCount", "sendStatHatValue", "requestDomain", "requestRewardedVideoAd"]) {
+    window["UNITY_" + name] = () => {};
+  }
+
+  const stages = { download: [0, 60], server: [60, 65], data: [65, 80], prepare: [80, 95], launch: [95, 100] };
+  let shown = 0;
+  let creeping = null;
+
+  function show(value) {
+    shown = Math.max(shown, Math.min(value, 100));
+    fill.style.width = shown + "%";
+  }
+
+  function step(stage, fraction, text) {
+    const [from, to] = stages[stage];
+    clearInterval(creeping);
+    show(from + (to - from) * Math.min(Math.max(fraction, 0), 1));
+    if (text) progressText.textContent = text;
+  }
+
+  function creep(stage, text) {
+    step(stage, 0, text);
+    const to = stages[stage][1];
+    creeping = setInterval(() => show(shown + (to - shown) * 0.04), 200);
+  }
+
+  function UnityProgress() {
+    const labels = [["Downloading", "data", "Loading game data"], ["Preparing", "prepare", "Preparing game"], ["All downloads complete", "launch", "Starting game..."]];
+    let current = null;
+    return {
+      SetMessage: message => {
+        const label = labels.find(([prefix]) => message.startsWith(prefix));
+        if (!label || label[1] === current) return;
+        current = label[1];
+        if (current === "data") step(current, 0, label[2]);
+        else creep(current, label[2]);
+      },
+      SetProgress: value => { if (current === "data") step(current, value); },
+      Clear: () => {
+        current = "launch";
+        creep("launch", "Starting game...");
+      },
+    };
+  }
+
+  function script(src) {
+    return new Promise((resolve, reject) => {
+      const element = document.createElement("script");
+      element.src = src;
+      element.onload = resolve;
+      element.onerror = () => reject(new Error("Cannot load " + src));
+      document.body.appendChild(element);
+    });
+  }
+
+  function canvas() {
+    const element = document.createElement("canvas");
+    element.id = "canvas";
+    element.className = "emscripten";
+    element.width = 940;
+    element.height = 482;
+    element.oncontextmenu = event => event.preventDefault();
+    document.getElementById("unity").appendChild(element);
+    return element;
+  }
+
+  async function start() {
+    const base = OpenKogamaOffline.buildUrl(selected.id, "");
+    creep("data", "Loading game...");
+    if (selected.family === "5.3") {
+      canvas();
+      window.Module = {
+        TOTAL_MEMORY: 536870912,
+        errorhandler: null,
+        compatibilitycheck: null,
+        dataUrl: base + "Release/WebGLBuild.data",
+        codeUrl: base + "Release/WebGLBuild.js",
+        memUrl: base + "Release/WebGLBuild.mem",
+      };
+      await script(base + "Release/UnityLoader.js");
+    } else if (selected.family === "5.2") {
+      const element = canvas();
+      const progressView = UnityProgress();
+      window.Module = {
+        TOTAL_MEMORY: 536870912,
+        filePackagePrefixURL: base + "Release/",
+        memoryInitializerPrefixURL: base + "Release/",
+        preRun: [],
+        postRun: [],
+        print: text => console.log(text),
+        printErr: text => console.error(text),
+        canvas: element,
+        setStatus: text => {
+          progressView.SetMessage(text);
+          const match = text.match(/([^(]+)\((\d+(\.\d+)?)\/(\d+)\)/);
+          if (match) progressView.SetProgress(parseInt(match[2]) / parseInt(match[4]));
+          if (text === "") progressView.Clear();
+        },
+        totalDependencies: 0,
+        monitorRunDependencies(left) {
+          this.totalDependencies = Math.max(this.totalDependencies, left);
+          Module.setStatus(left ? "Preparing... (" + (this.totalDependencies - left) + "/" + this.totalDependencies + ")" : "All downloads complete.");
+        },
+      };
+      await script(base + "Release/UnityConfig.js");
+      await script(base + "Release/fileloader.js");
+      await script(base + "Release/WebGLBuild.js");
+    } else {
+      await script(base + "Build/UnityLoader.js");
+      window.gameInstance = UnityLoader.instantiate("unity", base + "Build/WebGLBuild.json", {
+        onProgress: (instance, value) => {
+          if (value < 1) step("data", value, "Loading game data");
+          else creep("prepare", "Preparing game");
+        },
+      });
+    }
+  }
+
+  function choose(entry) {
+    selected = entry;
+    currentVersion.textContent = entry.version;
+    document.title = "OpenKogama " + entry.version;
+  }
+
+  async function loadVersions() {
+    const seen = new Set();
+    versions = (await fetch("../versions.json").then(response => response.json()))
+      .filter(entry => !seen.has(entry.version) && seen.add(entry.version));
+    const wanted = query.get("v") || remembered() || DEFAULT_VERSION;
+    choose(versions.find(entry => entry.version === wanted || entry.id === wanted)
+      ?? versions.find(entry => entry.version === DEFAULT_VERSION) ?? versions[0]);
+  }
+
+  function versionButton(entry) {
+    const button = document.createElement("button");
+    button.className = "button " + (entry === selected ? "play" : "download");
+    button.textContent = entry.version;
+    button.title = new Date(entry.time * 1000).toISOString().slice(0, 10);
+    button.addEventListener("click", () => {
+      choose(entry);
+      remember(entry.version);
+      closePanel();
+    });
+    return button;
+  }
+
+  function render() {
+    const term = search.value.trim();
+    const shown = versions.filter(entry => entry.version.startsWith(term));
+    const years = new Map();
+    for (const entry of shown) {
+      const year = new Date(entry.time * 1000).getFullYear();
+      if (!years.has(year)) years.set(year, []);
+      years.get(year).push(entry);
+    }
+    list.replaceChildren();
+    for (const [year, entries] of years) {
+      const heading = document.createElement("h3");
+      heading.textContent = year;
+      const group = document.createElement("div");
+      group.className = "versions";
+      group.append(...entries.map(versionButton));
+      list.append(heading, group);
+    }
+    if (!shown.length) {
+      const empty = document.createElement("p");
+      empty.className = "empty";
+      empty.textContent = "No versions match";
+      list.append(empty);
+    }
+  }
+
+  function openPanel() {
+    search.value = "";
+    panel.hidden = false;
+    render();
+    list.querySelector(".play")?.scrollIntoView({ block: "center" });
+    search.focus();
+  }
+
+  function closePanel() {
+    panel.hidden = true;
+  }
+
+  change.addEventListener("click", () => loaded.then(openPanel));
+  document.getElementById("close").addEventListener("click", closePanel);
+  search.addEventListener("input", render);
+  panel.addEventListener("keydown", event => { if (event.key === "Escape") closePanel(); });
+
+  const loaded = loadVersions().catch(error => {
+    errorText.textContent = "Cannot load the version list";
+    buttons.hidden = true;
+    console.log("openkogama: versions", error);
+  });
+
+  play.addEventListener("click", async () => {
+    await loaded;
+    if (!selected) return;
+    buttons.hidden = true;
+    progress.hidden = false;
+    errorText.textContent = "";
+    shown = 0;
+    fill.style.width = "0";
+    progressText.textContent = "Checking files...";
+    try {
+      if (!await ready) throw new Error("This browser cannot store the game offline");
+      const files = external ? [] : await fetch(OpenKogamaServer.files).then(response => response.json()).catch(() => null);
+      if (!files) throw new Error("Cannot load the server files");
+      const result = await OpenKogamaOffline.install({
+        files: ["./", "../css/style.css", "../fonts/OpenKogama.woff2", "../js/offline.js", "../js/server.js", "../js/webgl-compat.js", "../favicon.ico", "../versions.json",
+          ...(selected.set ? ["../manifests/" + selected.set + ".json"] : []),
+          ...files.map(file => new URL(file, OpenKogamaServer.files).href)],
+        set: selected.set,
+        build: { id: selected.id, url: selected.url, size: selected.size, patchEval: selected.family === "5.2" || selected.family === "5.3" },
+        server,
+        onProgress: (done, total) => step("download", total ? done / total : 1, total ? "Downloading " + megabytes(done) + " / " + megabytes(total) + " MB" : "Starting..."),
+      });
+      if (result.failed > 0) throw new Error(result.failed + " files could not be downloaded");
+      if (!external) {
+        creep("server", "Starting server...");
+        await OpenKogamaServer.start();
+      }
+      remember(selected.version);
+      if (sessionMode) await launchGame(sessionMode, sessionWorld);
+      else openWorlds();
+    } catch (error) {
+      clearInterval(creeping);
+      progress.hidden = true;
+      errorText.textContent = String(error.message || error);
+      play.textContent = "Retry";
+      buttons.hidden = false;
+    }
+  });
+
+  const worldsPanel = document.getElementById("worlds");
+  const worldList = document.getElementById("world-list");
+  const worldForm = document.getElementById("world-form");
+  const worldName = document.getElementById("world-name");
+  const worldNote = document.getElementById("world-note");
+  const worldActions = document.getElementById("world-actions");
+  const templateList = document.getElementById("templates");
+  const worldFile = document.getElementById("world-file");
+  const deleteButton = document.getElementById("world-delete");
+  let worlds = [];
+  let world = null;
+  let renaming = null;
+  const thumbnails = new Map();
+  let template = null;
+  let deleteArmed = null;
+  let revision = 0;
+
+  function rememberedWorld() {
+    try { return Number(localStorage.getItem("openkogama-world")) || null; } catch { return null; }
+  }
+
+  function api(path, options) {
+    return fetch(server + "/api/" + path, options);
+  }
+
+  async function persist() {
+    if (!external) await OpenKogamaServer.save();
+  }
+
+  async function loadWorlds(id) {
+    revision = await api("worlds/revision").then(response => response.json()).then(data => data.revision).catch(() => Date.now());
+    worlds = await api("worlds").then(response => response.json());
+    world = worlds.find(entry => entry.id === id) ?? worlds.find(entry => entry.id === world?.id)
+      ?? worlds.find(entry => entry.id === rememberedWorld()) ?? worlds[0] ?? null;
+    renderWorlds();
+  }
+
+  function date(value) {
+    return value ? new Date(value).toLocaleString([], { dateStyle: "short", timeStyle: "short" }) : null;
+  }
+
+  function loadThumbnail(id, image) {
+    const key = id + ":" + revision;
+    if (!thumbnails.has(key)) {
+      thumbnails.set(key, fetch(server + "/images/0/" + id + ".png?v=" + revision)
+        .then(async response => response.ok ? "url(" + URL.createObjectURL(await response.blob()) + ")" : "")
+        .catch(() => ""));
+    }
+    thumbnails.get(key).then(url => { if (url) image.style.backgroundImage = url; });
+  }
+
+  function startRename(entry) {
+    world = entry;
+    renaming = entry.id;
+    renderWorlds();
+    const input = worldList.querySelector(".tile .line");
+    input?.focus();
+    input?.select();
+  }
+
+  async function finishRename(entry, value) {
+    if (renaming !== entry.id) return;
+    renaming = null;
+    const name = value.trim();
+    if (!name || name === entry.name) {
+      renderWorlds();
+      return;
+    }
+    const response = await api("worlds/rename?" + new URLSearchParams({ id: entry.id, name }), { method: "POST" });
+    await persist();
+    worldNote.textContent = response.ok ? "" : "Cannot rename this world";
+    await loadWorlds(entry.id);
+  }
+
+  function nameField(entry) {
+    if (renaming !== entry.id) {
+      const name = document.createElement("span");
+      name.className = "name";
+      name.textContent = entry.name;
+      name.addEventListener("dblclick", event => {
+        event.stopPropagation();
+        startRename(entry);
+      });
+      return name;
+    }
+    const input = document.createElement("input");
+    input.className = "line";
+    input.value = entry.name;
+    input.maxLength = 64;
+    input.setAttribute("aria-label", "World name");
+    input.addEventListener("click", event => event.stopPropagation());
+    input.addEventListener("dblclick", event => event.stopPropagation());
+    input.addEventListener("blur", () => finishRename(entry, input.value));
+    input.addEventListener("keydown", event => {
+      event.stopPropagation();
+      if (event.key === "Enter") finishRename(entry, input.value);
+      if (event.key === "Escape") finishRename(entry, entry.name);
+    });
+    return input;
+  }
+
+  function renderWorlds() {
+    worldList.replaceChildren(...worlds.map(entry => {
+      const tile = document.createElement("div");
+      tile.className = "tile" + (entry === world ? " selected" : "");
+      tile.tabIndex = 0;
+      tile.setAttribute("role", "button");
+      tile.title = "Last played: " + (date(entry.playedAt) ?? "never") + "\nSaved: " + date(entry.savedAt)
+        + "\n" + (entry.publishedAt ? "Published: " + date(entry.publishedAt) : "Not published");
+      const frame = document.createElement("span");
+      frame.className = "thumb";
+      const image = document.createElement("span");
+      frame.append(image);
+      tile.append(frame, nameField(entry));
+      tile.addEventListener("click", () => {
+        if (world === entry) return;
+        world = entry;
+        renderWorlds();
+      });
+      tile.addEventListener("dblclick", () => launchGame("play", entry.id));
+      tile.addEventListener("keydown", event => { if (event.key === "Enter" && event.target === tile) launchGame("play", entry.id); });
+      loadThumbnail(entry.id, image);
+      return tile;
+    }));
+    if (!worlds.length) {
+      const empty = document.createElement("p");
+      empty.className = "empty";
+      empty.textContent = "No worlds yet";
+      worldList.append(empty);
+    }
+    for (const id of ["world-play", "world-build", "world-rename", "world-delete"]) document.getElementById(id).disabled = !world;
+  }
+
+  async function openWorlds() {
+    worldsPanel.hidden = false;
+    worldNote.textContent = "";
+    closeForm();
+    try {
+      await loadWorlds();
+    } catch (error) {
+      worldNote.textContent = "Cannot load the worlds";
+      console.log("openkogama: worlds", error);
+    }
+  }
+
+  function closeWorlds() {
+    worldsPanel.hidden = true;
+    clearInterval(creeping);
+    progress.hidden = true;
+    play.textContent = "Play";
+    buttons.hidden = false;
+  }
+
+  async function launchGame(mode, id) {
+    sessionMode = mode;
+    sessionWorld = id ? String(id) : "0";
+    if (id) try { localStorage.setItem("openkogama-world", id); } catch {}
+    worldsPanel.hidden = true;
+    progress.hidden = false;
+    buttons.hidden = true;
+    document.getElementById("back").hidden = false;
+    await start();
+  }
+
+  function openForm(name) {
+    worldName.value = name;
+    worldForm.hidden = false;
+    worldActions.hidden = true;
+    worldNote.textContent = "";
+    worldName.focus();
+    worldName.select();
+  }
+
+  function closeForm() {
+    worldForm.hidden = true;
+    worldActions.hidden = false;
+  }
+
+  async function showTemplates() {
+    const templates = await api("templates").then(response => response.json()).catch(() => []);
+    template = templates[0]?.id ?? null;
+    const render = () => templateList.replaceChildren(...templates.map(entry => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "button " + (entry.id === template ? "play" : "download");
+      button.textContent = entry.name;
+      button.addEventListener("click", () => {
+        template = entry.id;
+        render();
+      });
+      return button;
+    }));
+    render();
+  }
+
+  worldForm.addEventListener("submit", async event => {
+    event.preventDefault();
+    const name = worldName.value.trim();
+    if (!name) return;
+    const created = await api("worlds?" + new URLSearchParams(template ? { name, template } : { name }), { method: "POST" }).then(response => response.json());
+    await persist();
+    closeForm();
+    await loadWorlds(created.id);
+  });
+
+  document.getElementById("world-cancel").addEventListener("click", closeForm);
+  document.getElementById("worlds-close").addEventListener("click", closeWorlds);
+  document.getElementById("world-play").addEventListener("click", () => world && launchGame("play", world.id));
+  document.getElementById("world-build").addEventListener("click", () => world && launchGame("edit", world.id));
+  document.getElementById("world-avatar").addEventListener("click", () => launchGame("avatar", 0));
+  document.getElementById("world-new").addEventListener("click", () => {
+    openForm("New World");
+    showTemplates();
+  });
+  document.getElementById("world-rename").addEventListener("click", () => world && startRename(world));
+  document.getElementById("world-import").addEventListener("click", () => worldFile.click());
+
+  worldFile.addEventListener("change", async () => {
+    const file = worldFile.files[0];
+    worldFile.value = "";
+    if (!file) return;
+    worldNote.textContent = "Importing " + file.name + "...";
+    try {
+      const name = file.name.replace(/\.[^.]+$/, "");
+      const created = await api("worlds/import?" + new URLSearchParams({ name, client: selected.version }), { method: "POST", body: file })
+        .then(response => response.json());
+      await persist();
+      worldNote.textContent = "";
+      await loadWorlds(created.id);
+    } catch (error) {
+      worldNote.textContent = "Cannot import " + file.name;
+      console.log("openkogama: import", error);
+    }
+  });
+
+  deleteButton.addEventListener("click", async () => {
+    if (!world) return;
+    if (!deleteArmed) {
+      deleteButton.textContent = "Confirm delete";
+      deleteArmed = setTimeout(() => {
+        deleteArmed = null;
+        deleteButton.textContent = "Delete";
+      }, 3000);
+      return;
+    }
+    clearTimeout(deleteArmed);
+    deleteArmed = null;
+    deleteButton.textContent = "Delete";
+    const response = await api("worlds/delete?" + new URLSearchParams({ id: world.id }), { method: "POST" });
+    await persist();
+    if (!response.ok) worldNote.textContent = "This world is open, close it first";
+    world = null;
+    await loadWorlds();
+  });
+
+  worldsPanel.addEventListener("keydown", event => {
+    if (event.key !== "Escape") return;
+    if (!worldForm.hidden) closeForm();
+    else closeWorlds();
+  });
+
+  document.getElementById("back").addEventListener("click", async () => {
+    await persist().catch(() => {});
+    const next = new URLSearchParams({ v: selected.version, worlds: "1" });
+    if (external) next.set("server", external);
+    location.href = "?" + next;
+  });
+
+  if (query.has("worlds")) loaded.then(() => play.click());
+
+  function megabytes(bytes) {
+    return (bytes / 1e6).toFixed(bytes < 1e7 ? 1 : 0);
+  }
+</script>
+</body>
+</html>
