@@ -122,6 +122,7 @@
       <div class="actions manage">
         <button class="button download" id="world-new">New world</button>
         <button class="button download" id="world-import">Import</button>
+        <button class="button download" id="world-export">Export</button>
         <button class="button download" id="world-rename">Rename</button>
         <button class="button download" id="world-delete">Delete</button>
       </div>
@@ -567,7 +568,7 @@
       empty.textContent = "No worlds yet";
       worldList.append(empty);
     }
-    for (const id of ["world-play", "world-build", "world-rename", "world-delete"]) document.getElementById(id).disabled = !world;
+    for (const id of ["world-play", "world-build", "world-export", "world-rename", "world-delete"]) document.getElementById(id).disabled = !world;
   }
 
   async function openWorlds() {
@@ -653,6 +654,23 @@
   });
   document.getElementById("world-rename").addEventListener("click", () => world && startRename(world));
   document.getElementById("world-import").addEventListener("click", () => worldFile.click());
+
+  document.getElementById("world-export").addEventListener("click", async () => {
+    if (!world) return;
+    const name = world.name;
+    try {
+      const response = await api("worlds/export?" + new URLSearchParams({ id: world.id }));
+      if (!response.ok) throw new Error("status " + response.status);
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(await response.blob());
+      link.download = name.replace(/[\\/:*?"<>|]/g, "_") + ".kgmap";
+      link.click();
+      setTimeout(() => URL.revokeObjectURL(link.href), 1000);
+    } catch (error) {
+      worldNote.textContent = "Cannot export " + name;
+      console.log("openkogama: export", error);
+    }
+  });
 
   worldFile.addEventListener("change", async () => {
     const file = worldFile.files[0];
