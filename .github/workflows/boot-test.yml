@@ -1,0 +1,82 @@
+name: boot test
+
+on:
+  push:
+    branches: [maps-and-new-versions]
+    paths: [.github/workflows/boot-test.yml, tools/boot-test.py]
+  workflow_dispatch:
+    inputs:
+      sets:
+        description: "comma separated bundle sets to test, empty for all"
+        default: ""
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    outputs:
+      sets: ${{ steps.sets.outputs.sets }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: sets
+        run: |
+          python3 - <<'PY' >> "$GITHUB_OUTPUT"
+          import json, os
+          wanted = [s for s in os.environ["WANTED"].split(",") if s]
+          sets = sorted({v["set"] for v in json.load(open("site/versions.json"))})
+          print("sets=" + json.dumps([s for s in sets if not wanted or s in wanted]))
+          PY
+        env:
+          WANTED: ${{ inputs.sets || '' }}
+
+  boot:
+    needs: plan
+    runs-on: ubuntu-latest
+    timeout-minutes: 340
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        set: ${{ fromJSON(needs.plan.outputs.sets) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: |
+          pip install playwright
+          python -m playwright install --with-deps chromium
+      - timeout-minutes: 320
+        run: |
+          (cd site && python -m http.server 8092 --bind 127.0.0.1 > /dev/null 2>&1 &)
+          python tools/boot-test.py ${{ matrix.set }} result-${{ matrix.set }}.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: boot-${{ matrix.set }}
+          path: result-${{ matrix.set }}.json
+
+  report:
+    needs: boot
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: boot-*
+          merge-multiple: true
+      - run: |
+          python3 - <<'PY' >> "$GITHUB_STEP_SUMMARY"
+          import glob, json, collections
+          rows = [r for f in sorted(glob.glob("result-*.json")) for r in json.load(open(f))]
+          stages = collections.Counter(r.get("stage", "error") for r in rows)
+          print(f"## {len(rows)} versions: " + ", ".join(f"{k} {v}" for k, v in stages.most_common()))
+          print("| version | unity | set | stage | seconds | error |")
+          print("|---|---|---|---|---|---|")
+          for r in sorted(rows, key=lambda r: (r.get("stage") == "world", r["version"])):
+              print(f"| {r['version']} | {r['unity']} | {r['set']} | {r.get('stage','')} | {r.get('seconds','')} | {r.get('error','')[:80]} |")
+          PY
+          python3 -c "import glob,json;json.dump([r for f in sorted(glob.glob('result-*.json')) for r in json.load(open(f))],open('boot-report.json','w'),indent=1)"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: boot-report
+          path: boot-report.json
