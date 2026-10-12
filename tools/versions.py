@@ -28,14 +28,24 @@ def key(version):
     return tuple(int(part) for part in version.split("."))
 
 
-def bundle_set(version, bundles):
+def engine(unity):
+    major, minor = unity.split(".")[:2]
+    return "5" if int(major) < 2017 else f"{major}.{minor}"
+
+
+def bundle_set(version, bundles, unity):
     if version in bundles["builds"]:
         return bundles["builds"][version]
-    chosen = None
-    for entry in bundles["ranges"]:
-        if key(version) >= key(entry["from"]):
-            chosen = entry["set"]
-    return chosen
+    reached = [entry["set"] for entry in bundles["ranges"] if key(version) >= key(entry["from"])]
+    chosen = reached[-1] if reached else None
+    engines = bundles.get("engines", {})
+    wanted = engine(unity)
+    if chosen is None or engines.get(chosen, "5") == wanted:
+        return chosen
+    matching = sorted((name for name in bundles["sets"] if engines.get(name, "5") == wanted), key=lambda name: int(name.lstrip("v")))
+    if not matching:
+        return chosen
+    return next((name for name in reversed(reached) if name in matching), matching[-1])
 
 
 def fetch(url, start=None, end=None):
@@ -75,7 +85,7 @@ for build in sorted(builds, key=lambda build: build["timestamp"], reverse=True):
         build["version"] = product_version(build["urls"][0])
     if not kind or not build["version"] or key(build["version"]) >= NEWEST_UNSUPPORTED:
         continue
-    chosen = bundle_set(build["version"], bundles)
+    chosen = bundle_set(build["version"], bundles, build["unityVersion"])
     versions.append({
         "id": build["id"],
         "version": build["version"],
