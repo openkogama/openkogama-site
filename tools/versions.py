@@ -1,6 +1,9 @@
 import json
+import re
+import struct
 import sys
 import urllib.request
+import zlib
 from pathlib import Path
 
 SERVER = Path(sys.argv[1]) if len(sys.argv) > 1 else Path(r"C:/Users/nightus/source/repos/openkogama-server")
@@ -35,6 +38,32 @@ def bundle_set(version, bundles):
     return chosen
 
 
+def fetch(url, start=None, end=None):
+    headers = {"User-Agent": "openkogama-site"}
+    if start is not None:
+        headers["Range"] = f"bytes={start}-{end}" if end is not None else f"bytes={start}"
+    return urllib.request.urlopen(urllib.request.Request(url, headers=headers), timeout=60).read()
+
+
+def product_version(url):
+    tail = fetch(url, "-65536")
+    at = tail.find(b"PK\x01\x02")
+    while at >= 0:
+        size = struct.unpack("<H", tail[at + 28:at + 30])[0]
+        if tail[at + 46:at + 46 + size] == b"index.html":
+            method, = struct.unpack("<H", tail[at + 10:at + 12])
+            packed, = struct.unpack("<I", tail[at + 20:at + 24])
+            offset, = struct.unpack("<I", tail[at + 42:at + 46])
+            head = fetch(url, offset, offset + 30 + 1024 + packed)
+            skip = 30 + sum(struct.unpack("<HH", head[26:30]))
+            raw = head[skip:skip + packed]
+            page = raw if method == 0 else zlib.decompress(raw, -15)
+            found = re.search(rb'productVersion:\s*"([\d.]+)"', page)
+            return found.group(1).decode() if found else ""
+        at = tail.find(b"PK\x01\x02", at + 46)
+    return ""
+
+
 request = urllib.request.Request(SOURCE, headers={"User-Agent": "openkogama-site"})
 builds = json.load(urllib.request.urlopen(request))["versions"]
 bundles = json.loads((SERVER / "data" / "streaming" / "bundles.json").read_text(encoding="utf-8-sig"))
@@ -42,6 +71,8 @@ bundles = json.loads((SERVER / "data" / "streaming" / "bundles.json").read_text(
 versions = []
 for build in sorted(builds, key=lambda build: build["timestamp"], reverse=True):
     kind = family(build["unityVersion"])
+    if kind and not build["version"]:
+        build["version"] = product_version(build["urls"][0])
     if not kind or not build["version"] or key(build["version"]) >= NEWEST_UNSUPPORTED:
         continue
     chosen = bundle_set(build["version"], bundles)
