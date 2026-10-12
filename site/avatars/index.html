@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>Avatars - OpenKogama</title>
+<link rel="icon" href="../favicon.ico" sizes="16x16 32x32 48x48">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="../css/models.css">
+<script src="../js/vendor/sql.js-httpvfs/index.js"></script>
+<script type="module" src="../js/models.js"></script>
+</head>
+<body class="gallery" data-kind="avatars">
+<header class="top">
+  <a class="brand" href="../"><img src="../img/icon-192.png" alt="">OPENKOGAMA</a>
+  <nav class="sections">
+    <a class="button nav" href="#">Maps</a>
+    <a class="button nav" href="./" aria-current="page">Avatars</a>
+    <a class="button nav" href="../models/">Models</a>
+  </nav>
+</header>
+<main class="models">
+  <h1>AVATARS</h1>
+  <p class="summary" id="summary">Loading avatars</p>
+  <form class="filters" id="filters">
+    <input class="line" type="search" id="search" placeholder="Search by map or accessory" autocomplete="off">
+    <select class="line" id="filter" aria-label="Source">
+      <option value="">All sources</option>
+      <option value="class">Classes</option>
+      <option value="map">Avatars in maps</option>
+      <option value="world">Avatar worlds</option>
+      <option value="placed">Placed in maps</option>
+      <option value="build">Build mode</option>
+    </select>
+    <button class="line favorites" type="button" id="favorites" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.3 4.4 12.9a4.8 4.8 0 0 1 6.8-6.8l.8.8.8-.8a4.8 4.8 0 0 1 6.8 6.8z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg><span>Liked</span><span class="count"></span></button>
+  </form>
+  <div class="grid" id="grid"></div>
+  <p class="status" id="status"></p>
+</main>
+<footer>
+  <p>Not affiliated with Multiverse ApS.</p>
+</footer>
+</body>
+</html>

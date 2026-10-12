@@ -16,23 +16,50 @@
   --play-dark: #23565b;
   --donate: #5c5794;
   --donate-dark: #3d3970;
-  --backdrop: #749ac8 url(../img/background-light.png);
+  --primary: #0f0f0f;
+  --primary-edge: #000000;
+  --primary-text: #ffffff;
+  --primary-hover: #272727;
+  --secondary: #f2f2f2;
+  --secondary-edge: #dedede;
+  --secondary-text: #0f0f0f;
+  --secondary-hover: #e5e5e5;
+  --backdrop-color: #ffffff;
+  --backdrop: var(--backdrop-color) url(../img/background-light.png);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --page: #111214;
+    --page: #0f0f0f;
     --text: #ececef;
     --heading: #ffffff;
     --brand: #6b9fdc;
     --tagline: #ffffff;
-    --backdrop: #20334c url(../img/background-dark.png);
+    --primary: #f1f1f1;
+    --primary-edge: #ffffff;
+    --primary-text: #0f0f0f;
+    --primary-hover: #d9d9d9;
+    --secondary: #272727;
+    --secondary-edge: #3a3a3a;
+    --secondary-text: #f1f1f1;
+    --secondary-hover: #3f3f3f;
+    --backdrop-color: #0f0f0f;
+    --backdrop: var(--backdrop-color) url(../img/background-dark.png);
   }
 }
 
 * { box-sizing: border-box; }
 
-html { background: var(--backdrop) center / cover fixed; }
+html { background: var(--backdrop-color); }
+
+body.home::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: var(--backdrop) center / cover;
+  will-change: transform;
+}
 
 body {
   min-height: 100vh;
@@ -42,6 +69,16 @@ body {
   padding: 24px 16px 20px;
   font: 16px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   color: var(--text);
+}
+
+.top {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.sections {
+  display: flex;
+  gap: 8px;
 }
 
 .hero {
@@ -108,7 +145,7 @@ h1 {
   font-family: inherit;
   font-size: 0.95rem;
   font-weight: 400;
-  color: #fff;
+  color: var(--ink, #fff);
   text-decoration: none;
   background: var(--dark);
 }
@@ -134,8 +171,15 @@ h1 {
 .button.download { --fill: var(--download); --dark: var(--download-dark); }
 .button.play { --fill: var(--play); --dark: var(--play-dark); }
 .button.donate { --fill: var(--donate); --dark: var(--donate-dark); }
+.button.primary,
+.button.nav[aria-current="page"] { --fill: var(--primary); --dark: var(--primary-edge); --ink: var(--primary-text); --fill-hover: var(--primary-hover); }
+.button.secondary,
+.button.nav { --fill: var(--secondary); --dark: var(--secondary-edge); --ink: var(--secondary-text); --fill-hover: var(--secondary-hover); }
+.button.nav { --corner: 5px; padding: 5px 16px; font-size: 0.9rem; }
 
 .button:hover { filter: brightness(1.1); }
+.button:is(.primary, .secondary, .nav):hover { filter: none; }
+.button:is(.primary, .secondary, .nav):hover::before { background: var(--fill-hover); }
 
 footer {
   padding-top: 32px;
@@ -160,4 +204,5 @@ footer p { margin: 4px 0 0; }
 
 @media (max-width: 600px) {
   h1 { font-size: 3rem; }
+  .top { justify-content: center; }
 }

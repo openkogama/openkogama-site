@@ -1,0 +1,472 @@
+:root {
+  --card: #272727;
+  --card-edge: #3a3a3a;
+  --card-text: #ffffff;
+  --card-meta: rgb(255 255 255 / 0.72);
+  --field-line: rgb(0 0 0 / 0.3);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --field-line: rgb(255 255 255 / 0.35);
+  }
+}
+
+.gallery .top {
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.gallery .brand {
+  font-size: 1.3rem;
+  text-decoration: none;
+}
+
+.gallery .brand img {
+  height: 26px;
+}
+
+.models {
+  flex: 1;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-top: 28px;
+}
+
+.models h1 {
+  margin-bottom: 8px;
+  font-size: 3rem;
+}
+
+.summary {
+  margin: 0 0 20px;
+  text-align: center;
+  color: var(--tagline);
+}
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.line {
+  width: 240px;
+  padding: 4px 2px;
+  font: inherit;
+  font-size: 0.95rem;
+  color: var(--heading);
+  background: none;
+  border: 0;
+  border-bottom: 1px solid var(--field-line);
+  outline: 0;
+}
+
+select.line {
+  width: auto;
+  cursor: pointer;
+}
+
+select.line option {
+  color: var(--text);
+  background: var(--page);
+}
+
+.filters .favorites {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: auto;
+  cursor: pointer;
+}
+
+.favorites svg {
+  width: 18px;
+  height: 18px;
+}
+
+.favorites .count {
+  color: var(--tagline);
+}
+
+.favorites[aria-pressed="true"] svg {
+  color: #ff4d6d;
+}
+
+.favorites[aria-pressed="true"] path {
+  fill: currentColor;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  gap: 14px;
+}
+
+.card {
+  --corner: 7px;
+  --edge: 2px;
+  --cut: var(--corner);
+  position: relative;
+  isolation: isolate;
+  margin: 0;
+  padding: 10px;
+  background: var(--card-edge);
+}
+
+.card::before {
+  --cut: calc(var(--corner) - 0.586 * var(--edge));
+  content: "";
+  position: absolute;
+  inset: var(--edge);
+  z-index: -1;
+  background: var(--card);
+}
+
+.card,
+.card::before {
+  clip-path: polygon(
+    var(--cut) 0, calc(100% - var(--cut)) 0,
+    100% var(--cut), 100% calc(100% - var(--cut)),
+    calc(100% - var(--cut)) 100%, var(--cut) 100%,
+    0 calc(100% - var(--cut)), 0 var(--cut)
+  );
+}
+
+.picture {
+  --rotate-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.4'%3E%3Cpath d='M20 11a8 8 0 0 0-14.5-4.6M4 13a8 8 0 0 0 14.5 4.6'/%3E%3Cpath d='M5 2.5v4.2h4.2M19 21.5v-4.2h-4.2'/%3E%3C/svg%3E");
+  position: relative;
+  aspect-ratio: 1;
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.picture::before {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  z-index: 1;
+  width: 20px;
+  height: 20px;
+  background: var(--card-meta);
+  -webkit-mask: var(--rotate-icon) center / contain no-repeat;
+  mask: var(--rotate-icon) center / contain no-repeat;
+  pointer-events: none;
+}
+
+.picture.touch {
+  touch-action: none;
+}
+
+.picture.touch::before {
+  content: "";
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .card:not(.too-big, .failed) .picture:hover::before {
+    content: "";
+  }
+}
+
+.picture.dragging {
+  cursor: grabbing;
+}
+
+.card.too-big .picture,
+.card.failed .picture {
+  cursor: default;
+}
+
+.picture canvas,
+.picture img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  -webkit-user-drag: none;
+}
+
+.picture > img,
+.picture > canvas:not(.viewer) {
+  transition: opacity 0.18s;
+}
+
+.picture > img:not(.shown),
+.picture > canvas:not(.viewer, .shown) {
+  opacity: 0;
+}
+
+.picture .viewer {
+  position: absolute;
+  inset: 0;
+}
+
+.picture.live > img,
+.picture.live > canvas:not(.viewer) {
+  visibility: hidden;
+}
+
+.card.too-big .picture::after,
+.card.failed .picture::after {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: 0.8rem;
+  color: var(--card-meta);
+  text-align: center;
+}
+
+.card.too-big .picture::after { content: "Too big to preview"; }
+.card.failed .picture::after { content: "Preview unavailable"; }
+
+.icon {
+  padding: 6px;
+  color: var(--card-meta);
+  background: none;
+  border: 0;
+  cursor: pointer;
+  filter: drop-shadow(0 1px 1px rgb(0 0 0 / 0.6));
+}
+
+.icon svg {
+  display: block;
+  width: 18px;
+  height: 18px;
+}
+
+.icon:hover {
+  color: var(--card-text);
+}
+
+.icon:disabled {
+  cursor: progress;
+  opacity: 0.5;
+}
+
+.icon.error {
+  color: #e06c6c;
+}
+
+.icon.like.on {
+  color: #ff4d6d;
+}
+
+.icon.like.on path {
+  fill: currentColor;
+}
+
+.picture .tools {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  z-index: 1;
+  display: flex;
+}
+
+.picture .like {
+  position: absolute;
+  top: -4px;
+  left: -4px;
+  z-index: 1;
+}
+
+html.inspecting {
+  overflow: hidden;
+}
+
+.inspector {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  background: rgb(0 0 0 / 0.72);
+}
+
+.inspector .sheet {
+  --corner: 10px;
+  --edge: 2px;
+  --cut: var(--corner);
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 260px;
+  gap: 20px;
+  width: min(960px, 100%);
+  max-height: 100%;
+  overflow: auto;
+  padding: 20px;
+  color: var(--card-text);
+  background: var(--card-edge);
+}
+
+.inspector .sheet::before {
+  --cut: calc(var(--corner) - 0.586 * var(--edge));
+  content: "";
+  position: absolute;
+  inset: var(--edge);
+  z-index: -1;
+  background: var(--card);
+}
+
+.inspector .sheet,
+.inspector .sheet::before {
+  clip-path: polygon(
+    var(--cut) 0, calc(100% - var(--cut)) 0,
+    100% var(--cut), 100% calc(100% - var(--cut)),
+    calc(100% - var(--cut)) 100%, var(--cut) 100%,
+    0 calc(100% - var(--cut)), 0 var(--cut)
+  );
+}
+
+.inspector .close {
+  position: absolute;
+  top: 6px;
+  right: 12px;
+  z-index: 2;
+  padding: 0 4px;
+  font-size: 2rem;
+  line-height: 1;
+  color: var(--card-text);
+  background: none;
+  border: 0;
+  cursor: pointer;
+  opacity: 0.8;
+}
+
+.inspector .close:hover {
+  opacity: 1;
+}
+
+.inspector .stage {
+  position: relative;
+  aspect-ratio: 1;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.inspector .stage.dragging {
+  cursor: grabbing;
+}
+
+.inspector .stage canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.inspector .stage[data-state]::after {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: var(--card-meta);
+}
+
+.inspector .stage[data-state="loading"]::after { content: "Loading"; }
+.inspector .stage[data-state="big"]::after { content: "Too big to preview"; }
+.inspector .stage[data-state="failed"]::after { content: "Preview unavailable"; }
+
+.inspector .about {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+  padding-top: 28px;
+}
+
+.inspector .title {
+  margin: 0;
+  font-size: 1.35rem;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+
+.inspector .details {
+  margin: 0;
+  color: var(--card-meta);
+}
+
+.inspector .actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.inspector .actions .button {
+  border: 0;
+  cursor: pointer;
+}
+
+.inspector .actions .icon svg {
+  width: 24px;
+  height: 24px;
+}
+
+.inspector .hint {
+  margin: auto 0 0;
+  font-size: 0.85rem;
+  color: var(--card-meta);
+}
+
+@media (max-width: 700px) {
+  .inspector {
+    padding: 8px;
+  }
+
+  .inspector .sheet {
+    grid-template-columns: 1fr;
+    padding: 14px;
+  }
+
+  .inspector .about {
+    padding-top: 0;
+  }
+}
+
+.name,
+.meta {
+  margin: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.name {
+  margin-top: 8px;
+  font-size: 0.9rem;
+  color: var(--card-text);
+}
+
+.meta {
+  font-size: 0.78rem;
+  color: var(--card-meta);
+}
+
+.status {
+  min-height: 1.6em;
+  margin: 20px 0 0;
+  text-align: center;
+  color: var(--tagline);
+}
+
+.sentinel {
+  height: 1px;
+}
+
+@media (max-width: 600px) {
+  .gallery .top { justify-content: center; }
+  .models h1 { font-size: 2.2rem; }
+  .grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
+  .line { width: 100%; }
+}

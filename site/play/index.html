@@ -8,10 +8,9 @@
 <link rel="stylesheet" href="../css/style.css">
 <style>
   body { justify-content: center; align-items: center; gap: 12px; padding: 16px; }
-  #game { position: relative; width: min(940px, 100%); aspect-ratio: 940 / 482; background: #000; box-shadow: 0 10px 40px rgba(0, 0, 0, .35); }
+  #game { --primary: #f1f1f1; --primary-edge: #ffffff; --primary-text: #0f0f0f; --primary-hover: #d9d9d9; --secondary: #272727; --secondary-edge: #3a3a3a; --secondary-text: #f1f1f1; --secondary-hover: #3f3f3f; position: relative; width: min(940px, 100%); aspect-ratio: 940 / 482; background: #000; box-shadow: 0 0 0 1px rgba(255, 255, 255, .08), 0 10px 40px rgba(0, 0, 0, .35); }
   #unity, #unity canvas, #canvas { display: block; width: 100%; height: 100%; }
-  :root { --window: radial-gradient(circle at 50% 45%, #5f86b8, #24406c 85%); --window-text: #dbe7f5; }
-  @media (prefers-color-scheme: dark) { :root { --window: radial-gradient(circle at 50% 45%, #42607f, #0f1828 85%); } }
+  :root { --window: radial-gradient(circle at 50% 45%, #2a2a2a, #0f0f0f 85%); --window-text: #aaaaaa; }
   #launch, .panel { position: absolute; inset: 0; background: var(--window); }
   #launch { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; }
   #launch[hidden], .panel[hidden], [hidden].toolbar, #world-form[hidden] { display: none; }
@@ -19,6 +18,7 @@
   #current { margin-top: -6px; font-size: 1.1rem; color: var(--window-text); }
   #game .button { border: 0; cursor: pointer; }
   #game .button:disabled { opacity: .5; cursor: default; filter: none; }
+  #game .button:disabled::before { background: var(--fill); }
   .panel { z-index: 2; display: flex; flex-direction: column; gap: 14px; padding: 20px 24px; }
   .panel header { display: flex; gap: 12px; align-items: center; }
   .panel h2 { flex: 1; font-size: 2rem; }
@@ -39,8 +39,8 @@
   .tile { display: grid; gap: 6px; padding: 0; font: inherit; font-size: .95rem; color: #fff; text-align: center; background: none; border: 0; cursor: pointer; }
   .tile:hover { filter: brightness(1.1); }
   .thumb, .thumb span { clip-path: polygon(var(--cut) 0, calc(100% - var(--cut)) 0, 100% var(--cut), 100% calc(100% - var(--cut)), calc(100% - var(--cut)) 100%, var(--cut) 100%, 0 calc(100% - var(--cut)), 0 var(--cut)); }
-  .thumb { --corner: 7px; --edge: 3px; --cut: var(--corner); display: block; padding: var(--edge); background: var(--download-dark); }
-  .thumb span { --cut: calc(var(--corner) - 0.586 * var(--edge)); display: block; aspect-ratio: 5 / 2; background: var(--download) center / cover no-repeat; }
+  .thumb { --corner: 7px; --edge: 3px; --cut: var(--corner); display: block; padding: var(--edge); background: var(--secondary-edge); }
+  .thumb span { --cut: calc(var(--corner) - 0.586 * var(--edge)); display: block; aspect-ratio: 5 / 2; background: var(--secondary) center / cover no-repeat; }
   .tile.selected .thumb { background: #fff; }
   .tile .name, .tile .line { display: block; width: 100%; height: 32px; margin: 0; padding: 4px 2px; font: inherit; font-size: .95rem; line-height: 23px; text-align: center; border: 0; border-bottom: 1px solid transparent; }
   .tile .name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -68,8 +68,8 @@
   #action > [hidden] { visibility: hidden; }
   #progress { width: 100%; display: grid; gap: 8px; text-align: center; font-size: .9rem; color: var(--window-text); }
   #error { max-width: 80%; min-height: 1.4em; margin: 0; text-align: center; font-size: .9rem; color: #fff; overflow-wrap: anywhere; }
-  #bar { height: 8px; background: var(--download-dark); overflow: hidden; }
-  #fill { width: 0; height: 100%; background: var(--play); transition: width .2s; }
+  #bar { height: 8px; background: var(--secondary-edge); overflow: hidden; }
+  #fill { width: 0; height: 100%; background: var(--primary); transition: width .2s; }
   .link { font: inherit; font-size: .95rem; color: var(--heading); background: none; border: 0; padding: 0; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
   #status { color: var(--heading); font-size: .9rem; text-align: center; }
   #below .brand { justify-self: start; }
@@ -83,8 +83,8 @@
     <div id="current">KoGaMa <span id="current-version"></span></div>
     <div id="action">
       <div class="actions" id="buttons">
-        <button class="button play" id="play">Play</button>
-        <button class="button download" id="change">Change version</button>
+        <button class="button primary" id="play">Play</button>
+        <button class="button secondary" id="change">Change version</button>
       </div>
       <div id="progress" hidden><div id="bar"><div id="fill"></div></div><span id="progress-text"></span></div>
     </div>
@@ -108,23 +108,23 @@
       <input id="world-name" class="line" placeholder="World name" maxlength="64" autocomplete="off" aria-label="World name">
       <div id="templates" class="templates"></div>
       <div class="actions">
-        <button class="button play" id="world-save" type="submit">Create</button>
-        <button class="button download" id="world-cancel" type="button">Cancel</button>
+        <button class="button primary" id="world-save" type="submit">Create</button>
+        <button class="button secondary" id="world-cancel" type="button">Cancel</button>
       </div>
     </form>
     <p class="note" id="world-note"></p>
     <div class="toolbar" id="world-actions">
       <div class="actions">
-        <button class="button play" id="world-play">Play</button>
-        <button class="button download" id="world-build">Build</button>
-        <button class="button download" id="world-avatar">Avatar editor</button>
+        <button class="button primary" id="world-play">Play</button>
+        <button class="button secondary" id="world-build">Build</button>
+        <button class="button secondary" id="world-avatar">Avatar editor</button>
       </div>
       <div class="actions manage">
-        <button class="button download" id="world-new">New world</button>
-        <button class="button download" id="world-import">Import</button>
-        <button class="button download" id="world-export">Export</button>
-        <button class="button download" id="world-rename">Rename</button>
-        <button class="button download" id="world-delete">Delete</button>
+        <button class="button secondary" id="world-new">New world</button>
+        <button class="button secondary" id="world-import">Import</button>
+        <button class="button secondary" id="world-export">Export</button>
+        <button class="button secondary" id="world-rename">Rename</button>
+        <button class="button secondary" id="world-delete">Delete</button>
       </div>
     </div>
     <input id="world-file" type="file" accept=".kgmap,.kgm" hidden>
@@ -339,7 +339,7 @@
 
   function versionButton(entry) {
     const button = document.createElement("button");
-    button.className = "button " + (entry === selected ? "play" : "download");
+    button.className = "button " + (entry === selected ? "primary" : "secondary");
     button.textContent = entry.version;
     button.title = new Date(entry.time * 1000).toISOString().slice(0, 10);
     button.addEventListener("click", () => {
@@ -622,7 +622,7 @@
     const render = () => templateList.replaceChildren(...templates.map(entry => {
       const button = document.createElement("button");
       button.type = "button";
-      button.className = "button " + (entry.id === template ? "play" : "download");
+      button.className = "button " + (entry.id === template ? "primary" : "secondary");
       button.textContent = entry.name;
       button.addEventListener("click", () => {
         template = entry.id;
