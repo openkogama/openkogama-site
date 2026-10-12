@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>Maps - OpenKogama</title>
+<link rel="icon" href="../favicon.ico" sizes="16x16 32x32 48x48">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="../css/models.css">
+<link rel="stylesheet" href="../css/maps.css">
+<script type="module" src="../js/maps.js"></script>
+</head>
+<body class="gallery">
+<header class="top">
+  <a class="brand" href="../"><img src="../img/icon-192.png" alt="">OPENKOGAMA</a>
+  <nav class="sections">
+    <a class="button nav" href="./" aria-current="page">Maps</a>
+    <a class="button nav" href="../avatars/">Avatars</a>
+    <a class="button nav" href="../models/">Models</a>
+  </nav>
+</header>
+<main class="models">
+  <h1>MAPS</h1>
+  <p class="summary" id="summary">Loading maps</p>
+  <form class="filters" id="filters">
+    <input class="line" type="search" id="search" placeholder="Search by name, author or id" autocomplete="off">
+    <select class="line" id="region" aria-label="Region">
+      <option value="">All regions</option>
+      <option value="www">Global</option>
+      <option value="br">Brazil</option>
+      <option value="friends">Friends</option>
+      <option value="-">Unknown</option>
+    </select>
+    <select class="line" id="sort" aria-label="Sort">
+      <option value="plays">Most played</option>
+      <option value="likes">Most liked</option>
+      <option value="new">Newest</option>
+      <option value="old">Oldest</option>
+      <option value="name">Name</option>
+    </select>
+    <button class="line favorites" type="button" id="favorites" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.3 4.4 12.9a4.8 4.8 0 0 1 6.8-6.8l.8.8.8-.8a4.8 4.8 0 0 1 6.8 6.8z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg><span>Liked</span><span class="count"></span></button>
+  </form>
+  <div class="grid maps" id="list"></div>
+  <p class="status" id="status"></p>
+</main>
+<footer>
+  <p>Not affiliated with Multiverse ApS.</p>
+</footer>
+</body>
+</html>

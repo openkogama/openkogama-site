@@ -1,0 +1,197 @@
+.maps {
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+}
+
+.map {
+  min-width: 0;
+}
+
+.map .picture {
+  --cut: 5px;
+  aspect-ratio: 350 / 194;
+  overflow: hidden;
+  cursor: pointer;
+  background: rgb(0 0 0 / 0.18) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-opacity='.3' stroke-width='1.6'%3E%3Cpath d='M12 3 3 7.5v9L12 21l9-4.5v-9z M3 7.5 12 12l9-4.5M12 12v9'/%3E%3C/svg%3E") center / 40px no-repeat;
+  clip-path: polygon(
+    var(--cut) 0, calc(100% - var(--cut)) 0,
+    100% var(--cut), 100% calc(100% - var(--cut)),
+    calc(100% - var(--cut)) 100%, var(--cut) 100%,
+    0 calc(100% - var(--cut)), 0 var(--cut)
+  );
+}
+
+.map .picture::before {
+  content: none;
+}
+
+.map .picture > img {
+  object-fit: cover;
+}
+
+.map .picture .tools,
+.map .picture .like {
+  top: 0;
+}
+
+.map .picture .tools {
+  right: 0;
+}
+
+.map .picture .like {
+  left: 0;
+}
+
+.map .picture .icon {
+  color: #fff;
+}
+
+.inspector .sheet:has(.map-stage) {
+  grid-template-columns: minmax(0, 1fr) 300px;
+  width: min(100%, 1100px);
+}
+
+.inspector .map-stage {
+  align-self: start;
+  height: auto;
+  aspect-ratio: 350 / 194;
+  cursor: default;
+  background: rgb(0 0 0 / 0.18);
+}
+
+.inspector .map-stage img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  opacity: 0;
+  transition: opacity 0.18s;
+}
+
+.inspector .map-stage img.shown {
+  opacity: 1;
+}
+
+.inspector .map-stage[data-state="none"]::after {
+  content: "No thumbnail yet";
+}
+
+.inspector .actions .save {
+  --cut: 7px;
+  flex: none;
+  width: 44px;
+  padding: 0;
+  background: rgb(0 0 0 / 0.22);
+  filter: none;
+  clip-path: polygon(
+    var(--cut) 0, calc(100% - var(--cut)) 0,
+    100% var(--cut), 100% calc(100% - var(--cut)),
+    calc(100% - var(--cut)) 100%, var(--cut) 100%,
+    0 calc(100% - var(--cut)), 0 var(--cut)
+  );
+}
+
+.inspector .actions .save:hover {
+  background: rgb(0 0 0 / 0.32);
+}
+
+.inspector .actions .button:disabled {
+  cursor: progress;
+  opacity: 0.6;
+}
+
+.inspector .more {
+  min-height: 0;
+  overflow-y: auto;
+  font-size: 0.85rem;
+  color: var(--card-meta);
+}
+
+.inspector .description {
+  margin: 0 0 10px;
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+  color: var(--card-text);
+}
+
+.inspector dl {
+  display: grid;
+  gap: 3px;
+  margin: 0;
+}
+
+.inspector dl div {
+  display: flex;
+  gap: 8px;
+  min-width: 0;
+}
+
+.inspector dt {
+  flex: none;
+  width: 96px;
+}
+
+.inspector dd {
+  min-width: 0;
+  margin: 0;
+  overflow-wrap: anywhere;
+  color: var(--card-text);
+}
+
+.inspector dd a {
+  color: inherit;
+}
+
+.inspector .versions {
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.inspector .link {
+  padding: 2px 0;
+  text-align: left;
+  font: inherit;
+  color: var(--card-text);
+  text-decoration: underline;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+
+.inspector .link.error {
+  color: #e06c6c;
+}
+
+@media (max-width: 600px) {
+  .maps {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 14px;
+  }
+
+  .map .name {
+    font-size: 1rem;
+  }
+
+  .map .meta {
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 700px) {
+  .inspector .sheet:has(.map-stage) {
+    grid-template-columns: 1fr;
+    width: 100%;
+  }
+
+  .inspector .map-stage {
+    background: #000;
+  }
+
+  .inspector .map-stage img {
+    object-fit: cover;
+  }
+
+  .inspector .more {
+    overflow: visible;
+  }
+}

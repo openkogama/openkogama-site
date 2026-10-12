@@ -164,6 +164,10 @@ export function createViewer(grid, { animated, atlas, materials, geometry, row, 
     if (current.ready) schedule();
   });
 
+  grid.addEventListener("touchmove", event => {
+    if (drag) event.preventDefault();
+  }, { passive: false });
+
   grid.addEventListener("pointerup", release);
   grid.addEventListener("pointercancel", release);
 

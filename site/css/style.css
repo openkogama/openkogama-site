@@ -112,7 +112,7 @@ h1 {
   margin-top: 28px;
 }
 
-.icon {
+.links .icon {
   display: block;
   height: 26px;
   background: var(--heading);
@@ -121,9 +121,9 @@ h1 {
   mask: var(--image) center / contain no-repeat;
 }
 
-.icon:hover { opacity: 1; }
-.icon.github { --image: url(../img/github.svg); width: 27px; }
-.icon.discord { --image: url(../img/discord.svg); width: 34px; }
+.links .icon:hover { opacity: 1; }
+.links .icon.github { --image: url(../img/github.svg); width: 27px; }
+.links .icon.discord { --image: url(../img/discord.svg); width: 34px; }
 
 .actions {
   display: flex;

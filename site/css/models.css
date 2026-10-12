@@ -226,6 +226,8 @@ select.line option {
 .card.failed .picture::after { content: "Preview unavailable"; }
 
 .icon {
+  display: grid;
+  place-items: center;
   padding: 6px;
   color: var(--card-meta);
   background: none;
@@ -276,7 +278,8 @@ select.line option {
   z-index: 1;
 }
 
-html.inspecting {
+html.inspecting,
+html.inspecting body {
   overflow: hidden;
 }
 
@@ -288,6 +291,8 @@ html.inspecting {
   place-items: center;
   padding: 16px;
   background: rgb(0 0 0 / 0.72);
+  touch-action: none;
+  overscroll-behavior: contain;
 }
 
 .inspector .sheet {
@@ -302,6 +307,8 @@ html.inspecting {
   width: min(960px, 100%);
   max-height: 100%;
   overflow: auto;
+  overscroll-behavior: contain;
+  touch-action: pan-y;
   padding: 20px;
   color: var(--card-text);
   background: var(--card-edge);
@@ -398,19 +405,40 @@ html.inspecting {
 
 .inspector .actions {
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
+  justify-content: flex-start;
+  align-items: stretch;
   gap: 10px;
 }
 
 .inspector .actions .button {
+  flex: 1;
+  justify-content: center;
   border: 0;
   cursor: pointer;
 }
 
+.inspector .actions .like {
+  --cut: 7px;
+  flex: none;
+  width: 44px;
+  padding: 0;
+  background: rgb(0 0 0 / 0.22);
+  filter: none;
+  clip-path: polygon(
+    var(--cut) 0, calc(100% - var(--cut)) 0,
+    100% var(--cut), 100% calc(100% - var(--cut)),
+    calc(100% - var(--cut)) 100%, var(--cut) 100%,
+    0 calc(100% - var(--cut)), 0 var(--cut)
+  );
+}
+
+.inspector .actions .like:hover {
+  background: rgb(0 0 0 / 0.32);
+}
+
 .inspector .actions .icon svg {
-  width: 24px;
-  height: 24px;
+  width: 22px;
+  height: 22px;
 }
 
 .inspector .hint {
@@ -421,16 +449,50 @@ html.inspecting {
 
 @media (max-width: 700px) {
   .inspector {
-    padding: 8px;
+    place-items: stretch;
+    padding: 0;
   }
 
   .inspector .sheet {
+    --corner: 0px;
+    --edge: 0px;
     grid-template-columns: 1fr;
-    padding: 14px;
+    align-content: start;
+    gap: 16px;
+    width: 100%;
+    height: 100%;
+    max-height: none;
+    padding: 0 0 calc(24px + env(safe-area-inset-bottom));
+  }
+
+  .inspector .stage {
+    width: 100%;
   }
 
   .inspector .about {
-    padding-top: 0;
+    padding: 0 16px;
+  }
+
+  .inspector .close {
+    --cut: 7px;
+    position: fixed;
+    top: calc(10px + env(safe-area-inset-top));
+    right: 10px;
+    display: grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    padding: 0;
+    font-size: 1.8rem;
+    color: #fff;
+    background: rgb(0 0 0 / 0.55);
+    opacity: 1;
+    clip-path: polygon(
+      var(--cut) 0, calc(100% - var(--cut)) 0,
+      100% var(--cut), 100% calc(100% - var(--cut)),
+      calc(100% - var(--cut)) 100%, var(--cut) 100%,
+      0 calc(100% - var(--cut)), 0 var(--cut)
+    );
   }
 }
 

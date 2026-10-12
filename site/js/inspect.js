@@ -73,7 +73,9 @@ function sheet({ title, meta, tint, edge, actions }) {
 export async function inspect({ row, title, meta, tint, edge, actions, atlas, materials, geometry, animated, opener }) {
   closeInspector();
   const view = sheet({ title, meta, tint, edge, actions });
-  view.hint.textContent = animated ? "Drag to rotate, scroll to zoom, click to change the animation" : "Drag to rotate, scroll to zoom";
+  const touch = matchMedia("(pointer: coarse)").matches;
+  view.hint.textContent = (touch ? "Drag to rotate, pinch to zoom" : "Drag to rotate, scroll to zoom")
+    + (animated ? (touch ? ", tap to change the animation" : ", click to change the animation") : "");
   document.body.append(view.element);
   document.documentElement.classList.add("inspecting");
   const state = { element: view.element, frame: 0, turn: TURN, tilt: 0, zoom: 1, parts: null, opener, keys: null };
@@ -117,38 +119,58 @@ export async function inspect({ row, title, meta, tint, edge, actions, atlas, ma
   };
   draw(performance.now());
 
-  let drag = null, travelled = 0;
+  const pointers = new Map();
+  let travelled = 0, multi = false, pinch = null;
+  const spread = () => {
+    const [a, b] = pointers.values();
+    return Math.hypot(a.x - b.x, a.y - b.y);
+  };
+  const pinchStart = () => {
+    pinch = pointers.size === 2 ? { spread: spread(), zoom: state.zoom } : null;
+  };
   const release = event => {
-    if (!drag || event.pointerId !== drag.id) return false;
-    drag = null;
-    view.stage.classList.remove("dragging");
+    if (!pointers.delete(event.pointerId)) return false;
+    pinchStart();
+    if (!pointers.size) view.stage.classList.remove("dragging");
     return true;
   };
   view.stage.addEventListener("pointerdown", event => {
-    if (event.button !== 0) return;
+    if (event.pointerType === "mouse" && event.button !== 0) return;
     event.preventDefault();
-    drag = { id: event.pointerId, x: event.clientX, y: event.clientY };
-    travelled = 0;
+    if (!pointers.size) {
+      travelled = 0;
+      multi = false;
+    }
+    pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+    if (pointers.size > 1) multi = true;
+    pinchStart();
     if (event.isTrusted) view.stage.setPointerCapture(event.pointerId);
     view.stage.classList.add("dragging");
   });
   view.stage.addEventListener("pointermove", event => {
-    if (!drag || event.pointerId !== drag.id) return;
-    const dx = event.clientX - drag.x, dy = event.clientY - drag.y;
-    drag.x = event.clientX;
-    drag.y = event.clientY;
+    const point = pointers.get(event.pointerId);
+    if (!point) return;
+    const dx = event.clientX - point.x, dy = event.clientY - point.y;
+    point.x = event.clientX;
+    point.y = event.clientY;
     travelled += Math.abs(dx) + Math.abs(dy);
-    state.turn -= dx * SPIN;
-    state.tilt = clamp(state.tilt - dy * TILT, [-TILT_LIMIT, TILT_LIMIT]);
+    if (pinch) {
+      if (pinch.spread > 0) state.zoom = clamp(pinch.zoom * spread() / pinch.spread, ZOOM);
+    } else if (pointers.size === 1) {
+      state.turn -= dx * SPIN;
+      state.tilt = clamp(state.tilt - dy * TILT, [-TILT_LIMIT, TILT_LIMIT]);
+    }
     schedule();
   });
   view.stage.addEventListener("pointerup", event => {
-    if (release(event) && travelled <= TAP_SLOP && state.parts) {
+    if (release(event) && !pointers.size && !multi && travelled <= TAP_SLOP && state.parts) {
       advance(clips, state, performance.now());
       schedule();
     }
   });
   view.stage.addEventListener("pointercancel", release);
+  view.stage.addEventListener("touchmove", event => event.preventDefault(), { passive: false });
+  view.stage.addEventListener("gesturestart", event => event.preventDefault());
   view.stage.addEventListener("wheel", event => {
     event.preventDefault();
     state.zoom = clamp(state.zoom * Math.exp(-event.deltaY * 0.0015), ZOOM);

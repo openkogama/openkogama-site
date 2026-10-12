@@ -6,7 +6,7 @@ from pathlib import Path
 SERVER = Path(sys.argv[1]) if len(sys.argv) > 1 else Path(r"C:/Users/nightus/source/repos/openkogama-server")
 SITE = Path(__file__).resolve().parent.parent / "site"
 SOURCE = "https://cdn.openkogama.org/webgl.json"
-NEWEST_UNSUPPORTED = (2, 30, 12)
+NEWEST_UNSUPPORTED = (3, 6, 0)
 LEGACY_SET = "2015"
 
 
@@ -16,6 +16,8 @@ def family(unity):
         return {"2": "5.2", "3": "5.3"}.get(minor, "5.6")
     if major in ("2017", "2018", "2019", "2020"):
         return "2018"
+    if major in ("2021", "2022", "6000"):
+        return "2021"
     return None
 
 

@@ -4,7 +4,7 @@ const OpenKogamaOffline = (() => {
   const BUILDS = "openkogama-builds";
   const EVAL = "function _JS_Eval_EvalJS(ptr){var str=Pointer_stringify(ptr);window.eval(str)}";
   const SAFE_EVAL = "function _JS_Eval_EvalJS(ptr){var str=Pointer_stringify(ptr);try{window.eval(str)}catch(e){if(!(e instanceof ReferenceError))throw e;console.log(\"openkogama: ignored\",str.slice(0,120))}}";
-  const TYPES = { js: "text/javascript", json: "application/json", html: "text/html", css: "text/css", png: "image/png" };
+  const TYPES = { js: "text/javascript", json: "application/json", html: "text/html", css: "text/css", png: "image/png", wasm: "application/wasm" };
   const PARALLEL = 6;
   const ATTEMPTS = 3;
   const WORKER = new URL("../sw.js", document.currentScript.src).href;
@@ -71,6 +71,10 @@ const OpenKogamaOffline = (() => {
     for (let { name, data } of await unzip(await response.arrayBuffer())) {
       if (build.patchEval && name.endsWith("Release/WebGLBuild.js")) {
         data = new TextEncoder().encode(new TextDecoder().decode(data).replace(EVAL, SAFE_EVAL));
+      }
+      if (name.endsWith(".gz")) {
+        data = new Uint8Array(await new Response(new Blob([data]).stream().pipeThrough(new DecompressionStream("gzip"))).arrayBuffer());
+        name = name.slice(0, -3);
       }
       const type = TYPES[name.split(".").pop()] ?? "application/octet-stream";
       await cache.put(buildKey(build.id, name), new Response(data, { headers: { "content-type": type } }));
