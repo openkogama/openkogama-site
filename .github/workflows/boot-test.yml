@@ -31,7 +31,7 @@ jobs:
   boot:
     needs: plan
     runs-on: ubuntu-latest
-    timeout-minutes: 340
+    timeout-minutes: 350
     strategy:
       fail-fast: false
       max-parallel: 20
@@ -68,11 +68,13 @@ jobs:
           python3 - <<'PY' >> "$GITHUB_STEP_SUMMARY"
           import glob, json, collections
           rows = [r for f in sorted(glob.glob("result-*.json")) for r in json.load(open(f))]
+          ok = {"world", "joined"}
           stages = collections.Counter(r.get("stage", "error") for r in rows)
-          print(f"## {len(rows)} versions: " + ", ".join(f"{k} {v}" for k, v in stages.most_common()))
+          good = sum(v for k, v in stages.items() if k in ok)
+          print(f"## {good}/{len(rows)} booted ok: " + ", ".join(f"{k} {v}" for k, v in stages.most_common()))
           print("| version | unity | set | stage | seconds | error |")
           print("|---|---|---|---|---|---|")
-          for r in sorted(rows, key=lambda r: (r.get("stage") == "world", r["version"])):
+          for r in sorted(rows, key=lambda r: (r.get("stage") in ("world", "joined"), r["version"])):
               print(f"| {r['version']} | {r['unity']} | {r['set']} | {r.get('stage','')} | {r.get('seconds','')} | {r.get('error','')[:80]} |")
           PY
           python3 -c "import glob,json;json.dump([r for f in sorted(glob.glob('result-*.json')) for r in json.load(open(f))],open('boot-report.json','w'),indent=1)"

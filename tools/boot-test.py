@@ -6,7 +6,7 @@ import time
 from playwright.async_api import async_playwright
 
 SITE = "http://127.0.0.1:8092"
-LIMIT = 300
+LIMIT = 540
 
 
 async def boot(context, entry):
