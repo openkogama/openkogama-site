@@ -8,6 +8,7 @@ const HEART_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.
 const DOWNLOAD_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m-5-5 5 5 5-5M4 16v4h16v-4" fill="none" stroke="currentColor" stroke-width="2.5"/></svg>';
 const SHARE_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8.6 13.5 15.4 17M15.4 7 8.6 10.5" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="18" cy="5.5" r="2.6" fill="currentColor"/><circle cx="6" cy="12" r="2.6" fill="currentColor"/><circle cx="18" cy="18.5" r="2.6" fill="currentColor"/></svg>';
 
+const BASE_TITLE = document.title;
 const list = document.getElementById("list");
 const status = document.getElementById("status");
 const summary = document.getElementById("summary");
@@ -215,6 +216,7 @@ function closeSheet() {
   const state = inspecting;
   inspecting = null;
   state.element.remove();
+  document.title = BASE_TITLE;
   document.documentElement.classList.remove("inspecting");
   document.removeEventListener("keydown", state.keys);
   state.opener?.focus();
@@ -330,6 +332,7 @@ async function openSheet(map, opener) {
   element.append(panel);
   document.body.append(element);
   document.documentElement.classList.add("inspecting");
+  document.title = `${map.name} - OpenKogama`;
   const state = { element, opener, keys: event => { if (event.key === "Escape") closeSheet(); } };
   inspecting = state;
   document.addEventListener("keydown", state.keys);
