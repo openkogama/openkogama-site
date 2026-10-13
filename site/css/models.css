@@ -532,3 +532,14 @@ html.inspecting body {
   .grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
   .line { width: 100%; }
 }
+
+.name .badge {
+  display: inline-block;
+  margin-right: 6px;
+  padding: 0 5px;
+  font-size: 0.7rem;
+  line-height: 1.5;
+  color: #fff;
+  vertical-align: 1px;
+  background: #c0392b;
+}

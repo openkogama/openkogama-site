@@ -48,6 +48,9 @@ const filter = document.getElementById("filter");
 const favoritesButton = document.getElementById("favorites");
 const colorSelect = document.getElementById("color");
 const typeSelect = document.getElementById("type");
+const adultButton = document.getElementById("adult");
+const ADULT = "openkogama-adult";
+let adult = (() => { try { return localStorage.getItem(ADULT) === "1"; } catch { return false; } })();
 let colors = null, meta = null, listPage = null;
 const favoritesCount = favoritesButton.querySelector(".count");
 const sentinel = document.createElement("div");
@@ -626,8 +629,11 @@ async function loadMore() {
   const current = generation;
   status.textContent = "Loading";
   try {
-    const { rows, next, done } = await nextPage();
+    const page = await nextPage();
+    const { next, done } = page;
+    const table = latest.kind === "avatars" ? await metaTable() : null;
     if (current !== generation) return;
+    const rows = page.rows.filter(row => adult || !table?.rows[row.id]?.[4]);
     const cards = rows.map(card);
     grid.append(...cards);
     lastId = next;
@@ -641,6 +647,12 @@ async function loadMore() {
       const title = article.querySelector(".name");
       title.textContent = info[0];
       title.title = list[rows[i].map] || "";
+      if (info[4]) {
+        const badge = document.createElement("span");
+        badge.className = "badge";
+        badge.textContent = "18+";
+        title.prepend(badge);
+      }
     }));
   } catch (error) {
     status.textContent = `Could not load ${KIND.noun}`;
@@ -690,6 +702,16 @@ search.addEventListener("input", () => {
 filter.addEventListener("change", restart);
 colorSelect?.addEventListener("change", restart);
 typeSelect?.addEventListener("change", restart);
+function showAdult() {
+  adultButton?.setAttribute("aria-pressed", String(adult));
+}
+adultButton?.addEventListener("click", () => {
+  if (!adult && !confirm("This shows avatars marked as mature content, archived as they were made by players. Confirm that you are 18 or older.")) return;
+  adult = !adult;
+  try { localStorage.setItem(ADULT, adult ? "1" : "0"); } catch {}
+  showAdult();
+  restart();
+});
 document.getElementById("filters").addEventListener("submit", event => {
   event.preventDefault();
   clearTimeout(typing);
@@ -712,7 +734,11 @@ async function start() {
     summary.textContent = KIND.summary(latest);
     showFavorites();
     if (colorSelect) colorTable().then(table => { colorSelect.hidden = !table; });
-    if (typeSelect) metaTable().then(table => { typeSelect.hidden = !table; });
+    if (typeSelect) metaTable().then(table => {
+      typeSelect.hidden = !table;
+      if (adultButton) adultButton.hidden = !table || !Object.values(table.rows).some(info => info[4]);
+      showAdult();
+    });
     titles = fetch(base + latest.titles).then(response => response.json()).catch(error => {
       console.warn(error);
       return [];
