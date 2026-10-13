@@ -31,7 +31,7 @@
   <h1>AVATARS</h1>
   <p class="summary" id="summary">Loading avatars</p>
   <form class="filters" id="filters">
-    <input class="line" type="search" id="search" placeholder="Search by map or accessory" autocomplete="off">
+    <input class="line" type="search" id="search" placeholder="Search by name" autocomplete="off">
     <select class="line" id="filter" aria-label="Source">
       <option value="">All sources</option>
       <option value="class">Classes</option>
@@ -53,6 +53,21 @@
       <option value="black">Black</option>
       <option value="white">White</option>
       <option value="gray">Gray</option>
+    </select>
+    <select class="line" id="type" aria-label="Type" hidden>
+      <option value="">All types</option>
+      <option value="human">Human</option>
+      <option value="anthro">Anthro</option>
+      <option value="animal">Animal</option>
+      <option value="monster">Monster</option>
+      <option value="robot">Robot</option>
+      <option value="zombie">Zombie</option>
+      <option value="skeleton">Skeleton</option>
+      <option value="ghost">Ghost</option>
+      <option value="alien">Alien</option>
+      <option value="mythical">Mythical</option>
+      <option value="vehicle">Vehicle</option>
+      <option value="object">Object</option>
     </select>
     <button class="line favorites" type="button" id="favorites" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.3 4.4 12.9a4.8 4.8 0 0 1 6.8-6.8l.8.8.8-.8a4.8 4.8 0 0 1 6.8 6.8z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg><span>Liked</span><span class="count"></span></button>
   </form>

@@ -47,8 +47,8 @@ const search = document.getElementById("search");
 const filter = document.getElementById("filter");
 const favoritesButton = document.getElementById("favorites");
 const colorSelect = document.getElementById("color");
-let colors = null;
-const colorCache = new Map();
+const typeSelect = document.getElementById("type");
+let colors = null, meta = null, listPage = null;
 const favoritesCount = favoritesButton.querySelector(".count");
 const sentinel = document.createElement("div");
 sentinel.className = "sentinel";
@@ -206,25 +206,54 @@ function colorTable() {
   return colors.then(table => table && latest && table.build === latest.build ? table : null);
 }
 
-async function colorIds() {
-  const table = colorSelect?.value ? await colorTable() : null;
-  return table ? new Set(table.colors[colorSelect.value] || []) : null;
+function metaTable() {
+  if (latest?.kind !== "avatars") return Promise.resolve(null);
+  meta ??= fetch("meta.json").then(response => response.ok ? response.json() : null).catch(() => null);
+  return meta.then(table => table && latest && table.build === latest.build ? table : null);
 }
 
-async function colorRows() {
-  const table = await colorTable();
-  const value = colorSelect.value;
+function searchWords() {
+  return search.value.trim().toLowerCase().split(/\s+/).filter(Boolean);
+}
+
+function listMode() {
+  return Boolean(colorSelect?.value || typeSelect?.value || (latest?.kind === "avatars" && searchWords().length));
+}
+
+async function searchIds(words) {
+  const table = await metaTable();
   if (!table) return [];
-  if (!colorCache.has(value)) colorCache.set(value, rowsFor(table.colors[value] || []));
-  const rows = (await colorCache.get(value)).filter(Boolean);
-  const names = await titles;
-  const words = search.value.trim().toLowerCase().split(/\s+/).filter(Boolean);
-  return rows.filter(row => (!filter.value || KIND.matches(row, filter.value))
-    && words.every(word => (names[row.map] || "").toLowerCase().includes(word)));
+  return Object.keys(table.rows).filter(id => {
+    const [title, type, desc, , , tags] = table.rows[id];
+    const text = `${title} ${type} ${desc} ${tags}`.toLowerCase();
+    return words.every(word => text.includes(word));
+  }).map(Number).sort((a, b) => a - b);
+}
+
+async function filteredIds(withSearch) {
+  const parts = [];
+  if (colorSelect?.value) {
+    const table = await colorTable();
+    parts.push(table ? table.colors[colorSelect.value] || [] : []);
+  }
+  if (typeSelect?.value) {
+    const table = await metaTable();
+    parts.push(table ? Object.keys(table.rows).filter(id => table.rows[id][1] === typeSelect.value).map(Number) : []);
+  }
+  const words = searchWords();
+  const ranked = withSearch && words.length ? await searchIds(words) : null;
+  if (!parts.length && !ranked) return null;
+  let ids = ranked ?? [...parts.shift()].sort((a, b) => a - b);
+  for (const part of parts) {
+    const keep = new Set(part);
+    ids = ids.filter(id => keep.has(id));
+  }
+  return [...new Set(ids)];
 }
 
 async function likedRows() {
-  const allowed = await colorIds();
+  const allowedIds = await filteredIds(false);
+  const allowed = allowedIds ? new Set(allowedIds) : null;
   const shas = likedList(kindName());
   const missing = shas.filter(sha => !resolved.has(sha));
   if (missing.length) {
@@ -234,11 +263,17 @@ async function likedRows() {
     for (const sha of missing) if (!resolved.has(sha)) resolved.set(sha, null);
   }
   const names = await titles;
-  const words = search.value.trim().toLowerCase().split(/\s+/).filter(Boolean);
+  const table = await metaTable();
+  const words = searchWords();
   return shas.map(sha => resolved.get(sha)).filter(row => row
     && (!allowed || allowed.has(row.id))
     && (!filter.value || KIND.matches(row, filter.value))
-    && words.every(word => (names[row.map] || "").toLowerCase().includes(word)));
+    && words.every(word => {
+      const info = table?.rows[row.id];
+      return latest.kind === "avatars"
+        ? Boolean(info) && `${info[0]} ${info[1]} ${info[2]} ${info[5]}`.toLowerCase().includes(word)
+        : (names[row.map] || "").toLowerCase().includes(word);
+    }));
 }
 
 function within(promise, ms, message) {
@@ -455,8 +490,10 @@ function openInspector(row, article, opener) {
   save.addEventListener("click", () => download(row, article.mapName, save));
   inspect({
     row,
-    title: article.mapName || "Untitled map",
-    meta: article.querySelector(".meta").textContent,
+    title: article.avatarInfo?.[0] || article.mapName || "Untitled map",
+    meta: article.avatarInfo
+      ? [article.avatarInfo[2], article.mapName && `From ${article.mapName}`, article.querySelector(".meta").textContent].filter(Boolean).join(" · ")
+      : article.querySelector(".meta").textContent,
     tint: article.style.getPropertyValue("--card"),
     edge: article.style.getPropertyValue("--card-edge"),
     actions: [likeButton(row), save],
@@ -563,9 +600,15 @@ function name(article, text) {
 }
 
 async function nextPage() {
-  if (favorites || colorSelect?.value) {
-    const all = await (favoritePage ??= favorites ? likedRows() : colorRows());
+  if (favorites) {
+    const all = await (favoritePage ??= likedRows());
     return { rows: all.slice(lastId, lastId + PAGE), next: Math.min(lastId + PAGE, all.length), done: lastId + PAGE >= all.length };
+  }
+  if (listMode()) {
+    const ids = await (listPage ??= filteredIds(true));
+    const slice = ids.slice(lastId, lastId + PAGE);
+    const rows = slice.length ? (await rowsFor(slice)).filter(row => row && (!filter.value || KIND.matches(row, filter.value))) : [];
+    return { rows, next: lastId + PAGE, done: lastId + PAGE >= ids.length };
   }
   const ids = await nextIds();
   const rows = ids.length ? await rowsFor(ids) : [];
@@ -590,7 +633,15 @@ async function loadMore() {
     lastId = next;
     finished = done;
     status.textContent = finished ? (grid.children.length ? "" : emptyText()) : "";
-    titles.then(list => cards.forEach((article, i) => name(article, list[rows[i].map])));
+    Promise.all([titles, metaTable()]).then(([list, table]) => cards.forEach((article, i) => {
+      name(article, list[rows[i].map]);
+      const info = table?.rows[rows[i].id];
+      if (!info) return;
+      article.avatarInfo = info;
+      const title = article.querySelector(".name");
+      title.textContent = info[0];
+      title.title = list[rows[i].map] || "";
+    }));
   } catch (error) {
     status.textContent = `Could not load ${KIND.noun}`;
     console.error(error);
@@ -613,6 +664,7 @@ function restart() {
   finished = false;
   loading = false;
   favoritePage = null;
+  listPage = null;
   loadMore();
 }
 
@@ -637,6 +689,7 @@ search.addEventListener("input", () => {
 });
 filter.addEventListener("change", restart);
 colorSelect?.addEventListener("change", restart);
+typeSelect?.addEventListener("change", restart);
 document.getElementById("filters").addEventListener("submit", event => {
   event.preventDefault();
   clearTimeout(typing);
@@ -659,6 +712,7 @@ async function start() {
     summary.textContent = KIND.summary(latest);
     showFavorites();
     if (colorSelect) colorTable().then(table => { colorSelect.hidden = !table; });
+    if (typeSelect) metaTable().then(table => { typeSelect.hidden = !table; });
     titles = fetch(base + latest.titles).then(response => response.json()).catch(error => {
       console.warn(error);
       return [];
