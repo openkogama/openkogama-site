@@ -485,14 +485,9 @@ html.inspecting body {
     padding: 0;
     font-size: 1.8rem;
     color: #fff;
-    background: rgb(0 0 0 / 0.55);
+    background: none;
+    filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.8));
     opacity: 1;
-    clip-path: polygon(
-      var(--cut) 0, calc(100% - var(--cut)) 0,
-      100% var(--cut), 100% calc(100% - var(--cut)),
-      calc(100% - var(--cut)) 100%, var(--cut) 100%,
-      0 calc(100% - var(--cut)), 0 var(--cut)
-    );
   }
 }
 
@@ -542,4 +537,29 @@ html.inspecting body {
   color: #fff;
   vertical-align: 1px;
   background: #c0392b;
+}
+
+.inspector .description {
+  margin: 0;
+  line-height: 1.45;
+  color: var(--card-text);
+}
+
+.inspector .description + .details {
+  font-size: 0.85rem;
+}
+
+.favorites.adult span {
+  white-space: nowrap;
+}
+
+.favorites.adult[aria-pressed="true"] {
+  padding: 4px 10px;
+  color: #fff;
+  background: #c0392b;
+  border-color: #c0392b;
+}
+
+.inspector .close:focus:not(:focus-visible) {
+  outline: none;
 }

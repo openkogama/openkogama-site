@@ -500,8 +500,9 @@ function openInspector(row, article, opener) {
     row,
     title: article.avatarInfo?.[0] || article.mapName || "Untitled map",
     meta: article.avatarInfo
-      ? [article.avatarInfo[2], article.mapName && `From ${article.mapName}`, article.querySelector(".meta").textContent].filter(Boolean).join(" · ")
+      ? [article.mapName && `From ${article.mapName}`, article.querySelector(".meta").textContent].filter(Boolean).join(" · ")
       : article.querySelector(".meta").textContent,
+    description: article.avatarInfo?.[2] || "",
     tint: article.style.getPropertyValue("--card"),
     edge: article.style.getPropertyValue("--card-edge"),
     actions: [likeButton(row), save],
@@ -708,7 +709,10 @@ filter.addEventListener("change", restart);
 colorSelect?.addEventListener("change", restart);
 typeSelect?.addEventListener("change", restart);
 function showAdult() {
-  adultButton?.setAttribute("aria-pressed", String(adult));
+  if (!adultButton) return;
+  adultButton.setAttribute("aria-pressed", String(adult));
+  adultButton.querySelector("span").textContent = adult ? "18+ on" : "18+ off";
+  adultButton.title = adult ? "Mature avatars are shown. Click to hide them." : "Mature avatars are hidden. Click to show them.";
 }
 adultButton?.addEventListener("click", () => {
   if (!adult && !confirm("This shows avatars marked as mature content, archived as they were made by players. Confirm that you are 18 or older.")) return;
