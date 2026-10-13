@@ -19,6 +19,7 @@ const AMBIENT = 0.45;
 const OCCLUSION = 0.5;
 const MAX_TRIANGLES = 300000;
 export const AVATAR_TURN = 180;
+const MODEL_TURN = 180 - TURN;
 
 const corner = value => [-0.5 + Math.floor(value / 25) * 0.25, -0.5 + Math.floor(value / 5) % 5 * 0.25, -0.5 + value % 5 * 0.25];
 const IDENTITY_CORNERS = IDENTITY.map(corner);
@@ -50,7 +51,7 @@ export function parseModel(buffer) {
     return { parts, turn: AVATAR_TURN };
   }
   const start = magic === "OKM1" ? 8 : 0;
-  return { scale: start ? view.getFloat32(4) : 1, cubes: readCubes(view, bytes, start) };
+  return { scale: start ? view.getFloat32(4) : 1, cubes: readCubes(view, bytes, start), turn: MODEL_TURN };
 }
 
 function readCubes(view, bytes, start) {

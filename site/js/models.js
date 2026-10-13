@@ -211,7 +211,7 @@ function colorTable() {
 }
 
 function metaTable() {
-  if (latest?.kind !== "avatars") return Promise.resolve(null);
+  if (!latest) return Promise.resolve(null);
   meta ??= fetch("meta.json").then(response => response.ok ? response.json() : null).catch(() => null);
   return meta.then(table => table && latest && table.build === latest.build ? table : null);
 }
@@ -220,18 +220,35 @@ function searchWords() {
   return search.value.trim().toLowerCase().split(/\s+/).filter(Boolean);
 }
 
+function hasWord(text, word) {
+  const at = text.indexOf(word);
+  if (at < 0) return false;
+  return at === 0 || !/[\p{L}\p{N}]/u.test(text[at - 1]) || hasWord(text.slice(at + 1), word);
+}
+
 function listMode() {
-  return Boolean(reviewRating || colorSelect?.value || typeSelect?.value || (latest?.kind === "avatars" && searchWords().length));
+  return Boolean(reviewRating || colorSelect?.value || typeSelect?.value || searchWords().length);
 }
 
 async function searchIds(words) {
   const table = await metaTable();
-  if (!table) return [];
-  return Object.keys(table.rows).filter(id => {
+  const exact = [], partial = [];
+  for (const id of table ? Object.keys(table.rows) : []) {
     const [title, type, desc, , , tags] = table.rows[id];
     const text = `${title} ${type} ${desc} ${tags}`.toLowerCase();
-    return words.every(word => text.includes(word));
-  }).map(Number).sort((a, b) => a - b);
+    if (!title || !words.every(word => hasWord(text, word))) continue;
+    const terms = new Set(text.split(/[^\p{L}\p{N}]+/u));
+    (words.every(word => terms.has(word) || terms.has(word + "s")) ? exact : partial).push(Number(id));
+  }
+  const byId = (a, b) => a - b;
+  const named = [...exact.sort(byId), ...partial.sort(byId)];
+  if (latest.kind === "avatars") return named;
+  const match = matchQuery();
+  if (!match) return named;
+  const db = await openDatabase();
+  const name = latest.search?.table || "model_search";
+  const found = (await db.query(`SELECT rowid AS id FROM ${name} WHERE ${name} MATCH ? ORDER BY rowid LIMIT 5000`, [match])).map(row => row.id);
+  return [...named, ...found];
 }
 
 async function filteredIds(withSearch) {
@@ -279,8 +296,8 @@ async function likedRows() {
     && words.every(word => {
       const info = table?.rows[row.id];
       return latest.kind === "avatars"
-        ? Boolean(info) && `${info[0]} ${info[1]} ${info[2]} ${info[5]}`.toLowerCase().includes(word)
-        : (names[row.map] || "").toLowerCase().includes(word);
+        ? Boolean(info) && hasWord(`${info[0]} ${info[1]} ${info[2]} ${info[5]}`.toLowerCase(), word)
+        : hasWord(`${names[row.map] || ""} ${info?.[0] || ""}`.toLowerCase(), word);
     }));
 }
 
@@ -535,7 +552,7 @@ function card(row) {
       image.classList.add("shown");
       previews.then(engine => engine && engine.colors(image)).then(colors => recolor(article, colors)).catch(error => console.warn(error));
     }, { once: true });
-    image.src = `${base}images/${row.sha256}.png`;
+    image.src = `${base}${latest.imagePath || "images/"}${row.sha256}.png`;
     image.addEventListener("error", () => {
       image.replaceWith(canvas());
       visible.observe(article);
@@ -637,7 +654,7 @@ async function loadMore() {
   try {
     const page = await nextPage();
     const { next, done } = page;
-    const table = latest.kind === "avatars" ? await metaTable() : null;
+    const table = await metaTable();
     if (current !== generation) return;
     const rows = page.rows.filter(row => adult || !table?.rows[row.id]?.[4]);
     const cards = rows.map(card);
@@ -649,10 +666,12 @@ async function loadMore() {
       name(article, list[rows[i].map]);
       const info = table?.rows[rows[i].id];
       if (!info) return;
-      article.avatarInfo = info;
       const title = article.querySelector(".name");
-      title.textContent = info[0];
-      title.title = list[rows[i].map] || "";
+      if (info[0]) {
+        article.avatarInfo = info;
+        title.textContent = info[0];
+        title.title = list[rows[i].map] || "";
+      }
       if (info[4]) {
         const badge = document.createElement("span");
         badge.className = "badge";
@@ -712,10 +731,10 @@ function showAdult() {
   if (!adultButton) return;
   adultButton.setAttribute("aria-pressed", String(adult));
   adultButton.querySelector("span").textContent = adult ? "18+ on" : "18+ off";
-  adultButton.title = adult ? "Mature avatars are shown. Click to hide them." : "Mature avatars are hidden. Click to show them.";
+  adultButton.title = adult ? `Mature ${KIND.noun} are shown. Click to hide them.` : `Mature ${KIND.noun} are hidden. Click to show them.`;
 }
 adultButton?.addEventListener("click", () => {
-  if (!adult && !confirm("This shows avatars marked as mature content, archived as they were made by players. Confirm that you are 18 or older.")) return;
+  if (!adult && !confirm(`This shows ${KIND.noun} marked as mature content, archived as they were made by players. Confirm that you are 18 or older.`)) return;
   adult = !adult;
   try { localStorage.setItem(ADULT, adult ? "1" : "0"); } catch {}
   showAdult();
@@ -743,13 +762,13 @@ async function start() {
     summary.textContent = KIND.summary(latest);
     showFavorites();
     if (colorSelect) colorTable().then(table => { colorSelect.hidden = !table; });
-    if (reviewRating && !adult && confirm(`Review mode shows only avatars rated ${reviewRating}. Confirm that you are 18 or older.`)) {
+    if (reviewRating && !adult && confirm(`Review mode shows only ${KIND.noun} rated ${reviewRating}. Confirm that you are 18 or older.`)) {
       adult = true;
       try { localStorage.setItem(ADULT, "1"); } catch {}
     }
     if (reviewRating) metaTable().then(table => {
       const count = table ? Object.values(table.rows).filter(info => info[4] === reviewRating).length : 0;
-      summary.textContent = `Review: ${count.toLocaleString("en")} avatars rated ${reviewRating}`;
+      summary.textContent = `Review: ${count.toLocaleString("en")} ${KIND.noun} rated ${reviewRating}`;
     });
     if (typeSelect) metaTable().then(table => {
       typeSelect.hidden = !table;
