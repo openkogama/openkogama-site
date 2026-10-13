@@ -6,6 +6,7 @@ const REGIONS = { www: "Global", br: "Brazil", friends: "Friends" };
 const HOSTS = { www: "www.kogama.com", br: "kogama.com.br", friends: "friends.kogama.com" };
 const HEART_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.3 4.4 12.9a4.8 4.8 0 0 1 6.8-6.8l.8.8.8-.8a4.8 4.8 0 0 1 6.8 6.8z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg>';
 const DOWNLOAD_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m-5-5 5 5 5-5M4 16v4h16v-4" fill="none" stroke="currentColor" stroke-width="2.5"/></svg>';
+const SHARE_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8.6 13.5 15.4 17M15.4 7 8.6 10.5" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="18" cy="5.5" r="2.6" fill="currentColor"/><circle cx="6" cy="12" r="2.6" fill="currentColor"/><circle cx="18" cy="18.5" r="2.6" fill="currentColor"/></svg>';
 
 const list = document.getElementById("list");
 const status = document.getElementById("status");
@@ -306,6 +307,21 @@ async function openSheet(map, opener) {
   const save = iconButton("save", `Download .${map.format}`, DOWNLOAD_ICON);
   save.addEventListener("click", () => download(map, save));
   row.append(likeButton(map), start, save);
+  if (map.id) {
+    const share = iconButton("save share", "Copy link", SHARE_ICON);
+    share.addEventListener("click", async () => {
+      const link = `${location.origin}${location.pathname}?q=${encodeURIComponent(map.id)}`;
+      try {
+        await navigator.clipboard.writeText(link);
+        share.title = "Link copied";
+        share.classList.add("done");
+        setTimeout(() => { share.title = "Copy link"; share.classList.remove("done"); }, 1500);
+      } catch {
+        share.title = link;
+      }
+    });
+    row.append(share);
+  }
   const box = document.createElement("div");
   box.className = "more";
   box.textContent = "Loading";
