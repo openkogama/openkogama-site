@@ -51,6 +51,7 @@ const typeSelect = document.getElementById("type");
 const adultButton = document.getElementById("adult");
 const ADULT = "openkogama-adult";
 let adult = (() => { try { return localStorage.getItem(ADULT) === "1"; } catch { return false; } })();
+const reviewRating = ["mature", "hidden"].includes(new URLSearchParams(location.search).get("rating")) ? new URLSearchParams(location.search).get("rating") : null;
 let colors = null, meta = null, listPage = null;
 const favoritesCount = favoritesButton.querySelector(".count");
 const sentinel = document.createElement("div");
@@ -220,7 +221,7 @@ function searchWords() {
 }
 
 function listMode() {
-  return Boolean(colorSelect?.value || typeSelect?.value || (latest?.kind === "avatars" && searchWords().length));
+  return Boolean(reviewRating || colorSelect?.value || typeSelect?.value || (latest?.kind === "avatars" && searchWords().length));
 }
 
 async function searchIds(words) {
@@ -242,6 +243,10 @@ async function filteredIds(withSearch) {
   if (typeSelect?.value) {
     const table = await metaTable();
     parts.push(table ? Object.keys(table.rows).filter(id => table.rows[id][1] === typeSelect.value).map(Number) : []);
+  }
+  if (reviewRating) {
+    const table = await metaTable();
+    parts.push(table ? Object.keys(table.rows).filter(id => table.rows[id][4] === reviewRating).map(Number) : []);
   }
   const words = searchWords();
   const ranked = withSearch && words.length ? await searchIds(words) : null;
@@ -734,6 +739,14 @@ async function start() {
     summary.textContent = KIND.summary(latest);
     showFavorites();
     if (colorSelect) colorTable().then(table => { colorSelect.hidden = !table; });
+    if (reviewRating && !adult && confirm(`Review mode shows only avatars rated ${reviewRating}. Confirm that you are 18 or older.`)) {
+      adult = true;
+      try { localStorage.setItem(ADULT, "1"); } catch {}
+    }
+    if (reviewRating) metaTable().then(table => {
+      const count = table ? Object.values(table.rows).filter(info => info[4] === reviewRating).length : 0;
+      summary.textContent = `Review: ${count.toLocaleString("en")} avatars rated ${reviewRating}`;
+    });
     if (typeSelect) metaTable().then(table => {
       typeSelect.hidden = !table;
       if (adultButton) adultButton.hidden = !table || !Object.values(table.rows).some(info => info[4]);
