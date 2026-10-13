@@ -11,6 +11,7 @@ const FACE_UV = [[0, 1, 2, 0.5], [0, -1, 2, -0.5], [0, 1, 1, 0.5], [0, -1, 1, -0
 const SIDES = [[1, [0, 1, 2, 3]], [2, [4, 5, 6, 7]], [8, [2, 3, 4, 5]], [4, [0, 1, 6, 7]], [16, [0, 3, 4, 7]], [32, [1, 2, 5, 6]]];
 const FIELD_OF_VIEW = 35;
 const CAMERA_OFFSET = [4.57, 2.0, 0.15];
+const MODEL_CAMERA = [2.4, 2.6, -3.8];
 export const PREVIEW_SIZE = 2;
 export const TURN = -45;
 const LIGHT_EULER = [50, -30];
@@ -136,12 +137,12 @@ function around(axis, degrees) {
   ];
 }
 
-function cameraRight() {
-  return normalize(cross([0, 1, 0], normalize(CAMERA_OFFSET.map(v => -v))));
+function cameraRight(eye) {
+  return normalize(cross([0, 1, 0], normalize(eye.map(v => -v))));
 }
 
-function orientation(turn, tilt) {
-  const m = multiply(around(cameraRight(), tilt), yaw(turn));
+function orientation(turn, tilt, eye) {
+  const m = multiply(around(cameraRight(eye), tilt), yaw(turn));
   return new Float32Array([m[0][0], m[1][0], m[2][0], m[0][1], m[1][1], m[2][1], m[0][2], m[1][2], m[2][2]]);
 }
 
@@ -235,7 +236,9 @@ export function buildMesh(model, materials) {
   }
   if (triangles.length === 0) return null;
   const { center, fit } = bounds(triangles.flatMap(t => t.points));
-  return arrays(triangles, center, fit);
+  const mesh = arrays(triangles, center, fit);
+  if (!model.parts) mesh.camera = MODEL_CAMERA;
+  return mesh;
 }
 
 export function buildParts(model, materials) {
@@ -328,8 +331,7 @@ function compile(gl, type, source) {
   return shader;
 }
 
-function viewProjection(size) {
-  const eye = CAMERA_OFFSET;
+function viewProjection(size, eye) {
   const forward = normalize(eye.map(v => -v));
   const right = normalize(cross([0, 1, 0], forward));
   const up = cross(forward, right);
@@ -386,8 +388,14 @@ export async function createRenderer(atlasUrl, materials, size = 512) {
   gl.uniform1f(uniform("ambient"), AMBIENT);
   gl.uniform1f(uniform("occlusion"), OCCLUSION);
   gl.uniform1fv(uniform("emission[0]"), emission);
-  gl.uniformMatrix4fv(uniform("viewProjection"), false, viewProjection(size));
-  gl.uniform3fv(uniform("eye"), CAMERA_OFFSET);
+  let eye = null;
+  function look(next) {
+    if (next === eye) return;
+    eye = next;
+    gl.uniformMatrix4fv(uniform("viewProjection"), false, viewProjection(size, eye));
+    gl.uniform3fv(uniform("eye"), eye);
+  }
+  look(CAMERA_OFFSET);
   const model = uniform("model");
   gl.enable(gl.DEPTH_TEST);
 
@@ -428,12 +436,14 @@ export async function createRenderer(atlasUrl, materials, size = 512) {
 
   function load(mesh) {
     clear();
+    look(mesh.camera || CAMERA_OFFSET);
     pieces = [upload(mesh)];
     frame = { center: [0, 0, 0], fit: 1 };
   }
 
   function loadParts(built) {
     clear();
+    look(CAMERA_OFFSET);
     pieces = built.parts.map(upload);
     frame = { center: built.center, fit: built.fit };
   }
@@ -442,7 +452,7 @@ export async function createRenderer(atlasUrl, materials, size = 512) {
     gl.viewport(0, 0, size, size);
     gl.clearColor(0, 0, 0, 0);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-    gl.uniformMatrix3fv(model, false, orientation(turn, tilt));
+    gl.uniformMatrix3fv(model, false, orientation(turn, tilt, eye));
     gl.uniform3fv(center, frame.center);
     gl.uniform1f(fit, frame.fit * zoom);
     pieces.forEach((piece, i) => {
