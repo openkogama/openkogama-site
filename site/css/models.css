@@ -475,6 +475,14 @@ html.inspecting body {
     max-height: none;
     aspect-ratio: auto;
     margin-top: env(safe-area-inset-top);
+    display: grid;
+    place-items: center;
+    container-type: size;
+  }
+
+  .inspector .stage canvas {
+    width: min(100cqw, 100cqh);
+    height: min(100cqw, 100cqh);
   }
 
   .inspector .about {
