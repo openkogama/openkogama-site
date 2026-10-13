@@ -451,6 +451,13 @@ document.getElementById("filters").addEventListener("submit", event => {
   filter();
 });
 
+function deepLink() {
+  const q = (new URLSearchParams(location.search).get("q") || "").trim();
+  if (!q) return;
+  const exact = maps.filter(map => map.id === q);
+  if (exact.length === 1) openSheet(exact[0], null);
+}
+
 async function start() {
   readState();
   showFavorites();
@@ -460,6 +467,7 @@ async function start() {
     images = latest.images ? new URL(latest.images.path, base).href : null;
     maps = load(await (await fetch(base + latest.index.path)).json());
     filter();
+    deepLink();
   } catch (error) {
     summary.textContent = "Maps are not available right now";
     console.error(error);
