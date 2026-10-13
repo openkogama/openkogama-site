@@ -46,6 +46,9 @@ const summary = document.getElementById("summary");
 const search = document.getElementById("search");
 const filter = document.getElementById("filter");
 const favoritesButton = document.getElementById("favorites");
+const colorSelect = document.getElementById("color");
+let colors = null;
+const colorCache = new Map();
 const favoritesCount = favoritesButton.querySelector(".count");
 const sentinel = document.createElement("div");
 sentinel.className = "sentinel";
@@ -198,7 +201,30 @@ async function scanIds(shas) {
   return ids;
 }
 
+function colorTable() {
+  colors ??= fetch("colors.json").then(response => response.ok ? response.json() : null).catch(() => null);
+  return colors.then(table => table && latest && table.build === latest.build ? table : null);
+}
+
+async function colorIds() {
+  const table = colorSelect?.value ? await colorTable() : null;
+  return table ? new Set(table.colors[colorSelect.value] || []) : null;
+}
+
+async function colorRows() {
+  const table = await colorTable();
+  const value = colorSelect.value;
+  if (!table) return [];
+  if (!colorCache.has(value)) colorCache.set(value, rowsFor(table.colors[value] || []));
+  const rows = (await colorCache.get(value)).filter(Boolean);
+  const names = await titles;
+  const words = search.value.trim().toLowerCase().split(/\s+/).filter(Boolean);
+  return rows.filter(row => (!filter.value || KIND.matches(row, filter.value))
+    && words.every(word => (names[row.map] || "").toLowerCase().includes(word)));
+}
+
 async function likedRows() {
+  const allowed = await colorIds();
   const shas = likedList(kindName());
   const missing = shas.filter(sha => !resolved.has(sha));
   if (missing.length) {
@@ -210,6 +236,7 @@ async function likedRows() {
   const names = await titles;
   const words = search.value.trim().toLowerCase().split(/\s+/).filter(Boolean);
   return shas.map(sha => resolved.get(sha)).filter(row => row
+    && (!allowed || allowed.has(row.id))
     && (!filter.value || KIND.matches(row, filter.value))
     && words.every(word => (names[row.map] || "").toLowerCase().includes(word)));
 }
@@ -536,8 +563,8 @@ function name(article, text) {
 }
 
 async function nextPage() {
-  if (favorites) {
-    const all = await (favoritePage ??= likedRows());
+  if (favorites || colorSelect?.value) {
+    const all = await (favoritePage ??= favorites ? likedRows() : colorRows());
     return { rows: all.slice(lastId, lastId + PAGE), next: Math.min(lastId + PAGE, all.length), done: lastId + PAGE >= all.length };
   }
   const ids = await nextIds();
@@ -609,6 +636,7 @@ search.addEventListener("input", () => {
   typing = setTimeout(restart, 350);
 });
 filter.addEventListener("change", restart);
+colorSelect?.addEventListener("change", restart);
 document.getElementById("filters").addEventListener("submit", event => {
   event.preventDefault();
   clearTimeout(typing);
@@ -630,6 +658,7 @@ async function start() {
     });
     summary.textContent = KIND.summary(latest);
     showFavorites();
+    if (colorSelect) colorTable().then(table => { colorSelect.hidden = !table; });
     titles = fetch(base + latest.titles).then(response => response.json()).catch(error => {
       console.warn(error);
       return [];
