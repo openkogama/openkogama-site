@@ -71,5 +71,11 @@ export function tint(source) {
   const hue = neutral ? 0 : Math.atan2(b, a);
   const strength = neutral ? 0 : clamp(c / w * 0.4 * Math.min(1, coverage * 2), 0.025, 0.07);
   const level = clamp(0.6 - 0.5 * lightness / weight, 0.25, 0.5);
-  return { background: rgb(level, strength, hue), edge: rgb(level + 0.08, neutral ? 0 : strength + 0.01, hue) };
+  const light = clamp(0.99 - 0.15 * lightness / weight, 0.86, 0.95);
+  return {
+    background: rgb(level, strength, hue),
+    edge: rgb(level + 0.08, neutral ? 0 : strength + 0.01, hue),
+    light: rgb(light, strength * 0.6, hue),
+    lightEdge: rgb(light - 0.07, neutral ? 0 : strength * 0.8, hue),
+  };
 }

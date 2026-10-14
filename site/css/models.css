@@ -1,14 +1,34 @@
 :root {
-  --card: #272727;
-  --card-edge: #3a3a3a;
-  --card-text: #ffffff;
-  --card-meta: rgb(255 255 255 / 0.72);
+  --card-text: #0f0f0f;
+  --card-meta: rgb(0 0 0 / 0.6);
+  --card-shadow: none;
+  --chip: rgb(0 0 0 / 0.06);
+  --chip-hover: rgb(0 0 0 / 0.1);
   --field-line: rgb(0 0 0 / 0.3);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
+    --card-text: #ffffff;
+    --card-meta: rgb(255 255 255 / 0.72);
+    --card-shadow: drop-shadow(0 1px 1px rgb(0 0 0 / 0.6));
+    --chip: rgb(0 0 0 / 0.22);
+    --chip-hover: rgb(0 0 0 / 0.32);
     --field-line: rgb(255 255 255 / 0.35);
+  }
+}
+
+.card,
+.inspector .sheet {
+  --card: var(--tint-light, #f2f2f2);
+  --card-edge: var(--tint-light-edge, #dedede);
+}
+
+@media (prefers-color-scheme: dark) {
+  .card,
+  .inspector .sheet {
+    --card: var(--tint, #272727);
+    --card-edge: var(--tint-edge, #3a3a3a);
   }
 }
 
@@ -22,10 +42,6 @@
 .gallery .brand {
   font-size: 1.3rem;
   text-decoration: none;
-}
-
-.gallery .brand img {
-  height: 26px;
 }
 
 .models {
@@ -233,7 +249,7 @@ select.line option {
   background: none;
   border: 0;
   cursor: pointer;
-  filter: drop-shadow(0 1px 1px rgb(0 0 0 / 0.6));
+  filter: var(--card-shadow);
 }
 
 .icon svg {
@@ -425,7 +441,7 @@ html.inspecting body {
   flex: none;
   width: 44px;
   padding: 0;
-  background: rgb(0 0 0 / 0.22);
+  background: var(--chip);
   filter: none;
   clip-path: polygon(
     var(--cut) 0, calc(100% - var(--cut)) 0,
@@ -436,7 +452,7 @@ html.inspecting body {
 }
 
 .inspector .actions .like:hover {
-  background: rgb(0 0 0 / 0.32);
+  background: var(--chip-hover);
 }
 
 .inspector .actions .icon svg {
@@ -506,9 +522,9 @@ html.inspecting body {
     height: 42px;
     padding: 0;
     font-size: 1.8rem;
-    color: #fff;
+    color: var(--card-text);
     background: none;
-    filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.8));
+    filter: var(--card-shadow);
     opacity: 1;
   }
 }

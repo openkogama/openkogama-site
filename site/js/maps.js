@@ -16,7 +16,9 @@ const region = document.getElementById("region");
 const sort = document.getElementById("sort");
 const favoritesButton = document.getElementById("favorites");
 const favoritesCount = favoritesButton.querySelector(".count");
+const authorButton = document.getElementById("author");
 let favorites = location.hash === "#liked";
+let author = "";
 const sentinel = document.createElement("div");
 sentinel.className = "sentinel";
 list.after(sentinel);
@@ -32,11 +34,12 @@ function readState() {
   search.value = query.get("q") || "";
   region.value = query.get("region") || "";
   sort.value = query.get("sort") || "plays";
+  author = query.get("author") || "";
 }
 
 function writeState() {
   const query = new URLSearchParams(location.search);
-  for (const [key, value, fallback] of [["q", search.value.trim(), ""], ["region", region.value, ""], ["sort", sort.value, "plays"]]) {
+  for (const [key, value, fallback] of [["q", search.value.trim(), ""], ["region", region.value, ""], ["sort", sort.value, "plays"], ["author", author, ""]]) {
     if (value && value !== fallback) query.set(key, value);
     else query.delete(key);
   }
@@ -77,6 +80,36 @@ const ORDER = {
   name: (a, b) => a.folded.localeCompare(b.folded),
 };
 
+function authorKey(map) {
+  if (map.authorId) return `${map.site}:${map.authorId}`;
+  return map.author ? `name:${map.author}` : "";
+}
+
+function authorName(key) {
+  const own = maps.filter(map => authorKey(map) === key);
+  return own.find(map => map.author)?.author || (own.length ? `#${own[0].authorId}` : key.split(":").slice(1).join(":"));
+}
+
+function showAuthor() {
+  authorButton.hidden = !author;
+  authorButton.querySelector(".label").textContent = author ? `By ${authorName(author)}` : "";
+}
+
+function byAuthor(map) {
+  closeSheet();
+  author = authorKey(map);
+  search.value = "";
+  region.value = "";
+  if (favorites) {
+    favorites = false;
+    showFavorites();
+  }
+  history.replaceState(null, "", location.pathname + location.search);
+  writeState();
+  filter();
+  window.scrollTo({ top: 0 });
+}
+
 function score(map, query) {
   if (map.id && map.id === query) return 4;
   if (map.bare === query) return 3;
@@ -89,7 +122,8 @@ function filter() {
   const words = query.split(/\s+/).filter(Boolean);
   const wanted = region.value;
   const likedSet = favorites ? new Set(likedList("maps")) : null;
-  results = maps.filter(map => (!likedSet || likedSet.has(keyOf(map))) && (!wanted || (wanted === "-" ? !map.site : map.site === wanted)) && words.every(word => map.text.includes(word)));
+  results = maps.filter(map => (!likedSet || likedSet.has(keyOf(map))) && (!author || authorKey(map) === author)
+    && (!wanted || (wanted === "-" ? !map.site : map.site === wanted)) && words.every(word => map.text.includes(word)));
   const order = ORDER[sort.value] || ORDER.plays;
   if (words.length) {
     const plain = bare(query);
@@ -101,7 +135,8 @@ function filter() {
   list.replaceChildren();
   shown = 0;
   status.textContent = results.length ? "" : favorites ? "No liked maps yet" : "No maps found";
-  summary.textContent = words.length || wanted || favorites
+  showAuthor();
+  summary.textContent = words.length || wanted || favorites || author
     ? `${results.length.toLocaleString("en")} of ${maps.length.toLocaleString("en")} maps`
     : `${maps.length.toLocaleString("en")} archived maps`;
   more();
@@ -197,6 +232,16 @@ function line(label, value) {
   else data.textContent = value;
   row.append(term, data);
   return row;
+}
+
+function authorLink(map, text) {
+  const button = document.createElement("button");
+  button.type = "button";
+  button.className = "link author";
+  button.textContent = text;
+  button.title = "Show maps by this author";
+  button.addEventListener("click", () => byAuthor(map));
+  return button;
 }
 
 function anchor(href, text) {
@@ -298,6 +343,7 @@ async function openSheet(map, opener) {
   const details = document.createElement("p");
   details.className = "details";
   details.textContent = meta(map);
+  if (map.author && authorKey(map)) details.replaceChildren(authorLink(map, map.author), meta(map).slice(map.author.length));
   const row = document.createElement("div");
   row.className = "actions";
   const start = document.createElement("button");
@@ -348,7 +394,7 @@ async function openSheet(map, opener) {
       line("Plays", map.plays != null ? map.plays.toLocaleString("en") : ""),
       line("Likes", map.likes != null ? map.likes.toLocaleString("en") : ""),
       line("File", `${size(map.size)} .${map.format}`),
-      line("Author", map.author ? `${map.author}${map.authorId ? " (" + map.authorId + ")" : ""}` : map.authorId),
+      line("Author", authorKey(map) ? authorLink(map, map.author ? `${map.author}${map.authorId ? " (" + map.authorId + ")" : ""}` : map.authorId) : ""),
       line("Created", date(info.created)),
       line("Published", date(info.publishedAt)),
       line("Original page", original),
@@ -439,6 +485,12 @@ function showFavorites() {
   favoritesButton.setAttribute("aria-pressed", String(favorites));
   favoritesCount.textContent = likedList("maps").length || "";
 }
+
+authorButton.addEventListener("click", () => {
+  author = "";
+  writeState();
+  filter();
+});
 
 favoritesButton.addEventListener("click", () => {
   favorites = !favorites;

@@ -464,8 +464,10 @@ async function download(row, name, button) {
 
 function recolor(article, colors) {
   if (!colors) return;
-  article.style.setProperty("--card", colors.background);
-  article.style.setProperty("--card-edge", colors.edge);
+  article.style.setProperty("--tint", colors.background);
+  article.style.setProperty("--tint-edge", colors.edge);
+  article.style.setProperty("--tint-light", colors.light);
+  article.style.setProperty("--tint-light-edge", colors.lightEdge);
 }
 
 function iconButton(className, label, icon) {
@@ -520,8 +522,7 @@ function openInspector(row, article, opener) {
       ? [article.mapName && `From ${article.mapName}`, article.querySelector(".meta").textContent].filter(Boolean).join(" · ")
       : article.querySelector(".meta").textContent,
     description: article.avatarInfo?.[2] || "",
-    tint: article.style.getPropertyValue("--card"),
-    edge: article.style.getPropertyValue("--card-edge"),
+    tints: Object.fromEntries(["--tint", "--tint-edge", "--tint-light", "--tint-light-edge"].map(name => [name, article.style.getPropertyValue(name)])),
     actions: [likeButton(row), save],
     atlas: base + "atlas.png",
     materials: latest.materials,

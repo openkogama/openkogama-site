@@ -193,13 +193,13 @@ footer p { margin: 4px 0 0; }
 .brand {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 0.15em;
   font: 400 1.5rem/1 "OpenKogama", system-ui, sans-serif;
   color: var(--heading);
 }
 
 .brand img {
-  height: 28px;
+  height: 1.15em;
 }
 
 @media (max-width: 600px) {
