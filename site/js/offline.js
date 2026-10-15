@@ -115,15 +115,17 @@ const OpenKogamaOffline = (() => {
     const builds = await caches.open(BUILDS);
     const todo = [];
     if (build && !await builds.match(buildKey(build.id, ".installed"))) todo.push({ kind: "build", url: build.url, size: build.size });
+    const cached = new Set((await site.keys()).map(request => request.url));
     for (const file of files) {
       const url = new URL(file, location.href);
       url.search = "";
-      if (!await site.match(url.href)) todo.push({ kind: "site", url: url.href, size: await sizeOf(url.href) });
+      if (!cached.has(url.href)) todo.push({ kind: "site", url: url.href, size: await sizeOf(url.href) });
     }
     if (set) {
       const manifest = await (await fetch(new URL(`/manifests/${set}.json`, location.origin))).json();
+      const have = new Set((await bundles.keys()).map(request => request.url));
       for (const [path, size] of Object.entries(manifest.files)) {
-        if (!await bundles.match(bundleKey(set, path))) todo.push({ kind: "bundle", path, size, root: manifest.root });
+        if (!have.has(bundleKey(set, path))) todo.push({ kind: "bundle", path, size, root: manifest.root });
       }
     }
     return todo;
