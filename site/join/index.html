@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>Join - OpenKogama</title>
+<meta name="description" content="Join this game in the OpenKogama launcher.">
+<meta property="og:title" content="Join - OpenKogama">
+<meta property="og:description" content="Join this game in the OpenKogama launcher.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="../img/icon-512.png">
+<meta name="twitter:card" content="summary">
+<meta name="robots" content="noindex">
+<link rel="icon" href="../favicon.ico" sizes="16x16 32x32 48x48">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="stylesheet" href="../css/style.css">
+<style>
+  .hint { min-height: 1.4em; margin: 20px 0 0; font-size: .9rem; text-align: center; color: var(--tagline); opacity: .75; }
+</style>
+</head>
+<body class="home">
+<main class="hero">
+  <h1>OPENKOGAMA</h1>
+  <p class="tagline" id="what">Join this game in the OpenKogama launcher.</p>
+  <div class="actions">
+    <a class="button primary" id="open" href="../">Open the launcher</a>
+    <a class="button secondary" id="download" href="https://github.com/openkogama/openkogama-launcher/releases">Download</a>
+  </div>
+  <p class="hint" id="hint">Nothing happened? Install the launcher, then open this link again.</p>
+</main>
+<footer>
+  <div class="brand">
+    <img src="../img/icon-192.png" alt="">
+    <span>OPENKOGAMA</span>
+  </div>
+  <p>Not affiliated with Multiverse ApS.</p>
+</footer>
+<script src="../js/download.js"></script>
+<script>
+(() => {
+  const what = document.getElementById("what");
+  const open = document.getElementById("open");
+  const hint = document.getElementById("hint");
+
+  function clean(text) {
+    text = (text || "").trim();
+    const code = /^p2p:([A-HJ-NP-Z2-9]{6})$/i.exec(text.replace(/[-\s]/g, ""));
+    if (code) return "p2p:" + code[1].toUpperCase();
+    try {
+      const url = new URL(text);
+      if (!/^https?:$/.test(url.protocol) || url.username || url.password || url.search || url.hash || url.pathname !== "/") return null;
+      return url.origin;
+    } catch {
+      return null;
+    }
+  }
+
+  function shown(address) {
+    if (address.startsWith("p2p:")) return "the world with the code " + address.slice(4, 7) + "-" + address.slice(7);
+    return new URL(address).host;
+  }
+
+  const server = clean(new URLSearchParams(location.search).get("server"));
+  if (!server) {
+    what.textContent = "This link has no game to join.";
+    open.hidden = true;
+    hint.textContent = "";
+    return;
+  }
+
+  const link = "openkogama://join?server=" + encodeURIComponent(server);
+  open.href = link;
+  what.textContent = "Join " + shown(server) + " in the OpenKogama launcher.";
+
+  fetch("https://list.openkogama.org/servers")
+    .then(response => response.ok ? response.json() : [])
+    .then(list => {
+      const entry = Array.isArray(list) && list.find(item => item && item.address === server);
+      if (!entry || !entry.title) return;
+      const players = entry.players === 1 ? "1 player" : (entry.players || 0) + " players";
+      what.textContent = "Join " + entry.title + " (" + players + ") in the OpenKogama launcher.";
+    })
+    .catch(() => {});
+
+  location.href = link;
+})();
+</script>
+</body>
+</html>
