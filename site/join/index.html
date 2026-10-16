@@ -57,7 +57,7 @@
   }
 
   function shown(address) {
-    if (address.startsWith("p2p:")) return "the world with the code " + address.slice(4, 7) + "-" + address.slice(7);
+    if (address.startsWith("p2p:")) return address.slice(4, 7) + "-" + address.slice(7);
     return new URL(address).host;
   }
 
