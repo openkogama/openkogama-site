@@ -11,3 +11,6 @@ Made by nightus.
 - **LazyLemon**: info on how things looked in old versions, and help with the launcher
 - **bustersky**: archiving the standalone builds
 - **kamilslimak**: finding the 2012 build
+- **Dylinn**: announcing OpenKogama on Regama
+- **Zpayer**: announcing OpenKogama, and pointing kogama.cloud here
+- **loafio**: sharing OpenKogama on his server
