@@ -504,6 +504,28 @@ html.inspecting body {
   color: var(--card-meta);
 }
 
+.inspector .sources li {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.inspector .sources .link {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.inspector .sources .icon {
+  flex: none;
+  padding: 3px;
+  filter: none;
+}
+
+.inspector .sources .icon svg {
+  width: 15px;
+  height: 15px;
+}
+
 .filters .chip {
   display: flex;
   align-items: center;

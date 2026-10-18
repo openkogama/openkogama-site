@@ -1,6 +1,7 @@
-import { liked, likedList, toggle } from "./likes.js";
+import { liked, likedList, mapKey, toggle } from "./likes.js";
 
 const DATA = new URL(new URLSearchParams(location.search).get("data") || "https://cdn.openkogama.org/maps/v1/", location.href).href;
+const CONTENTS = { models: "https://cdn.openkogama.org/models/v2/", avatars: "https://cdn.openkogama.org/avatars/v1/" };
 const PAGE = 60;
 const REGIONS = { www: "Global", br: "Brazil", friends: "Friends" };
 const HOSTS = { www: "www.kogama.com", br: "kogama.com.br", friends: "friends.kogama.com" };
@@ -24,6 +25,7 @@ sentinel.className = "sentinel";
 list.after(sentinel);
 
 let latest, base, images, maps = [], results = [], shown = 0;
+let contents = Promise.resolve(null);
 const details = new Map();
 
 const fold = text => text.normalize("NFKD").replace(/\p{M}/gu, "").toLowerCase().replace(/ł/g, "l");
@@ -37,14 +39,18 @@ function readState() {
   author = query.get("author") || "";
 }
 
+function replaceQuery(query) {
+  const text = query.toString();
+  history.replaceState(null, "", (text ? "?" + text : location.pathname) + location.hash);
+}
+
 function writeState() {
   const query = new URLSearchParams(location.search);
   for (const [key, value, fallback] of [["q", search.value.trim(), ""], ["region", region.value, ""], ["sort", sort.value, "plays"], ["author", author, ""]]) {
     if (value && value !== fallback) query.set(key, value);
     else query.delete(key);
   }
-  const text = query.toString();
-  history.replaceState(null, "", (text ? "?" + text : location.pathname) + location.hash);
+  replaceQuery(query);
 }
 
 function load(index) {
@@ -122,7 +128,7 @@ function filter() {
   const words = query.split(/\s+/).filter(Boolean);
   const wanted = region.value;
   const likedSet = favorites ? new Set(likedList("maps")) : null;
-  results = maps.filter(map => (!likedSet || likedSet.has(keyOf(map))) && (!author || authorKey(map) === author)
+  results = maps.filter(map => (!likedSet || likedSet.has(mapKey(map))) && (!author || authorKey(map) === author)
     && (!wanted || (wanted === "-" ? !map.site : map.site === wanted)) && words.every(word => map.text.includes(word)));
   const order = ORDER[sort.value] || ORDER.plays;
   if (words.length) {
@@ -174,6 +180,22 @@ async function detail(map) {
     description, created, publishedAt,
     versions: versions.map(([sha256, format, bytes, savedAt, exporter, urls]) => ({ sha256, format, bytes, savedAt, exporter, urls })),
   };
+}
+
+async function loadContents() {
+  if (!latest.rows) return null;
+  const [rows, kinds] = await Promise.all([
+    fetch(base + latest.rows).then(response => response.json()),
+    Promise.all(Object.entries(CONTENTS).map(([kind, data]) => fetch(data + "latest.json", { cache: "no-cache" })
+      .then(response => response.json())
+      .then(info => info.links && info.maps === latest.files ? kind : null, () => null))),
+  ]);
+  const ids = new Map();
+  rows.forEach((row, file) => {
+    if (!ids.has(row)) ids.set(row, []);
+    ids.get(row).push(file + 1);
+  });
+  return { rows, ids, kinds: kinds.filter(Boolean) };
 }
 
 function fileName(map, version) {
@@ -244,6 +266,20 @@ function authorLink(map, text) {
   return button;
 }
 
+function contentLinks(map, inside) {
+  const ids = inside?.ids.get(map.position);
+  if (!ids || !inside.kinds.length) return null;
+  const links = document.createElement("span");
+  inside.kinds.forEach((kind, i) => {
+    if (i) links.append(" · ");
+    const link = document.createElement("a");
+    link.href = `../${kind}/?map=${ids.join(",")}`;
+    link.textContent = kind[0].toUpperCase() + kind.slice(1);
+    links.append(link);
+  });
+  return links;
+}
+
 function anchor(href, text) {
   const link = document.createElement("a");
   link.href = href;
@@ -264,6 +300,11 @@ function closeSheet() {
   document.documentElement.classList.remove("inspecting");
   document.removeEventListener("keydown", state.keys);
   state.opener?.focus();
+  const query = new URLSearchParams(location.search);
+  if (query.has("map")) {
+    query.delete("map");
+    replaceQuery(query);
+  }
 }
 
 function iconButton(className, label, icon) {
@@ -276,10 +317,6 @@ function iconButton(className, label, icon) {
   return button;
 }
 
-function keyOf(map) {
-  return map.id ? `${map.site}:${map.id}` : `name:${map.name}`;
-}
-
 function showLiked(button, on) {
   button.classList.toggle("on", on);
   button.setAttribute("aria-pressed", String(on));
@@ -289,11 +326,11 @@ function showLiked(button, on) {
 
 function likeButton(map) {
   const button = iconButton("like", "Like", HEART_ICON);
-  button.dataset.sha = keyOf(map);
-  showLiked(button, liked("maps", keyOf(map)));
+  button.dataset.sha = mapKey(map);
+  showLiked(button, liked("maps", mapKey(map)));
   button.addEventListener("click", event => {
     event.stopPropagation();
-    toggle("maps", keyOf(map));
+    toggle("maps", mapKey(map));
   });
   return button;
 }
@@ -370,7 +407,7 @@ async function openSheet(map, opener) {
   close.addEventListener("click", closeSheet);
   close.focus();
   try {
-    const info = await detail(map);
+    const [info, inside] = await Promise.all([detail(map), contents]);
     if (inspecting !== state) return;
     box.replaceChildren();
     if (info.description) {
@@ -394,6 +431,7 @@ async function openSheet(map, opener) {
       line("Plays", map.plays != null ? map.plays.toLocaleString("en") : ""),
       line("Likes", map.likes != null ? map.likes.toLocaleString("en") : ""),
       line("File", `${size(map.size)} .${map.format}`),
+      line("Contents", contentLinks(map, inside)),
       line("Author", authorKey(map) ? authorLink(map, map.author ? `${map.author}${map.authorId ? " (" + map.authorId + ")" : ""}` : map.authorId) : ""),
       line("Created", date(info.created)),
       line("Published", date(info.publishedAt)),
@@ -506,8 +544,14 @@ document.getElementById("filters").addEventListener("submit", event => {
   filter();
 });
 
-function deepLink() {
-  const q = (new URLSearchParams(location.search).get("q") || "").trim();
+async function deepLink() {
+  const query = new URLSearchParams(location.search);
+  if (query.has("map")) {
+    const inside = await contents;
+    const map = maps[inside?.rows[Number(query.get("map")) - 1]];
+    if (map) return openSheet(map, null);
+  }
+  const q = (query.get("q") || "").trim();
   if (!q) return;
   const exact = maps.filter(map => map.id === q);
   if (exact.length === 1) openSheet(exact[0], null);
@@ -520,6 +564,10 @@ async function start() {
     latest = await (await fetch(DATA + "latest.json", { cache: "no-cache" })).json();
     base = `${DATA}builds/${latest.build}/`;
     images = latest.images ? new URL(latest.images.path, base).href : null;
+    contents = loadContents().catch(error => {
+      console.warn(error);
+      return null;
+    });
     maps = load(await (await fetch(base + latest.index.path)).json());
     filter();
     deepLink();

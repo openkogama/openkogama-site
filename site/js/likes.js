@@ -16,6 +16,10 @@ function read(kind) {
   return set;
 }
 
+export function mapKey(map) {
+  return map.id ? `${map.site}:${map.id}` : `name:${map.name}`;
+}
+
 export function liked(kind, sha) {
   return read(kind).has(sha);
 }

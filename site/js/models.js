@@ -2,7 +2,7 @@ import { buildMesh, buildParts, createRenderer, fetchRange, loadBlob, loadModel 
 import { tint } from "./tint.js";
 import { createViewer } from "./viewer.js";
 import { closeInspector, inspect } from "./inspect.js";
-import { liked, likedList, toggle } from "./likes.js";
+import { liked, likedList, mapKey, toggle } from "./likes.js";
 
 const SOURCES = { map: 1, build: 2, class: 4, world: 8, placed: 16 };
 const KINDS = {
@@ -37,9 +37,11 @@ const SOURCE_PAGE = 100;
 const HEX = Array.from({ length: 256 }, (_, i) => i.toString(16).padStart(2, "0"));
 const BONES = ["Head", "Torso", "LArm", "RArm", "LUpLeg", "LLowLeg", "RUpLeg", "RLowLeg"];
 const VENDOR = new URL("./vendor/sql.js-httpvfs/", import.meta.url);
+const MAPS = "https://cdn.openkogama.org/maps/v1/";
 const DOWNLOAD_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m-5-5 5 5 5-5M4 16v4h16v-4" fill="none" stroke="currentColor" stroke-width="2.5"/></svg>';
 const RUN_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="15" cy="4" r="2.3" fill="currentColor"/><path d="M13.5 7.5 11 13M13 8.6l-3.6 1.6M13 8.6l3.4 3M11 13l3 3-.6 4.6M11 13l-2.6 3.4H4.6" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 const HEART_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.3 4.4 12.9a4.8 4.8 0 0 1 6.8-6.8l.8.8.8-.8a4.8 4.8 0 0 1 6.8 6.8z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg>';
+const OPEN_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4h6v6M20 4l-8 8M18 14v6H4V6h6" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 
 const grid = document.getElementById("grid");
 const status = document.getElementById("status");
@@ -54,8 +56,8 @@ const mapButton = document.getElementById("map");
 const ADULT = "openkogama-adult";
 let adult = (() => { try { return localStorage.getItem(ADULT) === "1"; } catch { return false; } })();
 const reviewRating = ["mature", "hidden"].includes(new URLSearchParams(location.search).get("rating")) ? new URLSearchParams(location.search).get("rating") : null;
-let colors = null, meta = null, listPage = null, names = null;
-let onMap = Number(new URLSearchParams(location.search).get("map")) || 0;
+let colors = null, meta = null, listPage = null, names = null, catalog = null;
+let onMap = (new URLSearchParams(location.search).get("map") || "").split(",").map(Number).filter(map => map > 0);
 const favoritesCount = favoritesButton.querySelector(".count");
 const sentinel = document.createElement("div");
 sentinel.className = "sentinel";
@@ -232,14 +234,31 @@ function mapName(list, map) {
   return /[^\s\p{Cf}]/u.test(list[map] || "") ? list[map] : "";
 }
 
-async function mapItems(map) {
+function mapCatalog() {
+  catalog ??= (async () => {
+    const info = await (await fetch(MAPS + "latest.json", { cache: "no-cache" })).json();
+    if (!info.rows || info.files !== latest.maps) return null;
+    const root = `${MAPS}builds/${info.build}/`;
+    const [rows, index] = await Promise.all([info.rows, info.index.path].map(path => fetch(root + path).then(response => response.json())));
+    const [id, site, name] = ["id", "site", "name"].map(field => index.fields.indexOf(field));
+    const keys = index.rows.map(row => mapKey({ id: row[id], site: row[site], name: row[name] || "Untitled map" }));
+    return map => keys[rows[map - 1]] || "";
+  })().catch(error => {
+    console.warn(error);
+    catalog = null;
+    return null;
+  });
+  return catalog;
+}
+
+async function mapItems(maps) {
   const db = await openDatabase(latest.links);
-  return (await db.query("SELECT item FROM links WHERE map = ? ORDER BY item", [map])).map(row => row.item);
+  return (await db.query(`SELECT DISTINCT item FROM links WHERE map IN (${maps.map(() => "?").join(",")}) ORDER BY item`, maps)).map(row => row.item);
 }
 
 async function mapsOf(row) {
-  const [db, list] = await Promise.all([openDatabase(latest.links), mapNames()]);
-  const maps = (await db.query("SELECT map FROM links WHERE item = ?", [row.id])).map(({ map }) => ({ id: map, name: mapName(list, map) }));
+  const [db, list, keyOf] = await Promise.all([openDatabase(latest.links), mapNames(), mapCatalog()]);
+  const maps = (await db.query("SELECT map FROM links WHERE item = ?", [row.id])).map(({ map }) => ({ id: map, name: mapName(list, map), key: keyOf ? keyOf(map) : "" }));
   return maps.sort((a, b) => !a.name - !b.name || a.name.localeCompare(b.name));
 }
 
@@ -254,7 +273,7 @@ function hasWord(text, word) {
 }
 
 function listMode() {
-  return Boolean(reviewRating || onMap || colorSelect?.value || typeSelect?.value || searchWords().length);
+  return Boolean(reviewRating || onMap.length || colorSelect?.value || typeSelect?.value || searchWords().length);
 }
 
 async function searchIds(words) {
@@ -280,7 +299,7 @@ async function searchIds(words) {
 
 async function filteredIds(withSearch) {
   const parts = [];
-  if (onMap) parts.push(await mapItems(onMap));
+  if (onMap.length) parts.push(await mapItems(onMap));
   if (colorSelect?.value) {
     const table = await colorTable();
     parts.push(table ? table.colors[colorSelect.value] || [] : []);
@@ -534,7 +553,8 @@ function likeButton(row) {
 }
 
 document.addEventListener("liked", ({ detail }) => {
-  for (const button of document.querySelectorAll(`.like[data-sha="${detail.sha}"]`)) showLiked(button, detail.liked);
+  const field = detail.kind === "maps" ? "map" : "sha";
+  for (const button of document.querySelectorAll(`.like[data-${field}="${CSS.escape(detail.sha)}"]`)) showLiked(button, detail.liked);
 });
 
 function mapCount(row) {
@@ -551,9 +571,27 @@ function mapLink(text, map) {
   button.className = "link";
   button.textContent = text;
   button.title = `Show ${KIND.noun} from this map`;
-  if (map === onMap) button.setAttribute("aria-current", "true");
+  if (onMap.includes(map)) button.setAttribute("aria-current", "true");
   button.addEventListener("click", () => openMap(map));
   return button;
+}
+
+function mapLike(key) {
+  const button = iconButton("like", "Like", HEART_ICON);
+  button.dataset.map = key;
+  showLiked(button, liked("maps", key));
+  button.addEventListener("click", () => toggle("maps", key));
+  return button;
+}
+
+function mapPage(map) {
+  const link = document.createElement("a");
+  link.className = "icon";
+  link.href = `../maps/?map=${map}`;
+  link.title = "Open in Maps";
+  link.setAttribute("aria-label", link.title);
+  link.innerHTML = OPEN_ICON;
+  return link;
 }
 
 function sourceList(row) {
@@ -580,9 +618,13 @@ function sourceList(row) {
   };
   let entries = null, shown = 0, loading = null;
   const fill = () => {
-    const items = entries.slice(shown, shown + SOURCE_PAGE).map(({ id, name }) => {
+    const items = entries.slice(shown, shown + SOURCE_PAGE).map(({ id, name, key }) => {
       const item = document.createElement("li");
       item.append(mapLink(name || "Untitled map", id));
+      if (key) {
+        item.prepend(mapLike(key));
+        item.append(mapPage(id));
+      }
       return item;
     });
     shown += items.length;
@@ -823,15 +865,15 @@ favoritesButton.addEventListener("click", () => {
 document.addEventListener("liked", showFavorites);
 
 function showMap() {
-  mapButton.hidden = !onMap;
-  if (onMap) mapNames().then(list => {
-    mapButton.querySelector(".label").textContent = `From ${mapName(list, onMap) || "Untitled map"}`;
+  mapButton.hidden = !onMap.length;
+  if (onMap.length) mapNames().then(list => {
+    mapButton.querySelector(".label").textContent = `From ${onMap.map(map => mapName(list, map)).find(Boolean) || "Untitled map"}`;
   });
 }
 
 function writeMap() {
   const query = new URLSearchParams(location.search);
-  if (onMap) query.set("map", onMap);
+  if (onMap.length) query.set("map", onMap.join(","));
   else query.delete("map");
   const text = query.toString();
   history.replaceState(null, "", (text ? "?" + text : location.pathname) + location.hash);
@@ -839,7 +881,7 @@ function writeMap() {
 
 function openMap(map) {
   closeInspector();
-  onMap = map;
+  onMap = [map];
   search.value = "";
   filter.value = "";
   if (colorSelect) colorSelect.value = "";
@@ -856,7 +898,7 @@ function openMap(map) {
 }
 
 mapButton.addEventListener("click", () => {
-  onMap = 0;
+  onMap = [];
   writeMap();
   showMap();
   restart();
@@ -904,7 +946,7 @@ async function start() {
     });
     summary.textContent = KIND.summary(latest);
     showFavorites();
-    if (!latest.links) onMap = 0;
+    if (!latest.links) onMap = [];
     showMap();
     if (colorSelect) colorTable().then(table => { colorSelect.hidden = !table; });
     if (reviewRating && !adult && confirm(`Review mode shows only ${KIND.noun} rated ${reviewRating}. Confirm that you are 18 or older.`)) {
