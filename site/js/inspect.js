@@ -33,7 +33,7 @@ export function closeInspector() {
   state.opener?.focus();
 }
 
-function sheet({ title, meta, description, tints, actions }) {
+function sheet({ title, meta, description, tints, actions, sources }) {
   const element = document.createElement("div");
   element.className = "inspector";
   element.setAttribute("role", "dialog");
@@ -58,7 +58,7 @@ function sheet({ title, meta, description, tints, actions }) {
   heading.textContent = title;
   const details = document.createElement("p");
   details.className = "details";
-  details.textContent = meta;
+  details.append(...[meta].flat());
   const row = document.createElement("div");
   row.className = "actions";
   row.append(...actions);
@@ -72,14 +72,15 @@ function sheet({ title, meta, description, tints, actions }) {
   } else {
     about.append(heading, details, row, hint);
   }
+  if (sources) hint.before(sources);
   panel.append(close, stage, about);
   element.append(panel);
   return { element, close, stage, hint };
 }
 
-export async function inspect({ row, title, meta, description, tints, actions, atlas, materials, geometry, animated, opener }) {
+export async function inspect({ row, title, meta, description, tints, actions, sources, atlas, materials, geometry, animated, opener }) {
   closeInspector();
-  const view = sheet({ title, meta, description, tints, actions });
+  const view = sheet({ title, meta, description, tints, actions, sources });
   const touch = matchMedia("(pointer: coarse)").matches;
   view.hint.textContent = (touch ? "Drag to rotate, pinch to zoom" : "Drag to rotate, scroll to zoom")
     + (animated ? (touch ? ", tap to change the animation" : ", click to change the animation") : "");

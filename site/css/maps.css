@@ -156,47 +156,6 @@
   list-style: none;
 }
 
-.inspector .link {
-  padding: 2px 0;
-  text-align: left;
-  font: inherit;
-  color: var(--card-text);
-  text-decoration: underline;
-  background: none;
-  border: 0;
-  cursor: pointer;
-}
-
-.inspector .details .link {
-  padding: 0;
-  color: var(--card-text);
-}
-
-.filters .chip {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  width: auto;
-  max-width: 260px;
-  cursor: pointer;
-}
-
-.filters .chip[hidden] {
-  display: none;
-}
-
-.filters .chip .label {
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-}
-
-.filters .chip [aria-hidden] {
-  font-size: 1.2rem;
-  line-height: 1;
-  color: var(--tagline);
-}
-
 .inspector .link.error {
   color: #e06c6c;
 }

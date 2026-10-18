@@ -1,7 +1,7 @@
 import { buildMesh, buildParts, createRenderer, fetchRange, loadBlob, loadModel } from "./cube-renderer.js";
 import { tint } from "./tint.js";
 import { createViewer } from "./viewer.js";
-import { inspect } from "./inspect.js";
+import { closeInspector, inspect } from "./inspect.js";
 import { liked, likedList, toggle } from "./likes.js";
 
 const SOURCES = { map: 1, build: 2, class: 4, world: 8, placed: 16 };
@@ -33,6 +33,7 @@ const PAGE = 48;
 const PARALLEL = 4;
 const GAP = 64;
 const PREFIX_LENGTH = 3;
+const SOURCE_PAGE = 100;
 const HEX = Array.from({ length: 256 }, (_, i) => i.toString(16).padStart(2, "0"));
 const BONES = ["Head", "Torso", "LArm", "RArm", "LUpLeg", "LLowLeg", "RUpLeg", "RLowLeg"];
 const VENDOR = new URL("./vendor/sql.js-httpvfs/", import.meta.url);
@@ -49,10 +50,12 @@ const favoritesButton = document.getElementById("favorites");
 const colorSelect = document.getElementById("color");
 const typeSelect = document.getElementById("type");
 const adultButton = document.getElementById("adult");
+const mapButton = document.getElementById("map");
 const ADULT = "openkogama-adult";
 let adult = (() => { try { return localStorage.getItem(ADULT) === "1"; } catch { return false; } })();
 const reviewRating = ["mature", "hidden"].includes(new URLSearchParams(location.search).get("rating")) ? new URLSearchParams(location.search).get("rating") : null;
-let colors = null, meta = null, listPage = null;
+let colors = null, meta = null, listPage = null, names = null;
+let onMap = Number(new URLSearchParams(location.search).get("map")) || 0;
 const favoritesCount = favoritesButton.querySelector(".count");
 const sentinel = document.createElement("div");
 sentinel.className = "sentinel";
@@ -216,6 +219,30 @@ function metaTable() {
   return meta.then(table => table && latest && table.build === latest.build ? table : null);
 }
 
+function mapNames() {
+  names ??= fetch(base + latest.links.names).then(response => response.json()).catch(error => {
+    console.warn(error);
+    names = null;
+    return [];
+  });
+  return names;
+}
+
+function mapName(list, map) {
+  return /[^\s\p{Cf}]/u.test(list[map] || "") ? list[map] : "";
+}
+
+async function mapItems(map) {
+  const db = await openDatabase(latest.links);
+  return (await db.query("SELECT item FROM links WHERE map = ? ORDER BY item", [map])).map(row => row.item);
+}
+
+async function mapsOf(row) {
+  const [db, list] = await Promise.all([openDatabase(latest.links), mapNames()]);
+  const maps = (await db.query("SELECT map FROM links WHERE item = ?", [row.id])).map(({ map }) => ({ id: map, name: mapName(list, map) }));
+  return maps.sort((a, b) => !a.name - !b.name || a.name.localeCompare(b.name));
+}
+
 function searchWords() {
   return search.value.trim().toLowerCase().split(/\s+/).filter(Boolean);
 }
@@ -227,7 +254,7 @@ function hasWord(text, word) {
 }
 
 function listMode() {
-  return Boolean(reviewRating || colorSelect?.value || typeSelect?.value || searchWords().length);
+  return Boolean(reviewRating || onMap || colorSelect?.value || typeSelect?.value || searchWords().length);
 }
 
 async function searchIds(words) {
@@ -253,6 +280,7 @@ async function searchIds(words) {
 
 async function filteredIds(withSearch) {
   const parts = [];
+  if (onMap) parts.push(await mapItems(onMap));
   if (colorSelect?.value) {
     const table = await colorTable();
     parts.push(table ? table.colors[colorSelect.value] || [] : []);
@@ -509,21 +537,95 @@ document.addEventListener("liked", ({ detail }) => {
   for (const button of document.querySelectorAll(`.like[data-sha="${detail.sha}"]`)) showLiked(button, detail.liked);
 });
 
+function mapCount(row) {
+  return `${row.maps.toLocaleString("en")} ${row.maps === 1 ? "map" : "maps"}`;
+}
+
+function counts(row) {
+  return `${row.cubes.toLocaleString("en")} cubes · ${KIND.detail(row)}`;
+}
+
+function mapLink(text, map) {
+  const button = document.createElement("button");
+  button.type = "button";
+  button.className = "link";
+  button.textContent = text;
+  button.title = `Show ${KIND.noun} from this map`;
+  if (map === onMap) button.setAttribute("aria-current", "true");
+  button.addEventListener("click", () => openMap(map));
+  return button;
+}
+
+function sourceList(row) {
+  const toggle = document.createElement("button");
+  toggle.type = "button";
+  toggle.className = "link";
+  toggle.textContent = mapCount(row);
+  toggle.title = "Show the maps it was found on";
+  toggle.setAttribute("aria-expanded", "false");
+  const list = document.createElement("ul");
+  list.className = "sources";
+  list.hidden = true;
+  const more = document.createElement("li");
+  const moreButton = document.createElement("button");
+  moreButton.type = "button";
+  moreButton.className = "link";
+  moreButton.textContent = "More maps";
+  more.append(moreButton);
+  const note = text => {
+    const item = document.createElement("li");
+    item.className = "note";
+    item.textContent = text;
+    return item;
+  };
+  let entries = null, shown = 0, loading = null;
+  const fill = () => {
+    const items = entries.slice(shown, shown + SOURCE_PAGE).map(({ id, name }) => {
+      const item = document.createElement("li");
+      item.append(mapLink(name || "Untitled map", id));
+      return item;
+    });
+    shown += items.length;
+    more.before(...items);
+    more.hidden = shown >= entries.length;
+  };
+  moreButton.addEventListener("click", fill);
+  toggle.addEventListener("click", () => {
+    list.hidden = !list.hidden;
+    toggle.setAttribute("aria-expanded", String(!list.hidden));
+    if (list.hidden || entries || loading) return;
+    list.replaceChildren(note("Loading"));
+    loading = mapsOf(row).then(found => {
+      entries = found;
+      list.replaceChildren(more);
+      fill();
+    }, error => {
+      list.replaceChildren(note("Could not load the maps"));
+      console.warn(error);
+    }).finally(() => {
+      loading = null;
+    });
+  });
+  return { toggle, list };
+}
+
 function openInspector(row, article, opener) {
   const save = document.createElement("button");
   save.type = "button";
   save.className = "button primary";
   save.textContent = `Download ${KIND.extension}`;
   save.addEventListener("click", () => download(row, article.mapName, save));
+  const sources = latest.links ? sourceList(row) : null;
+  const meta = [sources ? sources.toggle : mapCount(row), ` · ${counts(row)}`];
+  if (article.avatarInfo && article.mapName) meta.unshift("From ", latest.links ? mapLink(article.mapName, row.map) : article.mapName, " · ");
   inspect({
     row,
     title: article.avatarInfo?.[0] || article.mapName || "Untitled map",
-    meta: article.avatarInfo
-      ? [article.mapName && `From ${article.mapName}`, article.querySelector(".meta").textContent].filter(Boolean).join(" · ")
-      : article.querySelector(".meta").textContent,
+    meta,
     description: article.avatarInfo?.[2] || "",
     tints: Object.fromEntries(["--tint", "--tint-edge", "--tint-light", "--tint-light-edge"].map(name => [name, article.style.getPropertyValue(name)])),
     actions: [likeButton(row), save],
+    sources: sources?.list,
     atlas: base + "atlas.png",
     materials: latest.materials,
     geometry: item => previews.then(engine => engine ? engine.geometry(item) : { status: "failed" }),
@@ -582,7 +684,7 @@ function card(row) {
   title.textContent = "\u00a0";
   const meta = document.createElement("p");
   meta.className = "meta";
-  meta.textContent = `${row.maps.toLocaleString("en")} ${row.maps === 1 ? "map" : "maps"} · ${row.cubes.toLocaleString("en")} cubes · ${KIND.detail(row)}`;
+  meta.textContent = `${mapCount(row)} · ${counts(row)}`;
   article.append(picture, title, meta);
   article.model = row;
   return article;
@@ -720,6 +822,46 @@ favoritesButton.addEventListener("click", () => {
 
 document.addEventListener("liked", showFavorites);
 
+function showMap() {
+  mapButton.hidden = !onMap;
+  if (onMap) mapNames().then(list => {
+    mapButton.querySelector(".label").textContent = `From ${mapName(list, onMap) || "Untitled map"}`;
+  });
+}
+
+function writeMap() {
+  const query = new URLSearchParams(location.search);
+  if (onMap) query.set("map", onMap);
+  else query.delete("map");
+  const text = query.toString();
+  history.replaceState(null, "", (text ? "?" + text : location.pathname) + location.hash);
+}
+
+function openMap(map) {
+  closeInspector();
+  onMap = map;
+  search.value = "";
+  filter.value = "";
+  if (colorSelect) colorSelect.value = "";
+  if (typeSelect) typeSelect.value = "";
+  if (favorites) {
+    favorites = false;
+    history.replaceState(null, "", location.pathname + location.search);
+    showFavorites();
+  }
+  writeMap();
+  showMap();
+  restart();
+  window.scrollTo({ top: 0 });
+}
+
+mapButton.addEventListener("click", () => {
+  onMap = 0;
+  writeMap();
+  showMap();
+  restart();
+});
+
 let typing;
 search.addEventListener("input", () => {
   clearTimeout(typing);
@@ -762,6 +904,8 @@ async function start() {
     });
     summary.textContent = KIND.summary(latest);
     showFavorites();
+    if (!latest.links) onMap = 0;
+    showMap();
     if (colorSelect) colorTable().then(table => { colorSelect.hidden = !table; });
     if (reviewRating && !adult && confirm(`Review mode shows only ${KIND.noun} rated ${reviewRating}. Confirm that you are 18 or older.`)) {
       adult = true;

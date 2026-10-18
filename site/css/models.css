@@ -466,6 +466,69 @@ html.inspecting body {
   color: var(--card-meta);
 }
 
+.inspector .link {
+  padding: 2px 0;
+  text-align: left;
+  font: inherit;
+  color: var(--card-text);
+  text-decoration: underline;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+
+.inspector .details .link {
+  padding: 0;
+  color: var(--card-text);
+}
+
+.inspector .sources {
+  min-height: 0;
+  max-height: 240px;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  touch-action: pan-y;
+  list-style: none;
+  font-size: 0.85rem;
+  scrollbar-width: thin;
+  scrollbar-color: var(--card-meta) transparent;
+}
+
+.inspector .sources .link[aria-current] {
+  font-weight: bold;
+}
+
+.inspector .sources .note {
+  color: var(--card-meta);
+}
+
+.filters .chip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: auto;
+  max-width: 260px;
+  cursor: pointer;
+}
+
+.filters .chip[hidden] {
+  display: none;
+}
+
+.filters .chip .label {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.filters .chip [aria-hidden] {
+  font-size: 1.2rem;
+  line-height: 1;
+  color: var(--tagline);
+}
+
 @media (max-width: 700px) {
   .inspector {
     place-items: stretch;
@@ -509,6 +572,10 @@ html.inspecting body {
 
   .inspector .hint {
     margin: 0;
+  }
+
+  .inspector .sources {
+    max-height: 150px;
   }
 
   .inspector .close {
