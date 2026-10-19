@@ -181,6 +181,73 @@ h1 {
 .button:is(.primary, .secondary, .nav):hover { filter: none; }
 .button:is(.primary, .secondary, .nav):hover::before { background: var(--fill-hover); }
 
+.showcase {
+  position: relative;
+  width: 100%;
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.slides {
+  overflow: hidden;
+  border-radius: 6px;
+}
+
+.track {
+  display: flex;
+  transition: transform 0.35s ease;
+}
+
+.track iframe {
+  flex: 0 0 100%;
+  display: block;
+  aspect-ratio: 16 / 9;
+  border: 0;
+}
+
+.dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.dots button {
+  width: 8px;
+  height: 8px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--heading);
+  opacity: 0.3;
+  cursor: pointer;
+}
+
+.dots button[aria-current="true"] { opacity: 0.9; }
+
+.arrow {
+  position: absolute;
+  top: calc(50% - 10px);
+  width: 36px;
+  height: 36px;
+  margin-top: -18px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--secondary);
+  color: var(--secondary-text);
+  font-size: 1.2rem;
+  cursor: pointer;
+  opacity: 0.85;
+}
+
+.arrow:hover { opacity: 1; }
+.arrow:disabled { visibility: hidden; }
+.arrow.prev { left: -48px; }
+.arrow.next { right: -48px; }
+.arrow.prev::before { content: "\2039"; }
+.arrow.next::before { content: "\203A"; }
+
 footer {
   padding-top: 32px;
   text-align: center;
@@ -205,4 +272,9 @@ footer p { margin: 4px 0 0; }
 @media (max-width: 600px) {
   h1 { font-size: 3rem; }
   .top { justify-content: center; }
+}
+
+@media (max-width: 880px) {
+  .arrow.prev { left: 6px; }
+  .arrow.next { right: 6px; }
 }
