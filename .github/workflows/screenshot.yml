@@ -1,0 +1,36 @@
+name: screenshot
+
+on:
+  push:
+    branches: [video-showcase]
+    paths: [site/**, .github/workflows/screenshot.yml]
+
+jobs:
+  shot:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: npm i playwright@1.56.1 && npx playwright install --with-deps chromium
+      - run: python3 -m http.server 8000 --directory site &
+      - run: |
+          cat > shot.js <<'JS'
+          const { chromium } = require("playwright");
+          (async () => {
+            const browser = await chromium.launch();
+            for (const scheme of ["light", "dark"]) {
+              const page = await browser.newPage({ viewport: { width: 1440, height: 900 }, colorScheme: scheme });
+              await page.goto("http://localhost:8000/");
+              await page.waitForTimeout(4000);
+              await page.screenshot({ path: `pc-${scheme}.png`, fullPage: true });
+              await page.click(".next");
+              await page.waitForTimeout(3000);
+              await page.screenshot({ path: `pc-${scheme}-next.png`, fullPage: true });
+            }
+            await browser.close();
+          })();
+          JS
+          node shot.js
+      - uses: actions/upload-artifact@v4
+        with:
+          name: screenshots
+          path: pc-*.png
