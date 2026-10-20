@@ -124,6 +124,7 @@ h1 {
 .links .icon:hover { opacity: 1; }
 .links .icon.github { --image: url(../img/github.svg); width: 27px; }
 .links .icon.discord { --image: url(../img/discord.svg); width: 34px; }
+.links .icon.kofi { --image: url(../img/kofi.svg); width: 32px; }
 
 .actions {
   display: flex;
