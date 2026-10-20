@@ -14,8 +14,10 @@
   --download-dark: #243f66;
   --play: #3a7a80;
   --play-dark: #23565b;
-  --donate: #5c5794;
-  --donate-dark: #3d3970;
+  --donate: #f8e6ed;
+  --donate-dark: #edcbd8;
+  --donate-text: #0f0f0f;
+  --donate-hover: #f2d8e3;
   --primary: #0f0f0f;
   --primary-edge: #000000;
   --primary-text: #ffffff;
@@ -43,6 +45,10 @@
     --secondary-edge: #3a3a3a;
     --secondary-text: #f1f1f1;
     --secondary-hover: #3f3f3f;
+    --donate: #33252b;
+    --donate-dark: #4d3540;
+    --donate-text: #f1f1f1;
+    --donate-hover: #42303a;
     --backdrop-color: #0f0f0f;
     --backdrop: var(--backdrop-color) url(../img/background-dark.png);
   }
@@ -124,13 +130,18 @@ h1 {
 .links .icon:hover { opacity: 1; }
 .links .icon.github { --image: url(../img/github.svg); width: 27px; }
 .links .icon.discord { --image: url(../img/discord.svg); width: 34px; }
-.links .icon.kofi { --image: url(../img/kofi.svg); width: 32px; }
 
 .actions {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   gap: 12px;
+}
+
+.actions .button {
+  padding: 11px 30px;
+  font-size: 1.08rem;
+  font-weight: 600;
 }
 
 .button {
@@ -171,7 +182,7 @@ h1 {
 
 .button.download { --fill: var(--download); --dark: var(--download-dark); }
 .button.play { --fill: var(--play); --dark: var(--play-dark); }
-.button.donate { --fill: var(--donate); --dark: var(--donate-dark); }
+.button.donate { --fill: var(--donate); --dark: var(--donate-dark); --ink: var(--donate-text); --fill-hover: var(--donate-hover); }
 .button.primary,
 .button.nav[aria-current="page"] { --fill: var(--primary); --dark: var(--primary-edge); --ink: var(--primary-text); --fill-hover: var(--primary-hover); }
 .button.secondary,
@@ -179,8 +190,8 @@ h1 {
 .button.nav { --corner: 5px; padding: 5px 16px; font-size: 0.9rem; }
 
 .button:hover { filter: brightness(1.1); }
-.button:is(.primary, .secondary, .nav):hover { filter: none; }
-.button:is(.primary, .secondary, .nav):hover::before { background: var(--fill-hover); }
+.button:is(.primary, .secondary, .nav, .donate):hover { filter: none; }
+.button:is(.primary, .secondary, .nav, .donate):hover::before { background: var(--fill-hover); }
 
 .showcase {
   position: relative;
