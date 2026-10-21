@@ -66,6 +66,8 @@
 
 * { box-sizing: border-box; }
 
+::selection { color: #ffffff; background: var(--accent); }
+
 html { background: var(--backdrop-color); }
 
 body.home::before {
@@ -94,6 +96,18 @@ body {
 .top {
   display: flex;
   justify-content: flex-end;
+}
+
+.top:has(> .brand) {
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.top > .brand {
+  font-size: 1.3rem;
+  text-decoration: none;
 }
 
 .sections {
@@ -236,6 +250,7 @@ h1 {
 .button.secondary,
 .button.nav { --fill: var(--secondary); --dark: var(--secondary-edge); --ink: var(--secondary-text); --fill-hover: var(--secondary-hover); }
 .button.nav { --corner: 5px; padding: 5px 16px; font-size: 0.9rem; }
+.button.nav.signin { --fill: var(--accent); --dark: var(--accent-pressed); --ink: #ffffff; --fill-hover: var(--accent-hover); }
 
 .button:hover { filter: brightness(1.1); }
 .button:is(.primary, .secondary, .nav, .accent, .control, .donate):hover { filter: none; }
@@ -414,6 +429,9 @@ footer p { margin: 4px 0 0; }
   .intro, .faq { margin-top: 56px; }
   .faq + footer { padding-top: 56px; }
   .top { justify-content: center; }
+  .top:has(> .brand) { row-gap: 12px; }
+  .sections { flex-wrap: wrap; justify-content: center; }
+  .top > .brand { flex-basis: 100%; justify-content: center; }
   .hero { gap: 20px; }
   .screen { min-height: 0; }
   .screen .hero { flex: none; padding: 32px 0 40px; }

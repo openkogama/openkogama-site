@@ -32,18 +32,6 @@
   }
 }
 
-.gallery .top {
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 12px;
-}
-
-.gallery .brand {
-  font-size: 1.3rem;
-  text-decoration: none;
-}
-
 .models {
   flex: 1;
   width: 100%;
@@ -649,12 +637,9 @@ html.inspecting body {
 }
 
 @media (max-width: 600px) {
-  .gallery .top { justify-content: center; }
   .models h1 { font-size: 2.2rem; }
   .grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
   .line { width: 100%; }
-  .gallery .top { flex-wrap: wrap; row-gap: 12px; }
-  .gallery .top .brand { flex-basis: 100%; justify-content: center; }
   .filters { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 16px; }
   .filters input.line { grid-column: 1 / -1; }
   .filters select.line { width: 100%; }
