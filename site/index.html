@@ -4,19 +4,43 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light dark">
-<title>OpenKogama</title>
-<meta name="description" content="An open-source, fan-made revival of classic KoGaMa. Host your own server, build worlds and play with friends.">
-<meta property="og:title" content="OpenKogama">
-<meta property="og:description" content="An open-source, fan-made revival of classic KoGaMa. Host your own server, build worlds and play with friends.">
+<title>OpenKogama - Play Classic KoGaMa Again</title>
+<meta name="description" content="Open-source, fan-made revival of classic KoGaMa. Play 600+ old KoGaMa versions and 28,000+ archived maps, build worlds and host your own server.">
+<link rel="canonical" href="https://openkogama.org/">
+<meta property="og:title" content="OpenKogama - Play Classic KoGaMa Again">
+<meta property="og:description" content="Open-source, fan-made revival of classic KoGaMa. Play 600+ old KoGaMa versions and 28,000+ archived maps, build worlds and host your own server.">
 <meta property="og:type" content="website">
-<meta property="og:image" content="img/icon-512.png">
+<meta property="og:url" content="https://openkogama.org/">
+<meta property="og:site_name" content="OpenKogama">
+<meta property="og:image" content="https://openkogama.org/img/icon-512.png">
 <meta name="twitter:card" content="summary">
 <link rel="icon" href="favicon.ico" sizes="16x16 32x32 48x48">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="manifest" href="site.webmanifest">
 <link rel="stylesheet" href="css/style.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "name": "OpenKogama",
+      "alternateName": ["Open KoGaMa", "OpenKoGaMa"],
+      "url": "https://openkogama.org/"
+    },
+    {
+      "@type": "Organization",
+      "name": "OpenKogama",
+      "url": "https://openkogama.org/",
+      "logo": "https://openkogama.org/img/icon-512.png",
+      "sameAs": ["https://github.com/openkogama", "https://discord.gg/u6tKuP3k4M", "https://ko-fi.com/openkogama"]
+    }
+  ]
+}
+</script>
 </head>
 <body class="home">
+<div class="screen">
 <header class="top">
   <nav class="sections">
     <a class="button nav" href="maps/">Maps</a>
@@ -26,12 +50,12 @@
 </header>
 <main class="hero">
   <h1>OPENKOGAMA</h1>
-  <p class="tagline">An open-source, fan-made revival of classic KoGaMa. Host your own server, build worlds and play with friends.</p>
   <div class="actions">
-    <a class="button primary" id="download" href="https://github.com/openkogama/openkogama-launcher/releases">Download</a>
-    <a class="button secondary" href="play/">Play in browser</a>
+    <a class="button accent" id="download" href="https://github.com/openkogama/openkogama-launcher/releases">Download</a>
+    <a class="button control" href="play/">Play in browser</a>
     <a class="button donate" href="https://ko-fi.com/openkogama" target="_blank" rel="noopener">Donate</a>
   </div>
+  <p class="tagline">An open-source, fan-made revival of classic KoGaMa. Host your own server, build worlds and play with friends.</p>
   <nav class="links">
     <a class="icon github" href="https://github.com/openkogama/openkogama-launcher" target="_blank" rel="noopener" aria-label="GitHub"></a>
     <a class="icon discord" href="https://discord.gg/u6tKuP3k4M" target="_blank" rel="noopener" aria-label="Discord"></a>
@@ -47,6 +71,52 @@
   <button class="arrow prev" type="button" aria-label="Previous video"></button>
   <button class="arrow next" type="button" aria-label="Next video"></button>
   <div class="dots"></div>
+</section>
+</div>
+<section class="intro">
+  <h2>Play classic KoGaMa again</h2>
+  <p>OpenKogama brings back the KoGaMa you remember. More than 600 versions of the game, from the first 2012 build to 2026, work again. Play old KoGaMa maps, build your own worlds and meet your friends, right in the browser or with the launcher for Windows.</p>
+  <div class="features">
+    <a class="feature" href="play/">
+      <h3>600+ versions</h3>
+      <p>KoGaMa from 2012 to 2026. Over 500 versions play right in the browser.</p>
+    </a>
+    <a class="feature" href="maps/">
+      <h3>28,000+ maps</h3>
+      <p>Archived KoGaMa maps with thumbnails. Search by name, author or id.</p>
+    </a>
+    <a class="feature" href="models/">
+      <h3>1,000,000+ models</h3>
+      <p>Models from archived KoGaMa maps, with live previews and downloads.</p>
+    </a>
+    <a class="feature" href="avatars/">
+      <h3>Avatars</h3>
+      <p>Archived KoGaMa avatars with live previews and animations.</p>
+    </a>
+  </div>
+</section>
+<section class="faq">
+  <h2>FAQ</h2>
+  <details>
+    <summary>Is OpenKogama the official KoGaMa?</summary>
+    <p>No. OpenKogama is a fan-made community project. It is not affiliated with or endorsed by Multiverse ApS, the company behind KoGaMa.</p>
+  </details>
+  <details>
+    <summary>Can I play old versions of KoGaMa?</summary>
+    <p>Yes. The launcher for Windows has more than 600 KoGaMa versions, from 2012 to 2026, and over 500 of them also run in the browser with no install.</p>
+  </details>
+  <details>
+    <summary>Can I still play old KoGaMa maps?</summary>
+    <p>More than 28,000 KoGaMa maps were archived. Find one on the <a href="maps/">Maps</a> page by name, author or id and play it in the browser.</p>
+  </details>
+  <details>
+    <summary>Is OpenKogama free?</summary>
+    <p>Yes. OpenKogama is free and open source. If you want to support it, you can donate on <a href="https://ko-fi.com/openkogama" target="_blank" rel="noopener">Ko-fi</a>.</p>
+  </details>
+  <details>
+    <summary>Can I host my own KoGaMa server?</summary>
+    <p>Yes. The <a href="https://github.com/openkogama/openkogama-server" target="_blank" rel="noopener">OpenKogama server</a> is open source and supports plugins, so you can run your own server and play with friends.</p>
+  </details>
 </section>
 <footer>
   <div class="brand">
