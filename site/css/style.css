@@ -432,7 +432,7 @@ footer p { margin: 4px 0 0; }
   .intro, .faq { margin-top: 56px; }
   .faq + footer { padding-top: 56px; }
   .top { justify-content: center; }
-  .top:has(> .brand) { row-gap: 12px; }
+  .top:has(> .brand) { justify-content: center; row-gap: 12px; }
   .sections { flex-wrap: wrap; justify-content: center; }
   .top > .brand { flex-basis: 100%; justify-content: center; }
   .hero { gap: 20px; }
