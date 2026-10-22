@@ -161,16 +161,19 @@ h1 {
 
 .links .icon {
   display: block;
-  height: 26px;
-  background: var(--heading);
+  color: var(--heading);
   opacity: 0.8;
-  -webkit-mask: var(--image) center / contain no-repeat;
-  mask: var(--image) center / contain no-repeat;
+}
+
+.links .icon svg {
+  display: block;
+  height: 26px;
+  fill: currentColor;
 }
 
 .links .icon:hover { opacity: 1; }
-.links .icon.github { --image: url(../img/github.svg); width: 27px; }
-.links .icon.discord { --image: url(../img/discord.svg); width: 34px; }
+.links .icon.github svg { width: 27px; }
+.links .icon.discord svg { width: 34px; }
 
 .actions {
   display: flex;
