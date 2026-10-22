@@ -226,8 +226,8 @@ select.line option {
   text-align: center;
 }
 
-.card.too-big .picture::after { content: "Too big to preview"; }
-.card.failed .picture::after { content: "Preview unavailable"; }
+.card.too-big .picture::after { content: var(--too-big, "Too big to preview"); }
+.card.failed .picture::after { content: var(--preview-unavailable, "Preview unavailable"); }
 
 .icon {
   display: grid;
@@ -386,9 +386,9 @@ html.inspecting body {
   color: var(--card-meta);
 }
 
-.inspector .stage[data-state="loading"]::after { content: "Loading"; }
-.inspector .stage[data-state="big"]::after { content: "Too big to preview"; }
-.inspector .stage[data-state="failed"]::after { content: "Preview unavailable"; }
+.inspector .stage[data-state="loading"]::after { content: var(--loading, "Loading"); }
+.inspector .stage[data-state="big"]::after { content: var(--too-big, "Too big to preview"); }
+.inspector .stage[data-state="failed"]::after { content: var(--preview-unavailable, "Preview unavailable"); }
 
 .inspector .about {
   display: flex;

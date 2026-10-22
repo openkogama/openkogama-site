@@ -46,7 +46,7 @@ function sheet({ title, meta, description, tints, actions, sources }) {
   const close = document.createElement("button");
   close.type = "button";
   close.className = "close";
-  close.setAttribute("aria-label", "Close");
+  close.setAttribute("aria-label", i18n.t("common.close"));
   close.textContent = "×";
   const stage = document.createElement("div");
   stage.className = "stage";
@@ -82,8 +82,9 @@ export async function inspect({ row, title, meta, description, tints, actions, s
   closeInspector();
   const view = sheet({ title, meta, description, tints, actions, sources });
   const touch = matchMedia("(pointer: coarse)").matches;
-  view.hint.textContent = (touch ? "Drag to rotate, pinch to zoom" : "Drag to rotate, scroll to zoom")
-    + (animated ? (touch ? ", tap to change the animation" : ", click to change the animation") : "");
+  view.hint.textContent = touch
+    ? i18n.t(animated ? "common.inspect.touchAnimated" : "common.inspect.touch")
+    : i18n.t(animated ? "common.inspect.mouseAnimated" : "common.inspect.mouse");
   document.body.append(view.element);
   document.documentElement.classList.add("inspecting");
   const state = { element: view.element, frame: 0, turn: TURN, tilt: 0, zoom: 1, parts: null, opener, keys: null };

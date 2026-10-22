@@ -4,11 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light dark">
-<title>KoGaMa Models - OpenKogama</title>
-<meta name="description" content="Explore over a million models from archived KoGaMa maps, with live previews and downloads.">
+<title data-i18n="models.title">KoGaMa Models - OpenKogama</title>
+<meta name="description" data-i18n-attr="content:models.description" content="Explore over a million models from archived KoGaMa maps, with live previews and downloads.">
 <link rel="canonical" href="https://openkogama.org/models/">
-<meta property="og:title" content="KoGaMa Models - OpenKogama">
-<meta property="og:description" content="Explore over a million models from archived KoGaMa maps, with live previews and downloads.">
+<meta property="og:title" data-i18n-attr="content:models.title" content="KoGaMa Models - OpenKogama">
+<meta property="og:description" data-i18n-attr="content:models.description" content="Explore over a million models from archived KoGaMa maps, with live previews and downloads.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://openkogama.org/models/">
 <meta property="og:site_name" content="OpenKogama">
@@ -18,72 +18,73 @@
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
 <link rel="stylesheet" href="../css/style.css">
 <link rel="stylesheet" href="../css/models.css">
+<script src="../js/i18n.js"></script>
 <script src="../js/vendor/sql.js-httpvfs/index.js"></script>
 <script type="module" src="../js/models.js"></script>
 </head>
-<body class="gallery">
+<body class="gallery" data-i18n-vars="--too-big:common.tooBig;--preview-unavailable:common.previewUnavailable;--loading:common.loading">
 <header class="top">
   <a class="brand" href="../"><img src="../img/icon-192.png" alt="">OPENKOGAMA</a>
   <nav class="sections">
-    <a class="button nav" href="../maps/">Maps</a>
-    <a class="button nav" href="../avatars/">Avatars</a>
-    <a class="button nav" href="./" aria-current="page">Models</a>
+    <a class="button nav" href="../maps/" data-i18n="common.nav.maps">Maps</a>
+    <a class="button nav" href="../avatars/" data-i18n="common.nav.avatars">Avatars</a>
+    <a class="button nav" href="./" aria-current="page" data-i18n="common.nav.models">Models</a>
   </nav>
 </header>
 <main class="models">
-  <h1>MODELS</h1>
-  <p class="summary" id="summary">Loading models</p>
+  <h1 data-i18n="models.heading">MODELS</h1>
+  <p class="summary" id="summary" data-i18n="models.loading">Loading models</p>
   <form class="filters" id="filters">
-    <input class="line" type="search" id="search" placeholder="Search by name or map" autocomplete="off">
-    <select class="line" id="filter" aria-label="Scale">
-      <option value="">All scales</option>
-      <option value="4">Scale 4</option>
-      <option value="1">Scale 1</option>
-      <option value="0.5">Scale 0.5</option>
-      <option value="0.25">Scale 0.25</option>
-      <option value="0.125">Scale 0.125</option>
-      <option value="0.0625">Scale 0.0625</option>
+    <input class="line" type="search" id="search" placeholder="Search by name or map" data-i18n-attr="placeholder:models.search" autocomplete="off">
+    <select class="line" id="filter" aria-label="Scale" data-i18n-attr="aria-label:models.scale">
+      <option value="" data-i18n="models.allScales">All scales</option>
+      <option value="4" data-i18n="models.scaleOption" data-i18n-args='{"value":"4"}'>Scale 4</option>
+      <option value="1" data-i18n="models.scaleOption" data-i18n-args='{"value":"1"}'>Scale 1</option>
+      <option value="0.5" data-i18n="models.scaleOption" data-i18n-args='{"value":"0.5"}'>Scale 0.5</option>
+      <option value="0.25" data-i18n="models.scaleOption" data-i18n-args='{"value":"0.25"}'>Scale 0.25</option>
+      <option value="0.125" data-i18n="models.scaleOption" data-i18n-args='{"value":"0.125"}'>Scale 0.125</option>
+      <option value="0.0625" data-i18n="models.scaleOption" data-i18n-args='{"value":"0.0625"}'>Scale 0.0625</option>
     </select>
-    <select class="line" id="color" aria-label="Color" hidden>
-      <option value="">All colors</option>
-      <option value="red">Red</option>
-      <option value="orange">Orange</option>
-      <option value="yellow">Yellow</option>
-      <option value="green">Green</option>
-      <option value="blue">Blue</option>
-      <option value="purple">Purple</option>
-      <option value="pink">Pink</option>
-      <option value="brown">Brown</option>
-      <option value="black">Black</option>
-      <option value="white">White</option>
-      <option value="gray">Gray</option>
+    <select class="line" id="color" aria-label="Color" data-i18n-attr="aria-label:common.color" hidden>
+      <option value="" data-i18n="common.colors.all">All colors</option>
+      <option value="red" data-i18n="common.colors.red">Red</option>
+      <option value="orange" data-i18n="common.colors.orange">Orange</option>
+      <option value="yellow" data-i18n="common.colors.yellow">Yellow</option>
+      <option value="green" data-i18n="common.colors.green">Green</option>
+      <option value="blue" data-i18n="common.colors.blue">Blue</option>
+      <option value="purple" data-i18n="common.colors.purple">Purple</option>
+      <option value="pink" data-i18n="common.colors.pink">Pink</option>
+      <option value="brown" data-i18n="common.colors.brown">Brown</option>
+      <option value="black" data-i18n="common.colors.black">Black</option>
+      <option value="white" data-i18n="common.colors.white">White</option>
+      <option value="gray" data-i18n="common.colors.gray">Gray</option>
     </select>
-    <select class="line" id="type" aria-label="Type" hidden>
-      <option value="">All types</option>
-      <option value="building">Building</option>
-      <option value="furniture">Furniture</option>
-      <option value="vehicle">Vehicle</option>
-      <option value="weapon">Weapon</option>
-      <option value="plant">Plant</option>
-      <option value="nature">Nature</option>
-      <option value="food">Food</option>
-      <option value="animal">Animal</option>
-      <option value="character">Character</option>
-      <option value="decoration">Decoration</option>
-      <option value="sign">Sign</option>
-      <option value="structure">Structure</option>
-      <option value="tool">Tool</option>
-      <option value="object">Object</option>
+    <select class="line" id="type" aria-label="Type" data-i18n-attr="aria-label:common.type" hidden>
+      <option value="" data-i18n="common.allTypes">All types</option>
+      <option value="building" data-i18n="models.types.building">Building</option>
+      <option value="furniture" data-i18n="models.types.furniture">Furniture</option>
+      <option value="vehicle" data-i18n="models.types.vehicle">Vehicle</option>
+      <option value="weapon" data-i18n="models.types.weapon">Weapon</option>
+      <option value="plant" data-i18n="models.types.plant">Plant</option>
+      <option value="nature" data-i18n="models.types.nature">Nature</option>
+      <option value="food" data-i18n="models.types.food">Food</option>
+      <option value="animal" data-i18n="models.types.animal">Animal</option>
+      <option value="character" data-i18n="models.types.character">Character</option>
+      <option value="decoration" data-i18n="models.types.decoration">Decoration</option>
+      <option value="sign" data-i18n="models.types.sign">Sign</option>
+      <option value="structure" data-i18n="models.types.structure">Structure</option>
+      <option value="tool" data-i18n="models.types.tool">Tool</option>
+      <option value="object" data-i18n="models.types.object">Object</option>
     </select>
-    <button class="line chip" type="button" id="map" title="Show models from every map" hidden><span class="label"></span><span aria-hidden="true">×</span></button>
+    <button class="line chip" type="button" id="map" title="Show models from every map" data-i18n-attr="title:models.showEveryMap" hidden><span class="label"></span><span aria-hidden="true">×</span></button>
     <button class="line favorites adult" type="button" id="adult" aria-pressed="false" hidden><span>18+</span></button>
-    <button class="line favorites" type="button" id="favorites" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.3 4.4 12.9a4.8 4.8 0 0 1 6.8-6.8l.8.8.8-.8a4.8 4.8 0 0 1 6.8 6.8z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg><span>Liked</span><span class="count"></span></button>
+    <button class="line favorites" type="button" id="favorites" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.3 4.4 12.9a4.8 4.8 0 0 1 6.8-6.8l.8.8.8-.8a4.8 4.8 0 0 1 6.8 6.8z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg><span data-i18n="common.liked">Liked</span><span class="count"></span></button>
   </form>
   <div class="grid" id="grid"></div>
   <p class="status" id="status"></p>
 </main>
 <footer>
-  <p>Not affiliated with Multiverse ApS.</p>
+  <p data-i18n="common.notAffiliated">Not affiliated with Multiverse ApS.</p>
 </footer>
 <script src="../js/session.js"></script>
 </body>

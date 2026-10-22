@@ -414,6 +414,16 @@ footer {
 
 footer p { margin: 4px 0 0; }
 
+footer .language {
+  margin-top: 8px;
+  padding: 2px 4px;
+  font: inherit;
+  color: var(--secondary-text);
+  background: var(--secondary);
+  border: 1px solid var(--secondary-edge);
+  cursor: pointer;
+}
+
 .brand {
   display: inline-flex;
   align-items: center;

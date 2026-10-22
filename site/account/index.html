@@ -4,10 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light dark">
-<title>Account - OpenKogama</title>
-<meta name="description" content="Sign in to your OpenKogama account.">
-<meta property="og:title" content="Account - OpenKogama">
-<meta property="og:description" content="Sign in to your OpenKogama account.">
+<title data-i18n="account.title">Account - OpenKogama</title>
+<meta name="description" data-i18n-attr="content:account.description" content="Sign in to your OpenKogama account.">
+<meta property="og:title" data-i18n-attr="content:account.title" content="Account - OpenKogama">
+<meta property="og:description" data-i18n-attr="content:account.description" content="Sign in to your OpenKogama account.">
 <meta property="og:type" content="website">
 <meta property="og:image" content="../img/icon-512.png">
 <meta name="twitter:card" content="summary">
@@ -15,6 +15,7 @@
 <link rel="icon" href="../favicon.ico" sizes="16x16 32x32 48x48">
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
 <link rel="stylesheet" href="../css/style.css">
+<script src="../js/i18n.js"></script>
 <style>
   :root { --card: var(--secondary); --card-edge: var(--secondary-edge); --field: #ffffff; --title: var(--heading); --label: var(--text);
     --sub: color-mix(in srgb, var(--text) 68%, transparent); --link: var(--brand); --danger: var(--donate); }
@@ -80,134 +81,134 @@
 <header class="top">
   <a class="brand" href="../"><img src="../img/icon-192.png" alt="">OPENKOGAMA</a>
   <nav class="sections">
-    <a class="button nav" href="../maps/">Maps</a>
-    <a class="button nav" href="../avatars/">Avatars</a>
-    <a class="button nav" href="../models/">Models</a>
+    <a class="button nav" href="../maps/" data-i18n="common.nav.maps">Maps</a>
+    <a class="button nav" href="../avatars/" data-i18n="common.nav.avatars">Avatars</a>
+    <a class="button nav" href="../models/" data-i18n="common.nav.models">Models</a>
   </nav>
 </header>
 <main class="account">
   <form class="card" id="signin" hidden>
-    <h2>Welcome back!</h2>
-    <p class="sub">Good to see you again!</p>
+    <h2 data-i18n="account.welcome">Welcome back!</h2>
+    <p class="sub" data-i18n="account.welcomeSub">Good to see you again!</p>
     <div class="field">
-      <label for="signin-login">Name or email<i>*</i></label>
+      <label for="signin-login"><span data-i18n="account.nameOrEmail">Name or email</span><i>*</i></label>
       <div class="box"><input id="signin-login" name="login" autocomplete="username" required></div>
     </div>
     <div class="field password">
-      <label for="signin-password">Password<i>*</i></label>
-      <div class="box secret"><input id="signin-password" name="password" type="password" autocomplete="current-password" required><button type="button" aria-label="Show password" aria-pressed="false"><svg class="eye" viewBox="0 0 24 24" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg><svg class="eye-off" viewBox="0 0 24 24" aria-hidden="true"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><path d="M1 1l22 22"/></svg></button></div>
+      <label for="signin-password"><span data-i18n="account.password">Password</span><i>*</i></label>
+      <div class="box secret"><input id="signin-password" name="password" type="password" autocomplete="current-password" required><button type="button" aria-label="Show password" data-i18n-attr="aria-label:account.showPassword" aria-pressed="false"><svg class="eye" viewBox="0 0 24 24" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg><svg class="eye-off" viewBox="0 0 24 24" aria-hidden="true"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><path d="M1 1l22 22"/></svg></button></div>
     </div>
-    <a class="link forgot" href="#forgot">Forgot your password?</a>
+    <a class="link forgot" href="#forgot" data-i18n="account.forgot">Forgot your password?</a>
     <div class="captcha"></div>
     <p class="error" role="alert"></p>
-    <button class="button accent" type="submit">Sign in</button>
-    <p class="alt">Need an account? <a class="link" href="#create">Register</a></p>
+    <button class="button accent" type="submit" data-i18n="common.signIn">Sign in</button>
+    <p class="alt" data-i18n="account.needAccount">Need an account? <a class="link" href="#create" data-i18n-slot="register" data-i18n="account.register">Register</a></p>
   </form>
 
   <form class="card" id="create" hidden>
-    <h2>Create an account</h2>
-    <p class="sub">One account for every OpenKogama server.</p>
+    <h2 data-i18n="account.createHeading">Create an account</h2>
+    <p class="sub" data-i18n="account.createSub">One account for every OpenKogama server.</p>
     <div class="field">
-      <label for="create-name">Name<i>*</i></label>
+      <label for="create-name"><span data-i18n="account.name">Name</span><i>*</i></label>
       <div class="box"><input id="create-name" name="name" autocomplete="username" maxlength="20" required></div>
-      <small>3 to 20 letters, digits or _. Other players see it.</small>
+      <small data-i18n="account.nameHint">3 to 20 letters, digits or _. Other players see it.</small>
     </div>
     <div class="field">
-      <label for="create-password">Password<i>*</i></label>
-      <div class="box secret"><input id="create-password" name="password" type="password" autocomplete="new-password" minlength="8" required><button type="button" aria-label="Show password" aria-pressed="false"><svg class="eye" viewBox="0 0 24 24" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg><svg class="eye-off" viewBox="0 0 24 24" aria-hidden="true"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><path d="M1 1l22 22"/></svg></button></div>
-      <small>At least 8 characters.</small>
+      <label for="create-password"><span data-i18n="account.password">Password</span><i>*</i></label>
+      <div class="box secret"><input id="create-password" name="password" type="password" autocomplete="new-password" minlength="8" required><button type="button" aria-label="Show password" data-i18n-attr="aria-label:account.showPassword" aria-pressed="false"><svg class="eye" viewBox="0 0 24 24" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg><svg class="eye-off" viewBox="0 0 24 24" aria-hidden="true"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><path d="M1 1l22 22"/></svg></button></div>
+      <small data-i18n="account.passwordHint">At least 8 characters.</small>
     </div>
     <div class="field">
-      <label for="create-email">Email</label>
+      <label for="create-email" data-i18n="account.email">Email</label>
       <div class="box"><input id="create-email" name="email" type="email" autocomplete="email"></div>
-      <small>Optional, but without it you can't reset a forgotten password.</small>
+      <small data-i18n="account.emailHint">Optional, but without it you can't reset a forgotten password.</small>
     </div>
     <div class="captcha"></div>
     <p class="error" role="alert"></p>
-    <button class="button accent" type="submit">Continue</button>
-    <p class="alt"><a class="link" href="#signin">Already have an account?</a></p>
+    <button class="button accent" type="submit" data-i18n="account.continue">Continue</button>
+    <p class="alt"><a class="link" href="#signin" data-i18n="account.haveAccount">Already have an account?</a></p>
   </form>
 
   <form class="card" id="confirm" hidden>
-    <h2>Check your email</h2>
+    <h2 data-i18n="account.checkEmail">Check your email</h2>
     <p class="sub sent"></p>
     <div class="field">
-      <label for="confirm-code">Code<i>*</i></label>
+      <label for="confirm-code"><span data-i18n="account.code">Code</span><i>*</i></label>
       <div class="box"><input class="code" id="confirm-code" name="code" inputmode="numeric" autocomplete="one-time-code" maxlength="6" required></div>
     </div>
     <p class="error" role="alert"></p>
-    <button class="button accent" type="submit">Confirm</button>
-    <p class="alt">Didn't get it? <a class="link" href="#resend">Send it again</a> or <a class="link" href="#signin">go back</a></p>
+    <button class="button accent" type="submit" data-i18n="account.confirm">Confirm</button>
+    <p class="alt" data-i18n="account.didntGetIt">Didn't get it? <a class="link" href="#resend" data-i18n-slot="resend" data-i18n="account.sendAgain">Send it again</a> or <a class="link" href="#signin" data-i18n-slot="back" data-i18n="account.goBack">go back</a></p>
   </form>
 
   <form class="card" id="forgot" hidden>
-    <h2>Forgot your password?</h2>
-    <p class="sub">Enter your email and we will send you a code.</p>
+    <h2 data-i18n="account.forgot">Forgot your password?</h2>
+    <p class="sub" data-i18n="account.forgotSub">Enter your email and we will send you a code.</p>
     <div class="field">
-      <label for="forgot-email">Email<i>*</i></label>
+      <label for="forgot-email"><span data-i18n="account.email">Email</span><i>*</i></label>
       <div class="box"><input id="forgot-email" name="email" type="email" autocomplete="email" required></div>
     </div>
     <div class="captcha"></div>
     <p class="error" role="alert"></p>
-    <button class="button accent" type="submit">Send code</button>
-    <p class="alt"><a class="link" href="#signin">Back to sign in</a></p>
+    <button class="button accent" type="submit" data-i18n="account.sendCode">Send code</button>
+    <p class="alt"><a class="link" href="#signin" data-i18n="account.backToSignIn">Back to sign in</a></p>
   </form>
 
   <form class="card" id="reset" hidden>
-    <h2>Choose a new password</h2>
+    <h2 data-i18n="account.resetHeading">Choose a new password</h2>
     <p class="sub sent"></p>
     <div class="field">
-      <label for="reset-code">Code<i>*</i></label>
+      <label for="reset-code"><span data-i18n="account.code">Code</span><i>*</i></label>
       <div class="box"><input class="code" id="reset-code" name="code" inputmode="numeric" autocomplete="one-time-code" maxlength="6" required></div>
     </div>
     <div class="field">
-      <label for="reset-password">New password<i>*</i></label>
-      <div class="box secret"><input id="reset-password" name="password" type="password" autocomplete="new-password" minlength="8" required><button type="button" aria-label="Show password" aria-pressed="false"><svg class="eye" viewBox="0 0 24 24" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg><svg class="eye-off" viewBox="0 0 24 24" aria-hidden="true"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><path d="M1 1l22 22"/></svg></button></div>
-      <small>At least 8 characters.</small>
+      <label for="reset-password"><span data-i18n="account.newPassword">New password</span><i>*</i></label>
+      <div class="box secret"><input id="reset-password" name="password" type="password" autocomplete="new-password" minlength="8" required><button type="button" aria-label="Show password" data-i18n-attr="aria-label:account.showPassword" aria-pressed="false"><svg class="eye" viewBox="0 0 24 24" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg><svg class="eye-off" viewBox="0 0 24 24" aria-hidden="true"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><path d="M1 1l22 22"/></svg></button></div>
+      <small data-i18n="account.passwordHint">At least 8 characters.</small>
     </div>
     <p class="error" role="alert"></p>
-    <button class="button accent" type="submit">Save password</button>
-    <p class="alt"><a class="link" href="#signin">Back to sign in</a></p>
+    <button class="button accent" type="submit" data-i18n="account.savePassword">Save password</button>
+    <p class="alt"><a class="link" href="#signin" data-i18n="account.backToSignIn">Back to sign in</a></p>
   </form>
 
   <form class="card" id="email" hidden>
-    <h2>Your email</h2>
-    <p class="sub">We will send a code to confirm it. With an email you can reset a forgotten password.</p>
+    <h2 data-i18n="account.emailHeading">Your email</h2>
+    <p class="sub" data-i18n="account.emailSub">We will send a code to confirm it. With an email you can reset a forgotten password.</p>
     <div class="field">
-      <label for="email-address">Email<i>*</i></label>
+      <label for="email-address"><span data-i18n="account.email">Email</span><i>*</i></label>
       <div class="box"><input id="email-address" name="email" type="email" autocomplete="email" required></div>
     </div>
     <p class="error" role="alert"></p>
-    <button class="button accent" type="submit">Send code</button>
-    <p class="alt"><a class="link" href="#account">Back</a></p>
+    <button class="button accent" type="submit" data-i18n="account.sendCode">Send code</button>
+    <p class="alt"><a class="link" href="#account" data-i18n="account.back">Back</a></p>
   </form>
 
   <form class="card" id="emailcode" hidden>
-    <h2>Check your email</h2>
+    <h2 data-i18n="account.checkEmail">Check your email</h2>
     <p class="sub sent"></p>
     <div class="field">
-      <label for="emailcode-code">Code<i>*</i></label>
+      <label for="emailcode-code"><span data-i18n="account.code">Code</span><i>*</i></label>
       <div class="box"><input class="code" id="emailcode-code" name="code" inputmode="numeric" autocomplete="one-time-code" maxlength="6" required></div>
     </div>
     <p class="error" role="alert"></p>
-    <button class="button accent" type="submit">Confirm</button>
-    <p class="alt">Didn't get it? <a class="link" href="#resend-email">Send it again</a> or <a class="link" href="#account">go back</a></p>
+    <button class="button accent" type="submit" data-i18n="account.confirm">Confirm</button>
+    <p class="alt" data-i18n="account.didntGetIt">Didn't get it? <a class="link" href="#resend-email" data-i18n-slot="resend" data-i18n="account.sendAgain">Send it again</a> or <a class="link" href="#account" data-i18n-slot="back" data-i18n="account.goBack">go back</a></p>
   </form>
 
   <section class="card" id="account" hidden>
-    <h2>You're signed in</h2>
+    <h2 data-i18n="account.signedIn">You're signed in</h2>
     <p class="who"><b class="name"></b><span class="email"></span></p>
     <p class="alt mail"><a class="link" href="#email"></a></p>
-    <p class="note launcher" hidden>Your browser should ask to open the launcher. Nothing happened? Update the launcher and press the button below.</p>
+    <p class="note launcher" data-i18n="account.launcherNote" hidden>Your browser should ask to open the launcher. Nothing happened? Update the launcher and press the button below.</p>
     <p class="error" role="alert"></p>
     <div class="buttons">
-      <a class="button accent open launcher" href="#" hidden>Open the launcher</a>
-      <button class="button control" id="signout" type="button">Sign out</button>
+      <a class="button accent open launcher" href="#" data-i18n="common.openLauncher" hidden>Open the launcher</a>
+      <button class="button control" id="signout" type="button" data-i18n="account.signOut">Sign out</button>
     </div>
   </section>
 </main>
 <footer>
-  <p>Not affiliated with Multiverse ApS.</p>
+  <p data-i18n="common.notAffiliated">Not affiliated with Multiverse ApS.</p>
 </footer>
 <script src="../js/session.js"></script>
 <script src="../js/account.js"></script>

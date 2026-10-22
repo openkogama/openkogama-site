@@ -79,7 +79,7 @@
 }
 
 .inspector .map-stage[data-state="none"]::after {
-  content: "No thumbnail yet";
+  content: var(--no-thumbnail, "No thumbnail yet");
 }
 
 .inspector .actions .save {

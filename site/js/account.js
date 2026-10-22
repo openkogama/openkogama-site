@@ -42,9 +42,9 @@
   }
 
   function message(reply) {
-    if (reply.status === 0) return "Could not reach OpenKogama accounts, check your connection.";
+    if (reply.status === 0) return i18n.t("account.errors.offline");
     const text = reply.data.error;
-    if (!text) return "Something went wrong (" + reply.status + "), try again later.";
+    if (!text) return i18n.t("account.errors.status", { status: String(reply.status) });
     return text[0].toUpperCase() + text.slice(1) + ".";
   }
 
@@ -81,8 +81,8 @@
     for (const view of VIEWS) document.getElementById(view).hidden = view !== id;
     const panel = document.getElementById(id);
     fail(panel, "");
-    if (id === "confirm" || id === "emailcode") panel.querySelector(".sent").textContent = "We sent a code to " + pending + ".";
-    if (id === "reset") panel.querySelector(".sent").textContent = "If " + pending + " has an account, we sent a code there.";
+    if (id === "confirm" || id === "emailcode") panel.querySelector(".sent").textContent = i18n.t("account.codeSent", { email: pending });
+    if (id === "reset") panel.querySelector(".sent").textContent = i18n.t("account.resetSent", { email: pending });
     const first = panel.querySelector("input");
     if (first) first.focus();
     return panel;
@@ -112,8 +112,8 @@
     const panel = show("account");
     panel.querySelector(".name").textContent = me.ok ? me.data.name : session.name;
     const email = me.ok ? me.data.email || "" : "";
-    panel.querySelector(".email").textContent = email || (me.ok ? "No email yet" : "");
-    panel.querySelector(".mail a").textContent = email ? "Change email" : "Add an email to reset a forgotten password";
+    panel.querySelector(".email").textContent = email || (me.ok ? i18n.t("account.noEmail") : "");
+    panel.querySelector(".mail a").textContent = i18n.t(email ? "account.changeEmail" : "account.addEmail");
     if (!me.ok) fail(panel, message(me));
     else if (launcher && !handedOff) {
       handedOff = true;
@@ -233,7 +233,7 @@
     const session = saved();
     const reply = again ? await call("/email", { token: session && session.token, email: pending }) : await call("/resend", { email: pending });
     fail(panel, reply.ok ? "" : message(reply));
-    if (reply.ok) panel.querySelector(".sent").textContent = "We sent a new code to " + pending + ".";
+    if (reply.ok) panel.querySelector(".sent").textContent = i18n.t("account.newCodeSent", { email: pending });
   }));
 
   document.querySelectorAll(".secret button").forEach(button => button.addEventListener("click", () => {
@@ -241,7 +241,7 @@
     const shown = input.type === "password";
     input.type = shown ? "text" : "password";
     button.setAttribute("aria-pressed", String(shown));
-    button.setAttribute("aria-label", shown ? "Hide password" : "Show password");
+    button.setAttribute("aria-label", i18n.t(shown ? "account.hidePassword" : "account.showPassword"));
     input.focus();
   }));
 
@@ -257,5 +257,5 @@
     show("signin");
   });
 
-  showAccount();
+  i18n.ready.then(showAccount);
 })();

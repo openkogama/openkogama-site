@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Play KoGaMa in Your Browser - OpenKogama</title>
-<meta name="description" content="Play classic KoGaMa in your browser. Over 500 game versions, worlds and the avatar editor, no install.">
+<title data-i18n="play.title">Play KoGaMa in Your Browser - OpenKogama</title>
+<meta name="description" data-i18n-attr="content:play.description" content="Play classic KoGaMa in your browser. Over 500 game versions, worlds and the avatar editor, no install.">
 <link rel="canonical" href="https://openkogama.org/play/">
-<meta property="og:title" content="Play KoGaMa in Your Browser - OpenKogama">
-<meta property="og:description" content="Play classic KoGaMa in your browser. Over 500 game versions, worlds and the avatar editor, no install.">
+<meta property="og:title" data-i18n-attr="content:play.title" content="Play KoGaMa in Your Browser - OpenKogama">
+<meta property="og:description" data-i18n-attr="content:play.description" content="Play classic KoGaMa in your browser. Over 500 game versions, worlds and the avatar editor, no install.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://openkogama.org/play/">
 <meta property="og:site_name" content="OpenKogama">
@@ -15,6 +15,7 @@
 <meta name="twitter:card" content="summary">
 <link rel="icon" href="../favicon.ico">
 <link rel="stylesheet" href="../css/style.css">
+<script src="../js/i18n.js"></script>
 <style>
   body { justify-content: center; align-items: center; gap: 12px; padding: 16px; }
   #game { position: relative; width: min(940px, 100%); aspect-ratio: 940 / 482; background: #000; box-shadow: var(--window-shadow); }
@@ -132,14 +133,14 @@
 <body>
 <div id="game">
   <div id="unity"></div>
-  <button class="fullscreen" id="leave" type="button" aria-label="Exit fullscreen" title="Exit fullscreen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M9 4v5H4M20 9h-5V4M15 20v-5h5M4 15h5v5"/></svg></button>
+  <button class="fullscreen" id="leave" type="button" aria-label="Exit fullscreen" title="Exit fullscreen" data-i18n-attr="aria-label:play.exitFullscreen;title:play.exitFullscreen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M9 4v5H4M20 9h-5V4M15 20v-5h5M4 15h5v5"/></svg></button>
   <div id="launch">
     <h2>OPENKOGAMA</h2>
     <div id="current">KoGaMa <span id="current-version"></span></div>
     <div id="action">
       <div class="actions" id="buttons">
-        <button class="button primary" id="play">Play</button>
-        <button class="button secondary" id="change">Change version</button>
+        <button class="button primary" id="play" data-i18n="common.play">Play</button>
+        <button class="button secondary" id="change" data-i18n="play.changeVersion">Change version</button>
       </div>
       <div id="progress" hidden><div id="bar"><div id="fill"></div></div><span id="progress-text"></span></div>
     </div>
@@ -147,52 +148,52 @@
   </div>
   <div id="versions" class="panel" hidden>
     <header>
-      <h2>Versions</h2>
-      <input id="search" class="line" type="search" placeholder="Search version" aria-label="Search version" autocomplete="off">
-      <button class="close" id="close" aria-label="Close">&times;</button>
+      <h2 data-i18n="play.versions">Versions</h2>
+      <input id="search" class="line" type="search" placeholder="Search version" aria-label="Search version" data-i18n-attr="placeholder:play.searchVersion;aria-label:play.searchVersion" autocomplete="off">
+      <button class="close" id="close" aria-label="Close" data-i18n-attr="aria-label:common.close">&times;</button>
     </header>
     <div id="list" class="scroll"></div>
   </div>
   <div id="worlds" class="panel" hidden>
     <header>
-      <h2>Worlds</h2>
-      <button class="close" id="worlds-close" aria-label="Close">&times;</button>
+      <h2 data-i18n="play.worlds">Worlds</h2>
+      <button class="close" id="worlds-close" aria-label="Close" data-i18n-attr="aria-label:common.close">&times;</button>
     </header>
     <div id="world-list" class="scroll"></div>
     <form id="world-form" hidden>
-      <input id="world-name" class="line" placeholder="World name" maxlength="64" autocomplete="off" aria-label="World name">
+      <input id="world-name" class="line" placeholder="World name" maxlength="64" autocomplete="off" aria-label="World name" data-i18n-attr="placeholder:play.worldName;aria-label:play.worldName">
       <div id="templates" class="templates"></div>
       <div class="actions">
-        <button class="button primary" id="world-save" type="submit">Create</button>
-        <button class="button secondary" id="world-cancel" type="button">Cancel</button>
+        <button class="button primary" id="world-save" type="submit" data-i18n="play.create">Create</button>
+        <button class="button secondary" id="world-cancel" type="button" data-i18n="play.cancel">Cancel</button>
       </div>
     </form>
     <p class="note" id="world-note"></p>
     <div class="toolbar" id="world-actions">
       <div class="actions">
-        <button class="button primary" id="world-play">Play</button>
-        <button class="button secondary" id="world-build">Build</button>
-        <button class="button secondary" id="world-avatar">Avatar editor</button>
+        <button class="button primary" id="world-play" data-i18n="common.play">Play</button>
+        <button class="button secondary" id="world-build" data-i18n="play.build">Build</button>
+        <button class="button secondary" id="world-avatar" data-i18n="play.avatarEditor">Avatar editor</button>
       </div>
       <div class="actions manage">
-        <button class="button secondary" id="world-new">New world</button>
-        <button class="button secondary" id="world-import">Import</button>
-        <button class="button secondary" id="world-export">Export</button>
-        <button class="button secondary" id="world-rename">Rename</button>
-        <button class="button secondary" id="world-delete">Delete</button>
+        <button class="button secondary" id="world-new" data-i18n="play.newWorld">New world</button>
+        <button class="button secondary" id="world-import" data-i18n="play.import">Import</button>
+        <button class="button secondary" id="world-export" data-i18n="play.export">Export</button>
+        <button class="button secondary" id="world-rename" data-i18n="play.rename">Rename</button>
+        <button class="button secondary" id="world-delete" data-i18n="play.delete">Delete</button>
       </div>
     </div>
     <input id="world-file" type="file" accept=".kgmap,.kgm" hidden>
   </div>
 </div>
-<div id="below"><a class="brand" href="../"><img src="../img/icon-192.png" alt="">OPENKOGAMA</a><div id="status"></div><div class="side"><button class="link" id="back" hidden>Back to worlds</button><button class="fullscreen" id="fullscreen" type="button" aria-label="Fullscreen" title="Fullscreen"><svg class="enter" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5"/></svg><svg class="exit" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M9 4v5H4M20 9h-5V4M15 20v-5h5M4 15h5v5"/></svg></button></div></div>
-<p id="rotate">Turn your phone sideways or tap the fullscreen button for a bigger view</p>
+<div id="below"><a class="brand" href="../"><img src="../img/icon-192.png" alt="">OPENKOGAMA</a><div id="status"></div><div class="side"><button class="link" id="back" data-i18n="play.backToWorlds" hidden>Back to worlds</button><button class="fullscreen" id="fullscreen" type="button" aria-label="Fullscreen" title="Fullscreen" data-i18n-attr="aria-label:play.fullscreen;title:play.fullscreen"><svg class="enter" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5"/></svg><svg class="exit" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M9 4v5H4M20 9h-5V4M15 20v-5h5M4 15h5v5"/></svg></button></div></div>
+<p id="rotate" data-i18n="play.rotate">Turn your phone sideways or tap the fullscreen button for a bigger view</p>
 <footer>
   <div class="brand">
     <img src="../img/icon-192.png" alt="">
     <span>OPENKOGAMA</span>
   </div>
-  <p>Not affiliated with Multiverse ApS.</p>
+  <p data-i18n="common.notAffiliated">Not affiliated with Multiverse ApS.</p>
 </footer>
 <script src="../js/webgl-compat.js"></script>
 <script src="../js/offline.js"></script>
@@ -223,7 +224,7 @@
   let sessionWorld = query.get("world");
   const importUrl = query.get("import");
   let pendingImport = importUrl && new URL(importUrl, location.href).origin === "https://cdn.openkogama.org"
-    ? { url: importUrl, name: query.get("name") || "Imported map" } : null;
+    ? { url: importUrl, name: query.get("name") } : null;
 
   function remembered() {
     try { return localStorage.getItem("openkogama-version"); } catch { return null; }
@@ -258,11 +259,11 @@
   window.UNITY_sendPlayerParams = request => {
     clearInterval(creeping);
     launch.hidden = true;
-    if (external) status.textContent = "Connecting to " + server;
+    if (external) status.textContent = i18n.t("play.connecting", { server });
     fetch(sessionUrl())
       .then(response => response.text())
       .then(text => { status.textContent = ""; reply(request, text); })
-      .catch(error => { status.textContent = "Cannot reach the server at " + server; reply(request, null, String(error)); });
+      .catch(error => { status.textContent = i18n.t("play.unreachable", { server }); reply(request, null, String(error)); });
   };
   window.UNITY_unityDebugLog = (...args) => console.log("openkogama: game", ...args);
   window.UNITY_sendLoadStats = request => reply(request, JSON.stringify({ DOMReady: 0, PluginInit: 0 }));
@@ -299,7 +300,7 @@
   }
 
   function UnityProgress() {
-    const labels = [["Downloading", "data", "Loading game data"], ["Preparing", "prepare", "Preparing game"], ["All downloads complete", "launch", "Starting game..."]];
+    const labels = [["Downloading", "data", i18n.t("play.loadingData")], ["Preparing", "prepare", i18n.t("play.preparing")], ["All downloads complete", "launch", i18n.t("play.starting")]];
     let current = null;
     return {
       SetMessage: message => {
@@ -312,7 +313,7 @@
       SetProgress: value => { if (current === "data") step(current, value); },
       Clear: () => {
         current = "launch";
-        creep("launch", "Starting game...");
+        creep("launch", i18n.t("play.starting"));
       },
     };
   }
@@ -322,7 +323,7 @@
       const element = document.createElement("script");
       element.src = src;
       element.onload = resolve;
-      element.onerror = () => reject(new Error("Cannot load " + src));
+      element.onerror = () => reject(new Error(i18n.t("play.cannotLoad", { file: src })));
       document.body.appendChild(element);
     });
   }
@@ -342,7 +343,7 @@
   async function start() {
     document.body.classList.add("playing");
     const base = OpenKogamaOffline.buildUrl(selected.id, "");
-    creep("data", "Loading game...");
+    creep("data", i18n.t("play.loading"));
     if (selected.family === "5.3") {
       canvas();
       window.Module = {
@@ -402,8 +403,8 @@
           if (type === "error") status.textContent = message.replace(/<[^>]*>/g, " ");
         },
       }, value => {
-        if (value < 0.9) step("data", value / 0.9, "Loading game data");
-        else creep("prepare", "Preparing game");
+        if (value < 0.9) step("data", value / 0.9, i18n.t("play.loadingData"));
+        else creep("prepare", i18n.t("play.preparing"));
       }).catch(error => {
         clearInterval(creeping);
         status.textContent = String(error);
@@ -415,8 +416,8 @@
       await script(base + "Build/UnityLoader.js");
       window.gameInstance = UnityLoader.instantiate("unity", base + "Build/WebGLBuild.json", {
         onProgress: (instance, value) => {
-          if (value < 1) step("data", value, "Loading game data");
-          else creep("prepare", "Preparing game");
+          if (value < 1) step("data", value, i18n.t("play.loadingData"));
+          else creep("prepare", i18n.t("play.preparing"));
         },
       });
     }
@@ -471,7 +472,7 @@
     if (!shown.length) {
       const empty = document.createElement("p");
       empty.className = "empty";
-      empty.textContent = "No versions match";
+      empty.textContent = i18n.t("play.noVersions");
       list.append(empty);
     }
   }
@@ -493,8 +494,8 @@
   search.addEventListener("input", render);
   panel.addEventListener("keydown", event => { if (event.key === "Escape") closePanel(); });
 
-  const loaded = loadVersions().catch(error => {
-    errorText.textContent = "Cannot load the version list";
+  const loaded = i18n.ready.then(loadVersions).catch(error => {
+    errorText.textContent = i18n.t("play.versionsFailed");
     buttons.hidden = true;
     console.log("openkogama: versions", error);
   });
@@ -507,23 +508,24 @@
     errorText.textContent = "";
     shown = 0;
     fill.style.width = "0";
-    progressText.textContent = "Checking files...";
+    progressText.textContent = i18n.t("play.checking");
     try {
-      if (!await ready) throw new Error("This browser cannot store the game offline");
+      if (!await ready) throw new Error(i18n.t("play.noOffline"));
       const files = external ? [] : await fetch(OpenKogamaServer.files).then(response => response.json()).catch(() => null);
-      if (!files) throw new Error("Cannot load the server files");
+      if (!files) throw new Error(i18n.t("play.serverFilesFailed"));
       const result = await OpenKogamaOffline.install({
-        files: ["./", "../css/style.css", "../fonts/OpenKogama.woff2", "../js/offline.js", "../js/server.js", "../js/webgl-compat.js", "../favicon.ico", "../versions.json",
+        files: ["./", "../css/style.css", "../fonts/OpenKogama.woff2", "../js/offline.js", "../js/server.js", "../js/webgl-compat.js", "../js/i18n.js", "../favicon.ico", "../versions.json",
+          "../locales.json", "../locales/en.json", ...(i18n.file === "en" ? [] : ["../locales/" + i18n.file + ".json"]),
           ...(selected.set ? ["../manifests/" + selected.set + ".json"] : []),
           ...files.map(file => new URL(file, OpenKogamaServer.files).href)],
         set: selected.set,
         build: { id: selected.id, url: selected.url, size: selected.size, patchEval: selected.family === "5.2" || selected.family === "5.3" },
         server,
-        onProgress: (done, total) => step("download", total ? done / total : 1, total ? "Downloading " + megabytes(done) + " / " + megabytes(total) + " MB" : "Starting..."),
+        onProgress: (done, total) => step("download", total ? done / total : 1, total ? i18n.t("play.downloading", { done: megabytes(done), total: megabytes(total) }) : i18n.t("play.nothingToDownload")),
       });
-      if (result.failed > 0) throw new Error(result.failed + " files could not be downloaded");
+      if (result.failed > 0) throw new Error(i18n.t("play.failedFiles", { count: result.failed }));
       if (!external) {
-        creep("server", "Starting server...");
+        creep("server", i18n.t("play.startingServer"));
         await OpenKogamaServer.start();
       }
       remember(selected.version);
@@ -533,7 +535,7 @@
       clearInterval(creeping);
       progress.hidden = true;
       errorText.textContent = String(error.message || error);
-      play.textContent = "Retry";
+      play.textContent = i18n.t("play.retry");
       buttons.hidden = false;
     }
   });
@@ -576,7 +578,7 @@
   }
 
   function date(value) {
-    return value ? new Date(value).toLocaleString([], { dateStyle: "short", timeStyle: "short" }) : null;
+    return value ? new Date(value).toLocaleString(i18n.lang, { dateStyle: "short", timeStyle: "short" }) : null;
   }
 
   function loadThumbnail(id, image) {
@@ -608,7 +610,7 @@
     }
     const response = await api("worlds/rename?" + new URLSearchParams({ id: entry.id, name }), { method: "POST" });
     await persist();
-    worldNote.textContent = response.ok ? "" : "Cannot rename this world";
+    worldNote.textContent = response.ok ? "" : i18n.t("play.renameFailed");
     await loadWorlds(entry.id);
   }
 
@@ -627,7 +629,7 @@
     input.className = "line";
     input.value = entry.name;
     input.maxLength = 64;
-    input.setAttribute("aria-label", "World name");
+    input.setAttribute("aria-label", i18n.t("play.worldName"));
     input.addEventListener("click", event => event.stopPropagation());
     input.addEventListener("dblclick", event => event.stopPropagation());
     input.addEventListener("blur", () => finishRename(entry, input.value));
@@ -645,8 +647,11 @@
       tile.className = "tile" + (entry === world ? " selected" : "");
       tile.tabIndex = 0;
       tile.setAttribute("role", "button");
-      tile.title = "Last played: " + (date(entry.playedAt) ?? "never") + "\nSaved: " + date(entry.savedAt)
-        + "\n" + (entry.publishedAt ? "Published: " + date(entry.publishedAt) : "Not published");
+      tile.title = [
+        entry.playedAt ? i18n.t("play.lastPlayed", { date: date(entry.playedAt) }) : i18n.t("play.neverPlayed"),
+        i18n.t("play.saved", { date: date(entry.savedAt) }),
+        entry.publishedAt ? i18n.t("play.published", { date: date(entry.publishedAt) }) : i18n.t("play.notPublished"),
+      ].join("\n");
       const frame = document.createElement("span");
       frame.className = "thumb";
       const image = document.createElement("span");
@@ -665,7 +670,7 @@
     if (!worlds.length) {
       const empty = document.createElement("p");
       empty.className = "empty";
-      empty.textContent = "No worlds yet";
+      empty.textContent = i18n.t("play.noWorlds");
       worldList.append(empty);
     }
     for (const id of ["world-play", "world-build", "world-export", "world-rename", "world-delete"]) document.getElementById(id).disabled = !world;
@@ -678,7 +683,7 @@
     try {
       await loadWorlds();
     } catch (error) {
-      worldNote.textContent = "Cannot load the worlds";
+      worldNote.textContent = i18n.t("play.worldsFailed");
       console.log("openkogama: worlds", error);
       return;
     }
@@ -686,13 +691,14 @@
   }
 
   async function importFromUrl() {
-    const { url, name } = pendingImport;
+    const { url } = pendingImport;
+    const name = pendingImport.name || i18n.t("play.importedMap");
     pendingImport = null;
     const next = new URLSearchParams(location.search);
     next.delete("import");
     next.delete("name");
     history.replaceState(null, "", next.toString() ? "?" + next : location.pathname);
-    worldNote.textContent = "Importing " + name + "...";
+    worldNote.textContent = i18n.t("play.importing", { name });
     try {
       const file = await fetch(url).then(response => {
         if (!response.ok) throw new Error(response.status);
@@ -704,7 +710,7 @@
       worldNote.textContent = "";
       await loadWorlds(created.id);
     } catch (error) {
-      worldNote.textContent = "Cannot import " + name;
+      worldNote.textContent = i18n.t("play.importFailed", { name });
       console.log("openkogama: import", error);
     }
   }
@@ -713,7 +719,7 @@
     worldsPanel.hidden = true;
     clearInterval(creeping);
     progress.hidden = true;
-    play.textContent = "Play";
+    play.textContent = i18n.t("common.play");
     buttons.hidden = false;
   }
 
@@ -775,7 +781,7 @@
   document.getElementById("world-build").addEventListener("click", () => world && launchGame("edit", world.id));
   document.getElementById("world-avatar").addEventListener("click", () => launchGame("avatar", 0));
   document.getElementById("world-new").addEventListener("click", () => {
-    openForm("New World");
+    openForm(i18n.t("play.newWorldName"));
     showTemplates();
   });
   document.getElementById("world-rename").addEventListener("click", () => world && startRename(world));
@@ -793,7 +799,7 @@
       link.click();
       setTimeout(() => URL.revokeObjectURL(link.href), 1000);
     } catch (error) {
-      worldNote.textContent = "Cannot export " + name;
+      worldNote.textContent = i18n.t("play.exportFailed", { name });
       console.log("openkogama: export", error);
     }
   });
@@ -802,7 +808,7 @@
     const file = worldFile.files[0];
     worldFile.value = "";
     if (!file) return;
-    worldNote.textContent = "Importing " + file.name + "...";
+    worldNote.textContent = i18n.t("play.importing", { name: file.name });
     try {
       const name = file.name.replace(/\.[^.]+$/, "");
       const created = await api("worlds/import?" + new URLSearchParams({ name, client: selected.version }), { method: "POST", body: file })
@@ -811,7 +817,7 @@
       worldNote.textContent = "";
       await loadWorlds(created.id);
     } catch (error) {
-      worldNote.textContent = "Cannot import " + file.name;
+      worldNote.textContent = i18n.t("play.importFailed", { name: file.name });
       console.log("openkogama: import", error);
     }
   });
@@ -819,19 +825,19 @@
   deleteButton.addEventListener("click", async () => {
     if (!world) return;
     if (!deleteArmed) {
-      deleteButton.textContent = "Confirm delete";
+      deleteButton.textContent = i18n.t("play.confirmDelete");
       deleteArmed = setTimeout(() => {
         deleteArmed = null;
-        deleteButton.textContent = "Delete";
+        deleteButton.textContent = i18n.t("play.delete");
       }, 3000);
       return;
     }
     clearTimeout(deleteArmed);
     deleteArmed = null;
-    deleteButton.textContent = "Delete";
+    deleteButton.textContent = i18n.t("play.delete");
     const response = await api("worlds/delete?" + new URLSearchParams({ id: world.id }), { method: "POST" });
     await persist();
-    if (!response.ok) worldNote.textContent = "This world is open, close it first";
+    if (!response.ok) worldNote.textContent = i18n.t("play.worldOpen");
     world = null;
     await loadWorlds();
   });
@@ -900,7 +906,8 @@
 
 
   function megabytes(bytes) {
-    return (bytes / 1e6).toFixed(bytes < 1e7 ? 1 : 0);
+    const digits = bytes < 1e7 ? 1 : 0;
+    return (bytes / 1e6).toLocaleString(i18n.lang, { minimumFractionDigits: digits, maximumFractionDigits: digits });
   }
 </script>
 </body>

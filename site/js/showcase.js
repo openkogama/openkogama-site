@@ -24,3 +24,4 @@ function show(i) {
 prev.addEventListener("click", () => show(current - 1));
 next.addEventListener("click", () => show(current + 1));
 show(0);
+i18n.ready.then(() => dots.forEach((dot, i) => dot.setAttribute("aria-label", videos[i].title)));

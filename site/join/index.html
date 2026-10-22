@@ -4,10 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light dark">
-<title>Join - OpenKogama</title>
-<meta name="description" content="Join this game in the OpenKogama launcher.">
-<meta property="og:title" content="Join - OpenKogama">
-<meta property="og:description" content="Join this game in the OpenKogama launcher.">
+<title data-i18n="join.title">Join - OpenKogama</title>
+<meta name="description" data-i18n-attr="content:join.description" content="Join this game in the OpenKogama launcher.">
+<meta property="og:title" data-i18n-attr="content:join.title" content="Join - OpenKogama">
+<meta property="og:description" data-i18n-attr="content:join.description" content="Join this game in the OpenKogama launcher.">
 <meta property="og:type" content="website">
 <meta property="og:image" content="../img/icon-512.png">
 <meta name="twitter:card" content="summary">
@@ -15,6 +15,7 @@
 <link rel="icon" href="../favicon.ico" sizes="16x16 32x32 48x48">
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
 <link rel="stylesheet" href="../css/style.css">
+<script src="../js/i18n.js"></script>
 <style>
   .hint { min-height: 1.4em; margin: 0; font-size: .9rem; text-align: center; color: var(--tagline); opacity: .75; }
 </style>
@@ -22,19 +23,19 @@
 <body class="home">
 <main class="hero">
   <h1>OPENKOGAMA</h1>
-  <p class="tagline" id="what">Join this game in the OpenKogama launcher.</p>
+  <p class="tagline" id="what" data-i18n="join.description">Join this game in the OpenKogama launcher.</p>
   <div class="actions">
-    <a class="button primary" id="open" href="../">Open the launcher</a>
-    <a class="button secondary" id="download" href="https://github.com/openkogama/openkogama-launcher/releases">Download</a>
+    <a class="button primary" id="open" href="../" data-i18n="common.openLauncher">Open the launcher</a>
+    <a class="button secondary" id="download" href="https://github.com/openkogama/openkogama-launcher/releases" data-i18n="common.download">Download</a>
   </div>
-  <p class="hint" id="hint">Nothing happened? Install the launcher, then open this link again.</p>
+  <p class="hint" id="hint" data-i18n="join.hint">Nothing happened? Install the launcher, then open this link again.</p>
 </main>
 <footer>
   <div class="brand">
     <img src="../img/icon-192.png" alt="">
     <span>OPENKOGAMA</span>
   </div>
-  <p>Not affiliated with Multiverse ApS.</p>
+  <p data-i18n="common.notAffiliated">Not affiliated with Multiverse ApS.</p>
 </footer>
 <script src="../js/download.js"></script>
 <script>
@@ -63,23 +64,24 @@
 
   const server = clean(new URLSearchParams(location.search).get("server"));
   if (!server) {
-    what.textContent = "This link has no game to join.";
     open.hidden = true;
-    hint.textContent = "";
+    i18n.ready.then(() => {
+      what.textContent = i18n.t("join.noGame");
+      hint.textContent = "";
+    });
     return;
   }
 
   const link = "openkogama://join?server=" + encodeURIComponent(server);
   open.href = link;
-  what.textContent = "Join " + shown(server) + " in the OpenKogama launcher.";
+  i18n.ready.then(() => { what.textContent = i18n.t("join.server", { server: shown(server) }); });
 
-  fetch("https://list.openkogama.org/servers")
-    .then(response => response.ok ? response.json() : [])
-    .then(list => {
+  Promise.all([fetch("https://list.openkogama.org/servers").then(response => response.ok ? response.json() : []), i18n.ready])
+    .then(([list]) => {
       const entry = Array.isArray(list) && list.find(item => item && item.address === server);
       if (!entry || !entry.title) return;
-      const players = entry.players === 1 ? "1 player" : (entry.players || 0) + " players";
-      what.textContent = "Join " + entry.title + " (" + players + ") in the OpenKogama launcher.";
+      const players = i18n.t("join.players", { count: entry.players || 0 });
+      what.textContent = i18n.t("join.listed", { title: entry.title, players });
     })
     .catch(() => {});
 

@@ -3,12 +3,12 @@ import { liked, likedList, mapKey, toggle } from "./likes.js";
 const DATA = new URL(new URLSearchParams(location.search).get("data") || "https://cdn.openkogama.org/maps/v1/", location.href).href;
 const CONTENTS = { models: "https://cdn.openkogama.org/models/v2/", avatars: "https://cdn.openkogama.org/avatars/v1/" };
 const PAGE = 60;
-const REGIONS = { www: "Global", br: "Brazil", friends: "Friends" };
+const REGIONS = { www: "maps.regions.www", br: "maps.regions.br", friends: "maps.regions.friends" };
+const NAMES = { models: "common.nav.models", avatars: "common.nav.avatars" };
 const HOSTS = { www: "www.kogama.com", br: "kogama.com.br", friends: "friends.kogama.com" };
 const HEART_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.3 4.4 12.9a4.8 4.8 0 0 1 6.8-6.8l.8.8.8-.8a4.8 4.8 0 0 1 6.8 6.8z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg>';
 const DOWNLOAD_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m-5-5 5 5 5-5M4 16v4h16v-4" fill="none" stroke="currentColor" stroke-width="2.5"/></svg>';
 
-const BASE_TITLE = document.title;
 const list = document.getElementById("list");
 const status = document.getElementById("status");
 const summary = document.getElementById("summary");
@@ -58,11 +58,13 @@ function load(index) {
   const at = name => fields.indexOf(name);
   const [id, site, name, author, authorId, plays, likes, published, format, size, versions, image] =
     ["id", "site", "name", "author", "authorId", "plays", "likes", "published", "format", "size", "versions", "image"].map(at);
+  const untitled = i18n.t("common.untitledMap");
   return index.rows.map((row, position) => ({
     position,
+    key: mapKey({ id: row[id], site: row[site], name: row[name] || "Untitled map" }),
     id: row[id],
     site: row[site],
-    name: row[name] || "Untitled map",
+    name: row[name] || untitled,
     author: row[author],
     authorId: row[authorId],
     plays: row[plays],
@@ -98,7 +100,7 @@ function authorName(key) {
 
 function showAuthor() {
   authorButton.hidden = !author;
-  authorButton.querySelector(".label").textContent = author ? `By ${authorName(author)}` : "";
+  authorButton.querySelector(".label").textContent = author ? i18n.t("maps.byAuthor", { name: authorName(author) }) : "";
 }
 
 function byAuthor(map) {
@@ -128,7 +130,7 @@ function filter() {
   const words = query.split(/\s+/).filter(Boolean);
   const wanted = region.value;
   const likedSet = favorites ? new Set(likedList("maps")) : null;
-  results = maps.filter(map => (!likedSet || likedSet.has(mapKey(map))) && (!author || authorKey(map) === author)
+  results = maps.filter(map => (!likedSet || likedSet.has(map.key)) && (!author || authorKey(map) === author)
     && (!wanted || (wanted === "-" ? !map.site : map.site === wanted)) && words.every(word => map.text.includes(word)));
   const order = ORDER[sort.value] || ORDER.plays;
   if (words.length) {
@@ -140,11 +142,11 @@ function filter() {
   }
   list.replaceChildren();
   shown = 0;
-  status.textContent = results.length ? "" : favorites ? "No liked maps yet" : "No maps found";
+  status.textContent = results.length ? "" : i18n.t(favorites ? "maps.noLikedYet" : "maps.noneFound");
   showAuthor();
   summary.textContent = words.length || wanted || favorites || author
-    ? `${results.length.toLocaleString("en")} of ${maps.length.toLocaleString("en")} maps`
-    : `${maps.length.toLocaleString("en")} archived maps`;
+    ? i18n.t("maps.summaryFiltered", { shown: results.length, total: maps.length })
+    : i18n.t("maps.summary", { total: maps.length });
   more();
 }
 
@@ -161,7 +163,7 @@ function count(value) {
 function meta(map) {
   const parts = [];
   if (map.author) parts.push(map.author);
-  if (map.plays != null) parts.push(`${count(map.plays)} plays`);
+  if (map.plays != null) parts.push(i18n.t("maps.plays", { count: map.plays, value: count(map.plays) }));
   if (map.published) parts.push(map.published.slice(0, 4));
   return parts.join(" · ") || `${size(map.size)} .${map.format}`;
 }
@@ -241,7 +243,7 @@ async function play(map, button) {
 }
 
 function date(value) {
-  return value ? new Date(value).toLocaleDateString("en", { dateStyle: "medium" }) : "";
+  return value ? new Date(value).toLocaleDateString(i18n.lang, { dateStyle: "medium" }) : "";
 }
 
 function line(label, value) {
@@ -261,7 +263,7 @@ function authorLink(map, text) {
   button.type = "button";
   button.className = "link author";
   button.textContent = text;
-  button.title = "Show maps by this author";
+  button.title = i18n.t("maps.showByAuthor");
   button.addEventListener("click", () => byAuthor(map));
   return button;
 }
@@ -274,7 +276,7 @@ function contentLinks(map, inside) {
     if (i) links.append(" · ");
     const link = document.createElement("a");
     link.href = `../${kind}/?map=${ids.join(",")}`;
-    link.textContent = kind[0].toUpperCase() + kind.slice(1);
+    link.textContent = i18n.t(NAMES[kind]);
     links.append(link);
   });
   return links;
@@ -296,7 +298,7 @@ function closeSheet() {
   const state = inspecting;
   inspecting = null;
   state.element.remove();
-  document.title = BASE_TITLE;
+  document.title = i18n.t("maps.title");
   document.documentElement.classList.remove("inspecting");
   document.removeEventListener("keydown", state.keys);
   state.opener?.focus();
@@ -320,17 +322,17 @@ function iconButton(className, label, icon) {
 function showLiked(button, on) {
   button.classList.toggle("on", on);
   button.setAttribute("aria-pressed", String(on));
-  button.title = on ? "Unlike" : "Like";
+  button.title = i18n.t(on ? "common.unlike" : "common.like");
   button.setAttribute("aria-label", button.title);
 }
 
 function likeButton(map) {
-  const button = iconButton("like", "Like", HEART_ICON);
-  button.dataset.sha = mapKey(map);
-  showLiked(button, liked("maps", mapKey(map)));
+  const button = iconButton("like", i18n.t("common.like"), HEART_ICON);
+  button.dataset.sha = map.key;
+  showLiked(button, liked("maps", map.key));
   button.addEventListener("click", event => {
     event.stopPropagation();
-    toggle("maps", mapKey(map));
+    toggle("maps", map.key);
   });
   return button;
 }
@@ -365,7 +367,7 @@ async function openSheet(map, opener) {
   const close = document.createElement("button");
   close.type = "button";
   close.className = "close";
-  close.setAttribute("aria-label", "Close");
+  close.setAttribute("aria-label", i18n.t("common.close"));
   close.textContent = "×";
   const stage = document.createElement("div");
   stage.className = "stage map-stage";
@@ -386,14 +388,14 @@ async function openSheet(map, opener) {
   const start = document.createElement("button");
   start.type = "button";
   start.className = "button primary";
-  start.textContent = "Play";
+  start.textContent = i18n.t("common.play");
   start.addEventListener("click", () => play(map, start));
-  const save = iconButton("save", `Download .${map.format}`, DOWNLOAD_ICON);
+  const save = iconButton("save", i18n.t("common.downloadFile", { extension: "." + map.format }), DOWNLOAD_ICON);
   save.addEventListener("click", () => download(map, save));
   row.append(likeButton(map), start, save);
   const box = document.createElement("div");
   box.className = "more";
-  box.textContent = "Loading";
+  box.textContent = i18n.t("common.loading");
   about.append(heading, details, row, box);
   panel.append(close, stage, about);
   element.append(panel);
@@ -426,17 +428,17 @@ async function openSheet(map, opener) {
       sources.append(anchor(`https://archive.org/details/${item}`, decodeURIComponent(item)));
     });
     facts.append(...[
-      line("Id", map.id),
-      line("Region", REGIONS[map.site] || "Unknown"),
-      line("Plays", map.plays != null ? map.plays.toLocaleString("en") : ""),
-      line("Likes", map.likes != null ? map.likes.toLocaleString("en") : ""),
-      line("File", `${size(map.size)} .${map.format}`),
-      line("Contents", contentLinks(map, inside)),
-      line("Author", authorKey(map) ? authorLink(map, map.author ? `${map.author}${map.authorId ? " (" + map.authorId + ")" : ""}` : map.authorId) : ""),
-      line("Created", date(info.created)),
-      line("Published", date(info.publishedAt)),
-      line("Original page", original),
-      line("Archived in", sources.childNodes.length ? sources : null),
+      line(i18n.t("maps.facts.id"), map.id),
+      line(i18n.t("maps.facts.region"), i18n.t(REGIONS[map.site] || "maps.regions.unknown")),
+      line(i18n.t("maps.facts.plays"), map.plays != null ? map.plays.toLocaleString(i18n.lang) : ""),
+      line(i18n.t("maps.facts.likes"), map.likes != null ? map.likes.toLocaleString(i18n.lang) : ""),
+      line(i18n.t("maps.facts.file"), `${size(map.size)} .${map.format}`),
+      line(i18n.t("maps.facts.contents"), contentLinks(map, inside)),
+      line(i18n.t("maps.facts.author"), authorKey(map) ? authorLink(map, map.author ? `${map.author}${map.authorId ? " (" + map.authorId + ")" : ""}` : map.authorId) : ""),
+      line(i18n.t("maps.facts.created"), date(info.created)),
+      line(i18n.t("maps.facts.published"), date(info.publishedAt)),
+      line(i18n.t("maps.facts.originalPage"), original),
+      line(i18n.t("maps.facts.archivedIn"), sources.childNodes.length ? sources : null),
     ].filter(Boolean));
     box.append(facts);
     if (info.versions.length > 1) {
@@ -447,7 +449,7 @@ async function openSheet(map, opener) {
         const button = document.createElement("button");
         button.type = "button";
         button.className = "link";
-        button.textContent = `.${version.format} · ${size(version.bytes)}${version.savedAt ? " · saved " + date(version.savedAt) : ""}${index ? "" : " · used for Play"}`;
+        button.textContent = `.${version.format} · ${size(version.bytes)}${version.savedAt ? " · " + i18n.t("maps.saved", { date: date(version.savedAt) }) : ""}${index ? "" : " · " + i18n.t("maps.usedForPlay")}`;
         button.addEventListener("click", () => download(map, button, index));
         item.append(button);
         files.append(item);
@@ -455,7 +457,7 @@ async function openSheet(map, opener) {
       box.append(files);
     }
   } catch (error) {
-    box.textContent = "Details are not available right now";
+    box.textContent = i18n.t("maps.detailsUnavailable");
     console.warn(map.id, error);
   }
 }
@@ -467,7 +469,7 @@ function entry(map) {
   frame.className = "picture";
   frame.tabIndex = 0;
   frame.setAttribute("role", "button");
-  frame.setAttribute("aria-label", "Open details");
+  frame.setAttribute("aria-label", i18n.t("maps.openDetails"));
   const image = picture(map);
   if (image) frame.append(image);
   frame.addEventListener("click", () => openSheet(map, frame));
@@ -479,7 +481,7 @@ function entry(map) {
   });
   const tools = document.createElement("div");
   tools.className = "tools";
-  const save = iconButton("save", `Download .${map.format}`, DOWNLOAD_ICON);
+  const save = iconButton("save", i18n.t("common.downloadFile", { extension: "." + map.format }), DOWNLOAD_ICON);
   save.addEventListener("click", event => {
     event.stopPropagation();
     download(map, save);
@@ -558,6 +560,7 @@ async function deepLink() {
 }
 
 async function start() {
+  await i18n.ready;
   readState();
   showFavorites();
   try {
@@ -572,7 +575,7 @@ async function start() {
     filter();
     deepLink();
   } catch (error) {
-    summary.textContent = "Maps are not available right now";
+    summary.textContent = i18n.t("maps.unavailable");
     console.error(error);
   }
 }

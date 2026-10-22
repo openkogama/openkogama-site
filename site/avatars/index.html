@@ -4,11 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light dark">
-<title>KoGaMa Avatars - OpenKogama</title>
-<meta name="description" content="Browse archived KoGaMa avatars with live previews, animations and downloads.">
+<title data-i18n="avatars.title">KoGaMa Avatars - OpenKogama</title>
+<meta name="description" data-i18n-attr="content:avatars.description" content="Browse archived KoGaMa avatars with live previews, animations and downloads.">
 <link rel="canonical" href="https://openkogama.org/avatars/">
-<meta property="og:title" content="KoGaMa Avatars - OpenKogama">
-<meta property="og:description" content="Browse archived KoGaMa avatars with live previews, animations and downloads.">
+<meta property="og:title" data-i18n-attr="content:avatars.title" content="KoGaMa Avatars - OpenKogama">
+<meta property="og:description" data-i18n-attr="content:avatars.description" content="Browse archived KoGaMa avatars with live previews, animations and downloads.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://openkogama.org/avatars/">
 <meta property="og:site_name" content="OpenKogama">
@@ -18,69 +18,70 @@
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
 <link rel="stylesheet" href="../css/style.css">
 <link rel="stylesheet" href="../css/models.css">
+<script src="../js/i18n.js"></script>
 <script src="../js/vendor/sql.js-httpvfs/index.js"></script>
 <script type="module" src="../js/models.js"></script>
 </head>
-<body class="gallery" data-kind="avatars">
+<body class="gallery" data-kind="avatars" data-i18n-vars="--too-big:common.tooBig;--preview-unavailable:common.previewUnavailable;--loading:common.loading">
 <header class="top">
   <a class="brand" href="../"><img src="../img/icon-192.png" alt="">OPENKOGAMA</a>
   <nav class="sections">
-    <a class="button nav" href="../maps/">Maps</a>
-    <a class="button nav" href="./" aria-current="page">Avatars</a>
-    <a class="button nav" href="../models/">Models</a>
+    <a class="button nav" href="../maps/" data-i18n="common.nav.maps">Maps</a>
+    <a class="button nav" href="./" aria-current="page" data-i18n="common.nav.avatars">Avatars</a>
+    <a class="button nav" href="../models/" data-i18n="common.nav.models">Models</a>
   </nav>
 </header>
 <main class="models">
-  <h1>AVATARS</h1>
-  <p class="summary" id="summary">Loading avatars</p>
+  <h1 data-i18n="avatars.heading">AVATARS</h1>
+  <p class="summary" id="summary" data-i18n="avatars.loading">Loading avatars</p>
   <form class="filters" id="filters">
-    <input class="line" type="search" id="search" placeholder="Search by name" autocomplete="off">
-    <select class="line" id="filter" aria-label="Source">
-      <option value="">All sources</option>
-      <option value="class">Classes</option>
-      <option value="map">Avatars in maps</option>
-      <option value="world">Avatar worlds</option>
-      <option value="placed">Placed in maps</option>
-      <option value="build">Build mode</option>
+    <input class="line" type="search" id="search" placeholder="Search by name" data-i18n-attr="placeholder:avatars.search" autocomplete="off">
+    <select class="line" id="filter" aria-label="Source" data-i18n-attr="aria-label:avatars.source">
+      <option value="" data-i18n="avatars.allSources">All sources</option>
+      <option value="class" data-i18n="avatars.sources.class">Classes</option>
+      <option value="map" data-i18n="avatars.sources.map">Avatars in maps</option>
+      <option value="world" data-i18n="avatars.sources.world">Avatar worlds</option>
+      <option value="placed" data-i18n="avatars.sources.placed">Placed in maps</option>
+      <option value="build" data-i18n="avatars.sources.build">Build mode</option>
     </select>
-    <select class="line" id="color" aria-label="Color" hidden>
-      <option value="">All colors</option>
-      <option value="red">Red</option>
-      <option value="orange">Orange</option>
-      <option value="yellow">Yellow</option>
-      <option value="green">Green</option>
-      <option value="blue">Blue</option>
-      <option value="purple">Purple</option>
-      <option value="pink">Pink</option>
-      <option value="brown">Brown</option>
-      <option value="black">Black</option>
-      <option value="white">White</option>
-      <option value="gray">Gray</option>
+    <select class="line" id="color" aria-label="Color" data-i18n-attr="aria-label:common.color" hidden>
+      <option value="" data-i18n="common.colors.all">All colors</option>
+      <option value="red" data-i18n="common.colors.red">Red</option>
+      <option value="orange" data-i18n="common.colors.orange">Orange</option>
+      <option value="yellow" data-i18n="common.colors.yellow">Yellow</option>
+      <option value="green" data-i18n="common.colors.green">Green</option>
+      <option value="blue" data-i18n="common.colors.blue">Blue</option>
+      <option value="purple" data-i18n="common.colors.purple">Purple</option>
+      <option value="pink" data-i18n="common.colors.pink">Pink</option>
+      <option value="brown" data-i18n="common.colors.brown">Brown</option>
+      <option value="black" data-i18n="common.colors.black">Black</option>
+      <option value="white" data-i18n="common.colors.white">White</option>
+      <option value="gray" data-i18n="common.colors.gray">Gray</option>
     </select>
-    <select class="line" id="type" aria-label="Type" hidden>
-      <option value="">All types</option>
-      <option value="human">Human</option>
-      <option value="anthro">Anthro</option>
-      <option value="animal">Animal</option>
-      <option value="monster">Monster</option>
-      <option value="robot">Robot</option>
-      <option value="zombie">Zombie</option>
-      <option value="skeleton">Skeleton</option>
-      <option value="ghost">Ghost</option>
-      <option value="alien">Alien</option>
-      <option value="mythical">Mythical</option>
-      <option value="vehicle">Vehicle</option>
-      <option value="object">Object</option>
+    <select class="line" id="type" aria-label="Type" data-i18n-attr="aria-label:common.type" hidden>
+      <option value="" data-i18n="common.allTypes">All types</option>
+      <option value="human" data-i18n="avatars.types.human">Human</option>
+      <option value="anthro" data-i18n="avatars.types.anthro">Anthro</option>
+      <option value="animal" data-i18n="avatars.types.animal">Animal</option>
+      <option value="monster" data-i18n="avatars.types.monster">Monster</option>
+      <option value="robot" data-i18n="avatars.types.robot">Robot</option>
+      <option value="zombie" data-i18n="avatars.types.zombie">Zombie</option>
+      <option value="skeleton" data-i18n="avatars.types.skeleton">Skeleton</option>
+      <option value="ghost" data-i18n="avatars.types.ghost">Ghost</option>
+      <option value="alien" data-i18n="avatars.types.alien">Alien</option>
+      <option value="mythical" data-i18n="avatars.types.mythical">Mythical</option>
+      <option value="vehicle" data-i18n="avatars.types.vehicle">Vehicle</option>
+      <option value="object" data-i18n="avatars.types.object">Object</option>
     </select>
-    <button class="line chip" type="button" id="map" title="Show avatars from every map" hidden><span class="label"></span><span aria-hidden="true">×</span></button>
+    <button class="line chip" type="button" id="map" title="Show avatars from every map" data-i18n-attr="title:avatars.showEveryMap" hidden><span class="label"></span><span aria-hidden="true">×</span></button>
     <button class="line favorites adult" type="button" id="adult" aria-pressed="false" hidden><span>18+</span></button>
-    <button class="line favorites" type="button" id="favorites" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.3 4.4 12.9a4.8 4.8 0 0 1 6.8-6.8l.8.8.8-.8a4.8 4.8 0 0 1 6.8 6.8z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg><span>Liked</span><span class="count"></span></button>
+    <button class="line favorites" type="button" id="favorites" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.3 4.4 12.9a4.8 4.8 0 0 1 6.8-6.8l.8.8.8-.8a4.8 4.8 0 0 1 6.8 6.8z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg><span data-i18n="common.liked">Liked</span><span class="count"></span></button>
   </form>
   <div class="grid" id="grid"></div>
   <p class="status" id="status"></p>
 </main>
 <footer>
-  <p>Not affiliated with Multiverse ApS.</p>
+  <p data-i18n="common.notAffiliated">Not affiliated with Multiverse ApS.</p>
 </footer>
 <script src="../js/session.js"></script>
 </body>

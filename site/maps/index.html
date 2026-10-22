@@ -4,11 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light dark">
-<title>KoGaMa Maps Archive - OpenKogama</title>
-<meta name="description" content="Browse and play 28,000+ archived KoGaMa maps, preserved with thumbnails. Search by name, author or id.">
+<title data-i18n="maps.title">KoGaMa Maps Archive - OpenKogama</title>
+<meta name="description" data-i18n-attr="content:maps.description" content="Browse and play 28,000+ archived KoGaMa maps, preserved with thumbnails. Search by name, author or id.">
 <link rel="canonical" href="https://openkogama.org/maps/">
-<meta property="og:title" content="KoGaMa Maps Archive - OpenKogama">
-<meta property="og:description" content="Browse and play 28,000+ archived KoGaMa maps, preserved with thumbnails. Search by name, author or id.">
+<meta property="og:title" data-i18n-attr="content:maps.title" content="KoGaMa Maps Archive - OpenKogama">
+<meta property="og:description" data-i18n-attr="content:maps.description" content="Browse and play 28,000+ archived KoGaMa maps, preserved with thumbnails. Search by name, author or id.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://openkogama.org/maps/">
 <meta property="og:site_name" content="OpenKogama">
@@ -19,44 +19,45 @@
 <link rel="stylesheet" href="../css/style.css">
 <link rel="stylesheet" href="../css/models.css">
 <link rel="stylesheet" href="../css/maps.css">
+<script src="../js/i18n.js"></script>
 <script type="module" src="../js/maps.js"></script>
 </head>
-<body class="gallery">
+<body class="gallery" data-i18n-vars="--no-thumbnail:maps.noThumbnail;--too-big:common.tooBig;--preview-unavailable:common.previewUnavailable;--loading:common.loading">
 <header class="top">
   <a class="brand" href="../"><img src="../img/icon-192.png" alt="">OPENKOGAMA</a>
   <nav class="sections">
-    <a class="button nav" href="./" aria-current="page">Maps</a>
-    <a class="button nav" href="../avatars/">Avatars</a>
-    <a class="button nav" href="../models/">Models</a>
+    <a class="button nav" href="./" aria-current="page" data-i18n="common.nav.maps">Maps</a>
+    <a class="button nav" href="../avatars/" data-i18n="common.nav.avatars">Avatars</a>
+    <a class="button nav" href="../models/" data-i18n="common.nav.models">Models</a>
   </nav>
 </header>
 <main class="models">
-  <h1>MAPS</h1>
-  <p class="summary" id="summary">Loading maps</p>
+  <h1 data-i18n="maps.heading">MAPS</h1>
+  <p class="summary" id="summary" data-i18n="maps.loading">Loading maps</p>
   <form class="filters" id="filters">
-    <input class="line" type="search" id="search" placeholder="Search by name, author or id" autocomplete="off">
-    <select class="line" id="region" aria-label="Region">
-      <option value="">All regions</option>
-      <option value="www">Global</option>
-      <option value="br">Brazil</option>
-      <option value="friends">Friends</option>
-      <option value="-">Unknown</option>
+    <input class="line" type="search" id="search" placeholder="Search by name, author or id" data-i18n-attr="placeholder:maps.search" autocomplete="off">
+    <select class="line" id="region" aria-label="Region" data-i18n-attr="aria-label:maps.region">
+      <option value="" data-i18n="maps.allRegions">All regions</option>
+      <option value="www" data-i18n="maps.regions.www">Global</option>
+      <option value="br" data-i18n="maps.regions.br">Brazil</option>
+      <option value="friends" data-i18n="maps.regions.friends">Friends</option>
+      <option value="-" data-i18n="maps.regions.unknown">Unknown</option>
     </select>
-    <select class="line" id="sort" aria-label="Sort">
-      <option value="plays">Most played</option>
-      <option value="likes">Most liked</option>
-      <option value="new">Newest</option>
-      <option value="old">Oldest</option>
-      <option value="name">Name</option>
+    <select class="line" id="sort" aria-label="Sort" data-i18n-attr="aria-label:maps.sort">
+      <option value="plays" data-i18n="maps.sorts.plays">Most played</option>
+      <option value="likes" data-i18n="maps.sorts.likes">Most liked</option>
+      <option value="new" data-i18n="maps.sorts.new">Newest</option>
+      <option value="old" data-i18n="maps.sorts.old">Oldest</option>
+      <option value="name" data-i18n="maps.sorts.name">Name</option>
     </select>
-    <button class="line chip" type="button" id="author" title="Show maps by everyone" hidden><span class="label"></span><span aria-hidden="true">×</span></button>
-    <button class="line favorites" type="button" id="favorites" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.3 4.4 12.9a4.8 4.8 0 0 1 6.8-6.8l.8.8.8-.8a4.8 4.8 0 0 1 6.8 6.8z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg><span>Liked</span><span class="count"></span></button>
+    <button class="line chip" type="button" id="author" title="Show maps by everyone" data-i18n-attr="title:maps.showEveryone" hidden><span class="label"></span><span aria-hidden="true">×</span></button>
+    <button class="line favorites" type="button" id="favorites" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.3 4.4 12.9a4.8 4.8 0 0 1 6.8-6.8l.8.8.8-.8a4.8 4.8 0 0 1 6.8 6.8z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg><span data-i18n="common.liked">Liked</span><span class="count"></span></button>
   </form>
   <div class="grid maps" id="list"></div>
   <p class="status" id="status"></p>
 </main>
 <footer>
-  <p>Not affiliated with Multiverse ApS.</p>
+  <p data-i18n="common.notAffiliated">Not affiliated with Multiverse ApS.</p>
 </footer>
 <script src="../js/session.js"></script>
 </body>

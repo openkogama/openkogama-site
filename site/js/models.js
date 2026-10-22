@@ -12,9 +12,8 @@ const KINDS = {
     noun: "models",
     matches: (row, value) => row.scale === Number(value),
     word: value => "zzscale" + value.replace(".", ""),
-    detail: row => `scale ${row.scale}`,
-    summary: latest => `${latest.models.toLocaleString("en")} models from ${latest.maps.toLocaleString("en")} maps`,
-    missing: "Models are not available right now",
+    detail: row => i18n.t("models.detail", { scale: String(row.scale) }),
+    summary: latest => i18n.t("models.summary", { models: latest.models, maps: latest.maps }),
   },
   avatars: {
     data: "https://cdn.openkogama.org/avatars/v1/",
@@ -22,12 +21,13 @@ const KINDS = {
     noun: "avatars",
     matches: (row, value) => Boolean(row.sources & SOURCES[value]),
     word: value => "zzsource" + value,
-    detail: row => row.sources & 4 ? "class" : row.sources & 8 ? "avatar world" : row.sources & 16 ? "placed" : row.sources & 2 ? "build mode" : "avatar",
-    summary: latest => `${latest.avatars.toLocaleString("en")} avatars from ${latest.maps.toLocaleString("en")} maps`,
-    missing: "Avatars are not available right now",
+    detail: row => i18n.t(row.sources & 4 ? "avatars.details.class" : row.sources & 8 ? "avatars.details.world" : row.sources & 16 ? "avatars.details.placed"
+      : row.sources & 2 ? "avatars.details.build" : "avatars.details.avatar"),
+    summary: latest => i18n.t("avatars.summary", { avatars: latest.avatars, maps: latest.maps }),
   },
 };
 const KIND = KINDS[document.body.dataset.kind] || KINDS.models;
+const phrase = (key, vars) => i18n.t(`${KIND.noun}.${key}`, vars);
 const DATA = new URL(new URLSearchParams(location.search).get("data") || KIND.data, location.href).href;
 const PAGE = 48;
 const PARALLEL = 4;
@@ -528,7 +528,7 @@ function iconButton(className, label, icon) {
 }
 
 function saveButton(row, article) {
-  const button = iconButton("save", `Download ${KIND.extension}`, DOWNLOAD_ICON);
+  const button = iconButton("save", i18n.t("common.downloadFile", { extension: KIND.extension }), DOWNLOAD_ICON);
   button.addEventListener("click", () => download(row, article.mapName, button));
   return button;
 }
@@ -540,12 +540,12 @@ function kindName() {
 function showLiked(button, on) {
   button.classList.toggle("on", on);
   button.setAttribute("aria-pressed", String(on));
-  button.title = on ? "Unlike" : "Like";
+  button.title = i18n.t(on ? "common.unlike" : "common.like");
   button.setAttribute("aria-label", button.title);
 }
 
 function likeButton(row) {
-  const button = iconButton("like", "Like", HEART_ICON);
+  const button = iconButton("like", i18n.t("common.like"), HEART_ICON);
   button.dataset.sha = row.sha256;
   showLiked(button, liked(kindName(), row.sha256));
   button.addEventListener("click", () => toggle(kindName(), row.sha256));
@@ -558,11 +558,11 @@ document.addEventListener("liked", ({ detail }) => {
 });
 
 function mapCount(row) {
-  return `${row.maps.toLocaleString("en")} ${row.maps === 1 ? "map" : "maps"}`;
+  return i18n.t("common.mapCount", { count: row.maps });
 }
 
 function counts(row) {
-  return `${row.cubes.toLocaleString("en")} cubes · ${KIND.detail(row)}`;
+  return `${i18n.t("common.cubes", { count: row.cubes })} · ${KIND.detail(row)}`;
 }
 
 function mapLink(text, map) {
@@ -570,14 +570,14 @@ function mapLink(text, map) {
   button.type = "button";
   button.className = "link";
   button.textContent = text;
-  button.title = `Show ${KIND.noun} from this map`;
+  button.title = phrase("showFromMap");
   if (onMap.includes(map)) button.setAttribute("aria-current", "true");
   button.addEventListener("click", () => openMap(map));
   return button;
 }
 
 function mapLike(key) {
-  const button = iconButton("like", "Like", HEART_ICON);
+  const button = iconButton("like", i18n.t("common.like"), HEART_ICON);
   button.dataset.map = key;
   showLiked(button, liked("maps", key));
   button.addEventListener("click", () => toggle("maps", key));
@@ -588,7 +588,7 @@ function mapPage(map) {
   const link = document.createElement("a");
   link.className = "icon";
   link.href = `../maps/?map=${map}`;
-  link.title = "Open in Maps";
+  link.title = i18n.t("common.openInMaps");
   link.setAttribute("aria-label", link.title);
   link.innerHTML = OPEN_ICON;
   return link;
@@ -599,7 +599,7 @@ function sourceList(row) {
   toggle.type = "button";
   toggle.className = "link";
   toggle.textContent = mapCount(row);
-  toggle.title = "Show the maps it was found on";
+  toggle.title = i18n.t("common.showMapsFoundOn");
   toggle.setAttribute("aria-expanded", "false");
   const list = document.createElement("ul");
   list.className = "sources";
@@ -608,7 +608,7 @@ function sourceList(row) {
   const moreButton = document.createElement("button");
   moreButton.type = "button";
   moreButton.className = "link";
-  moreButton.textContent = "More maps";
+  moreButton.textContent = i18n.t("common.moreMaps");
   more.append(moreButton);
   const note = text => {
     const item = document.createElement("li");
@@ -620,7 +620,7 @@ function sourceList(row) {
   const fill = () => {
     const items = entries.slice(shown, shown + SOURCE_PAGE).map(({ id, name, key }) => {
       const item = document.createElement("li");
-      item.append(mapLink(name || "Untitled map", id));
+      item.append(mapLink(name || i18n.t("common.untitledMap"), id));
       if (key) {
         item.prepend(mapLike(key));
         item.append(mapPage(id));
@@ -636,13 +636,13 @@ function sourceList(row) {
     list.hidden = !list.hidden;
     toggle.setAttribute("aria-expanded", String(!list.hidden));
     if (list.hidden || entries || loading) return;
-    list.replaceChildren(note("Loading"));
+    list.replaceChildren(note(i18n.t("common.loading")));
     loading = mapsOf(row).then(found => {
       entries = found;
       list.replaceChildren(more);
       fill();
     }, error => {
-      list.replaceChildren(note("Could not load the maps"));
+      list.replaceChildren(note(i18n.t("common.couldNotLoadMaps")));
       console.warn(error);
     }).finally(() => {
       loading = null;
@@ -655,14 +655,14 @@ function openInspector(row, article, opener) {
   const save = document.createElement("button");
   save.type = "button";
   save.className = "button primary";
-  save.textContent = `Download ${KIND.extension}`;
+  save.textContent = i18n.t("common.downloadFile", { extension: KIND.extension });
   save.addEventListener("click", () => download(row, article.mapName, save));
   const sources = latest.links ? sourceList(row) : null;
   const meta = [sources ? sources.toggle : mapCount(row), ` · ${counts(row)}`];
-  if (article.avatarInfo && article.mapName) meta.unshift("From ", latest.links ? mapLink(article.mapName, row.map) : article.mapName, " · ");
+  if (article.avatarInfo && article.mapName) meta.unshift(...i18n.parts("common.fromMap", { map: latest.links ? mapLink(article.mapName, row.map) : article.mapName }), " · ");
   inspect({
     row,
-    title: article.avatarInfo?.[0] || article.mapName || "Untitled map",
+    title: article.avatarInfo?.[0] || article.mapName || i18n.t("common.untitledMap"),
     meta,
     description: article.avatarInfo?.[2] || "",
     tints: Object.fromEntries(["--tint", "--tint-edge", "--tint-light", "--tint-light-edge"].map(name => [name, article.style.getPropertyValue(name)])),
@@ -677,7 +677,7 @@ function openInspector(row, article, opener) {
 }
 
 function animateButton(article) {
-  const button = iconButton("animate", "Change animation", RUN_ICON);
+  const button = iconButton("animate", i18n.t("common.changeAnimation"), RUN_ICON);
   button.addEventListener("click", () => viewer.cycle(article.querySelector(".picture")));
   return button;
 }
@@ -713,7 +713,7 @@ function card(row) {
   tools.append(saveButton(row, article));
   picture.tabIndex = 0;
   picture.setAttribute("role", "button");
-  picture.setAttribute("aria-label", "Open full view");
+  picture.setAttribute("aria-label", i18n.t("common.openFullView"));
   picture.addEventListener("keydown", event => {
     if (event.target === picture && (event.key === "Enter" || event.key === " ")) {
       event.preventDefault();
@@ -767,7 +767,7 @@ async function show(article) {
 
 function name(article, text) {
   article.mapName = text || "";
-  article.querySelector(".name").textContent = text || "Untitled map";
+  article.querySelector(".name").textContent = text || i18n.t("common.untitledMap");
 }
 
 async function nextPage() {
@@ -787,15 +787,15 @@ async function nextPage() {
 }
 
 function emptyText() {
-  if (!favorites) return `No ${KIND.noun} found`;
-  return likedList(kindName()).length ? `No liked ${KIND.noun} found` : `No liked ${KIND.noun} yet`;
+  if (!favorites) return phrase("noneFound");
+  return phrase(likedList(kindName()).length ? "noLikedFound" : "noLikedYet");
 }
 
 async function loadMore() {
   if (loading || finished || !latest) return;
   loading = true;
   const current = generation;
-  status.textContent = "Loading";
+  status.textContent = i18n.t("common.loading");
   try {
     const page = await nextPage();
     const { next, done } = page;
@@ -825,7 +825,7 @@ async function loadMore() {
       }
     }));
   } catch (error) {
-    status.textContent = `Could not load ${KIND.noun}`;
+    status.textContent = phrase("couldNotLoad");
     console.error(error);
   } finally {
     if (current === generation) loading = false;
@@ -867,7 +867,7 @@ document.addEventListener("liked", showFavorites);
 function showMap() {
   mapButton.hidden = !onMap.length;
   if (onMap.length) mapNames().then(list => {
-    mapButton.querySelector(".label").textContent = `From ${onMap.map(map => mapName(list, map)).find(Boolean) || "Untitled map"}`;
+    mapButton.querySelector(".label").textContent = i18n.t("common.fromMap", { map: onMap.map(map => mapName(list, map)).find(Boolean) || i18n.t("common.untitledMap") });
   });
 }
 
@@ -915,11 +915,11 @@ typeSelect?.addEventListener("change", restart);
 function showAdult() {
   if (!adultButton) return;
   adultButton.setAttribute("aria-pressed", String(adult));
-  adultButton.querySelector("span").textContent = adult ? "18+ on" : "18+ off";
-  adultButton.title = adult ? `Mature ${KIND.noun} are shown. Click to hide them.` : `Mature ${KIND.noun} are hidden. Click to show them.`;
+  adultButton.querySelector("span").textContent = i18n.t(adult ? "common.adultOn" : "common.adultOff");
+  adultButton.title = phrase(adult ? "matureShown" : "matureHidden");
 }
 adultButton?.addEventListener("click", () => {
-  if (!adult && !confirm(`This shows ${KIND.noun} marked as mature content, archived as they were made by players. Confirm that you are 18 or older.`)) return;
+  if (!adult && !confirm(phrase("matureConfirm"))) return;
   adult = !adult;
   try { localStorage.setItem(ADULT, adult ? "1" : "0"); } catch {}
   showAdult();
@@ -932,6 +932,7 @@ document.getElementById("filters").addEventListener("submit", event => {
 });
 
 async function start() {
+  await i18n.ready;
   try {
     latest = await (await fetch(DATA + "latest.json", { cache: "no-cache" })).json();
     base = `${DATA}builds/${latest.build}/`;
@@ -949,13 +950,13 @@ async function start() {
     if (!latest.links) onMap = [];
     showMap();
     if (colorSelect) colorTable().then(table => { colorSelect.hidden = !table; });
-    if (reviewRating && !adult && confirm(`Review mode shows only ${KIND.noun} rated ${reviewRating}. Confirm that you are 18 or older.`)) {
+    if (reviewRating && !adult && confirm(phrase("reviewConfirm", { rating: reviewRating }))) {
       adult = true;
       try { localStorage.setItem(ADULT, "1"); } catch {}
     }
     if (reviewRating) metaTable().then(table => {
       const count = table ? Object.values(table.rows).filter(info => info[4] === reviewRating).length : 0;
-      summary.textContent = `Review: ${count.toLocaleString("en")} ${KIND.noun} rated ${reviewRating}`;
+      summary.textContent = phrase("review", { count, rating: reviewRating });
     });
     if (typeSelect) metaTable().then(table => {
       typeSelect.hidden = !table;
@@ -970,7 +971,7 @@ async function start() {
     loadMore();
     setTimeout(() => openDatabase().catch(error => console.warn(error)), 2000);
   } catch (error) {
-    summary.textContent = KIND.missing;
+    summary.textContent = phrase("unavailable");
     console.error(error);
   }
 }
