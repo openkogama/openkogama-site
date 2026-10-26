@@ -70,6 +70,7 @@
     "tagline": "Otwartoźródłowy, fanowski projekt, który przywraca klasyczną KoGaMę. Uruchom własny serwer, buduj światy i graj ze znajomymi.",
     "videos": {
       "deadzone": "Serwer OpenKogama: pokaz pluginu NPC deadzone",
+      "alternative": "Najlepsza alternatywa dla KoGaMy? (mogło być lepiej)",
       "zelda": "OpenKogama: parkour Zelda dla 2 graczy",
       "loxley": "OpenKogama Loxley Vale"
     },
@@ -169,10 +170,47 @@
       "created": "Utworzono",
       "published": "Opublikowano",
       "originalPage": "Oryginalna strona",
-      "archivedIn": "Zarchiwizowano w"
+      "archivedIn": "Zarchiwizowano w",
+      "archivedHere": "Zarchiwizowano tutaj"
     },
     "saved": "zapisano {date}",
-    "usedForPlay": "używany do gry"
+    "archivedHere": "zarchiwizowana tutaj po zamknięciu KoGaMy",
+    "afterClosure": "{date}, po zamknięciu KoGaMy 28 maja 2026",
+    "savedAfterClosure": "zapisana po zamknięciu KoGaMy",
+    "usedForPlay": "używany do gry",
+    "share": {
+      "title": "Masz mapy, których tu brakuje?",
+      "text": "Jeśli masz zachowane mapy KoGaMa, których nie ma w tym archiwum, podziel się nimi, żeby każdy mógł znów w nie zagrać.",
+      "open": "Udostępnij je",
+      "drop": "Przeciągnij tu pliki .kgmap, .kgm albo paczki .zip z mapami lub kliknij, żeby je wybrać",
+      "send": "Wyślij",
+      "remove": "Usuń",
+      "states": {
+        "checking": "Sprawdzanie...",
+        "ready": "Gotowa",
+        "notMap": "To nie jest plik mapy",
+        "tooBig": "Większa niż 50 MB",
+        "noZip": "Nie da się otworzyć tego .zip",
+        "inArchive": "Już jest w archiwum",
+        "duplicate": "Duplikat",
+        "sending": "Wysyłanie...",
+        "sent": "Wysłana",
+        "failed": "Nie udało się wysłać",
+        "exists": "Już udostępniona"
+      },
+      "thanks_one": "Dziękujemy! Wysłano {count} mapę do sprawdzenia.",
+      "thanks_few": "Dziękujemy! Wysłano {count} mapy do sprawdzenia.",
+      "thanks_many": "Dziękujemy! Wysłano {count} map do sprawdzenia.",
+      "thanks_other": "Dziękujemy! Wysłano {count} mapy do sprawdzenia.",
+      "nick": "Twój nick (opcjonalnie)",
+      "ready_one": "{count} mapa gotowa do wysłania. Mapy, które już są w archiwum, pomijamy.",
+      "ready_few": "{count} mapy gotowe do wysłania. Mapy, które już są w archiwum, pomijamy.",
+      "ready_many": "{count} map gotowych do wysłania. Mapy, które już są w archiwum, pomijamy.",
+      "ready_other": "{count} mapy gotowe do wysłania. Mapy, które już są w archiwum, pomijamy.",
+      "progress": "Wysyłanie {done} z {total}...",
+      "full": "Serwer nie ma teraz miejsca na kolejne mapy. Resztę wyślij później.",
+      "captcha": "Potwierdź, że nie jesteś botem, i naciśnij Wyślij jeszcze raz."
+    }
   },
   "models": {
     "title": "Modele z KoGaMy - OpenKogama",

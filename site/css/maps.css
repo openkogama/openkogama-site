@@ -222,3 +222,172 @@
   }
 }
 
+.share-cta {
+  margin: -8px 0 20px;
+  text-align: center;
+  font-size: 0.95rem;
+  color: var(--tagline);
+}
+
+.share-cta .link {
+  padding: 0;
+  font: inherit;
+  font-weight: 600;
+  color: var(--accent);
+  cursor: pointer;
+  background: none;
+  border: 0;
+}
+
+.share-cta .link:hover {
+  color: var(--accent-hover);
+  text-decoration: underline;
+}
+
+@media (prefers-color-scheme: dark) {
+  .share-cta .link { color: var(--accent-hover); }
+}
+
+.inspector.share {
+  touch-action: auto;
+}
+
+.inspector.share[hidden] {
+  display: none;
+}
+
+.inspector.share .sheet {
+  grid-template-columns: minmax(0, 1fr);
+  align-content: start;
+  gap: 14px;
+  width: min(560px, 100%);
+  overflow-y: auto;
+  touch-action: pan-y;
+}
+
+.share .title {
+  padding-right: 32px;
+}
+
+.share .text {
+  margin: -6px 0 0;
+  font-size: 0.9rem;
+  line-height: 1.45;
+  color: var(--card-meta);
+}
+
+.share .drop {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: 120px;
+  padding: 16px;
+  font-size: 0.9rem;
+  text-align: center;
+  color: var(--card-meta);
+  cursor: pointer;
+  border: 2px dashed var(--card-edge);
+  border-radius: 6px;
+  background: linear-gradient(rgb(0 0 0 / 0.04), rgb(0 0 0 / 0.04)), var(--card);
+}
+
+.share .drop:hover {
+  color: var(--card-text);
+  border-color: var(--control-hover-edge);
+}
+
+.share .drop.over,
+.share .drop:has(input:focus-visible) {
+  color: var(--card-text);
+  border-color: var(--accent);
+}
+
+@media (prefers-color-scheme: dark) {
+  .share .drop { background: linear-gradient(rgb(255 255 255 / 0.04), rgb(255 255 255 / 0.04)), var(--card); }
+}
+
+.share .drop input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.share .files {
+  display: grid;
+  gap: 6px;
+  max-height: 240px;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  list-style: none;
+}
+
+.share .files:empty,
+.share .captcha:empty,
+.share .note:empty {
+  display: none;
+}
+
+.share .files li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.9rem;
+}
+
+.share .files .name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.share .files .size,
+.share .files .state {
+  color: var(--card-meta);
+  white-space: nowrap;
+}
+
+.share .files .bad .state {
+  color: var(--donate);
+}
+
+.share .files .done .state {
+  color: var(--accent);
+}
+
+.share .files .skip {
+  opacity: 0.6;
+}
+
+.share .files .remove {
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  font: inherit;
+  line-height: 1;
+  color: var(--card-meta);
+  cursor: pointer;
+  background: none;
+  border: 0;
+}
+
+.share .files .remove:hover {
+  color: var(--card-text);
+}
+
+.share .line {
+  width: 100%;
+}
+
+.share .note {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--card-meta);
+}
+
+.inspector.share .actions .button:disabled {
+  cursor: default;
+}

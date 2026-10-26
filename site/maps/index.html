@@ -34,6 +34,10 @@
 <main class="models">
   <h1 data-i18n="maps.heading">MAPS</h1>
   <p class="summary" id="summary" data-i18n="maps.loading">Loading maps</p>
+  <p class="share-cta">
+    <span data-i18n="maps.share.title">Have maps that are missing here?</span>
+    <button class="link" type="button" id="share-open" aria-haspopup="dialog" data-i18n="maps.share.open">Share them</button>
+  </p>
   <form class="filters" id="filters">
     <input class="line" type="search" id="search" placeholder="Search by name, author or id" data-i18n-attr="placeholder:maps.search" autocomplete="off">
     <select class="line" id="region" aria-label="Region" data-i18n-attr="aria-label:maps.region">
@@ -56,9 +60,28 @@
   <div class="grid maps" id="list"></div>
   <p class="status" id="status"></p>
 </main>
+<div class="inspector share" id="share-dialog" role="dialog" aria-modal="true" aria-labelledby="share-title" hidden>
+  <form class="sheet" id="share-form">
+    <button class="close" type="button" id="share-close" aria-label="Close" data-i18n-attr="aria-label:common.close">×</button>
+    <h2 class="title" id="share-title" data-i18n="maps.share.title">Have maps that are missing here?</h2>
+    <p class="text" data-i18n="maps.share.text">If you kept KoGaMa maps that this archive doesn't have, share them so everyone can play them again.</p>
+    <label class="drop" id="share-drop">
+      <input type="file" id="share-files" accept=".kgmap,.kgm,.zip" multiple>
+      <span data-i18n="maps.share.drop">Drop .kgmap or .kgm files or .zip packs with maps here, or click to choose them</span>
+    </label>
+    <ul class="files" id="share-list"></ul>
+    <input class="line" id="share-nick" maxlength="32" autocomplete="nickname" placeholder="Your nick (optional)" data-i18n-attr="placeholder:maps.share.nick">
+    <div class="captcha" id="share-captcha"></div>
+    <p class="note" id="share-note"></p>
+    <div class="actions">
+      <button class="button primary" type="submit" id="share-send" disabled data-i18n="maps.share.send">Send</button>
+    </div>
+  </form>
+</div>
 <footer>
   <p data-i18n="common.notAffiliated">Not affiliated with Multiverse ApS.</p>
 </footer>
 <script src="../js/session.js"></script>
+<script src="../js/share.js"></script>
 </body>
 </html>

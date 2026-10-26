@@ -681,3 +681,24 @@ html.inspecting body {
 .inspector .close:focus:not(:focus-visible) {
   outline: none;
 }
+
+.line:focus-visible {
+  border-bottom-color: var(--accent);
+}
+
+.picture:focus-visible {
+  outline: none;
+}
+
+.card:has(.picture:focus-visible) {
+  background: var(--accent);
+}
+
+.picture :is(button, a):focus-visible {
+  outline-offset: -2px;
+}
+
+.inspector .actions :is(.like, .save):focus-visible {
+  outline: none;
+  box-shadow: inset 0 -3px 0 var(--accent);
+}

@@ -24,4 +24,14 @@ function show(i) {
 prev.addEventListener("click", () => show(current - 1));
 next.addEventListener("click", () => show(current + 1));
 show(0);
-i18n.ready.then(() => dots.forEach((dot, i) => dot.setAttribute("aria-label", videos[i].title)));
+i18n.ready.then(() => {
+  dots.forEach((dot, i) => dot.setAttribute("aria-label", videos[i].title));
+  const language = i18n.lang.split("-")[0];
+  for (const video of track.querySelectorAll("iframe[data-captions]")) {
+    const url = new URL(video.src);
+    if (url.searchParams.get("cc_lang_pref") === language) continue;
+    url.searchParams.set("cc_lang_pref", language);
+    url.searchParams.set("hl", language);
+    video.src = url.href;
+  }
+});

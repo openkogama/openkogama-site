@@ -6,6 +6,7 @@ const PAGE = 60;
 const REGIONS = { www: "maps.regions.www", br: "maps.regions.br", friends: "maps.regions.friends" };
 const NAMES = { models: "common.nav.models", avatars: "common.nav.avatars" };
 const HOSTS = { www: "www.kogama.com", br: "kogama.com.br", friends: "friends.kogama.com" };
+const CLOSED = "2026-05-28";
 const HEART_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.3 4.4 12.9a4.8 4.8 0 0 1 6.8-6.8l.8.8.8-.8a4.8 4.8 0 0 1 6.8 6.8z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg>';
 const DOWNLOAD_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m-5-5 5 5 5-5M4 16v4h16v-4" fill="none" stroke="currentColor" stroke-width="2.5"/></svg>';
 
@@ -180,7 +181,7 @@ async function detail(map) {
   const [description, created, publishedAt, versions] = (await details.get(file))[map.position % perFile];
   return {
     description, created, publishedAt,
-    versions: versions.map(([sha256, format, bytes, savedAt, exporter, urls]) => ({ sha256, format, bytes, savedAt, exporter, urls })),
+    versions: versions.map(([sha256, format, bytes, savedAt, exporter, urls, archivedAt]) => ({ sha256, format, bytes, savedAt, exporter, urls, archivedAt })),
   };
 }
 
@@ -244,6 +245,14 @@ async function play(map, button) {
 
 function date(value) {
   return value ? new Date(value).toLocaleDateString(i18n.lang, { dateStyle: "medium" }) : "";
+}
+
+function archivedHere(versions) {
+  const shared = versions.filter(version => version.archivedAt);
+  if (!shared.length) return "";
+  const first = shared.map(version => version.archivedAt).sort()[0];
+  const late = shared.some(version => (version.savedAt || "").slice(0, 10) > CLOSED);
+  return i18n.t("maps.afterClosure", { date: date(first) }) + (late ? ", " + i18n.t("maps.savedAfterClosure") : "");
 }
 
 function line(label, value) {
@@ -439,6 +448,7 @@ async function openSheet(map, opener) {
       line(i18n.t("maps.facts.published"), date(info.publishedAt)),
       line(i18n.t("maps.facts.originalPage"), original),
       line(i18n.t("maps.facts.archivedIn"), sources.childNodes.length ? sources : null),
+      line(i18n.t("maps.facts.archivedHere"), archivedHere(info.versions)),
     ].filter(Boolean));
     box.append(facts);
     if (info.versions.length > 1) {
@@ -449,7 +459,7 @@ async function openSheet(map, opener) {
         const button = document.createElement("button");
         button.type = "button";
         button.className = "link";
-        button.textContent = `.${version.format} · ${size(version.bytes)}${version.savedAt ? " · " + i18n.t("maps.saved", { date: date(version.savedAt) }) : ""}${index ? "" : " · " + i18n.t("maps.usedForPlay")}`;
+        button.textContent = `.${version.format} · ${size(version.bytes)}${version.savedAt ? " · " + i18n.t("maps.saved", { date: date(version.savedAt) }) : ""}${version.archivedAt ? " · " + i18n.t("maps.archivedHere") : ""}${index ? "" : " · " + i18n.t("maps.usedForPlay")}`;
         button.addEventListener("click", () => download(map, button, index));
         item.append(button);
         files.append(item);

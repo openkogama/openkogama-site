@@ -66,6 +66,7 @@
     "tagline": "An open-source, fan-made revival of classic KoGaMa. Host your own server, build worlds and play with friends.",
     "videos": {
       "deadzone": "OpenKogama server: NPC deadzone plugin showcase",
+      "alternative": "The best alternative to KoGaMa? (could have been better)",
       "zelda": "OpenKogama: 2 player Zelda parkour",
       "loxley": "OpenKogama Loxley Vale"
     },
@@ -163,10 +164,43 @@
       "created": "Created",
       "published": "Published",
       "originalPage": "Original page",
-      "archivedIn": "Archived in"
+      "archivedIn": "Archived in",
+      "archivedHere": "Archived here"
     },
     "saved": "saved {date}",
-    "usedForPlay": "used for Play"
+    "archivedHere": "archived here after KoGaMa closed",
+    "afterClosure": "{date}, after KoGaMa closed on May 28, 2026",
+    "savedAfterClosure": "saved after KoGaMa closed",
+    "usedForPlay": "used for Play",
+    "share": {
+      "title": "Have maps that are missing here?",
+      "text": "If you kept KoGaMa maps that this archive doesn't have, share them so everyone can play them again.",
+      "open": "Share them",
+      "drop": "Drop .kgmap or .kgm files or .zip packs with maps here, or click to choose them",
+      "send": "Send",
+      "remove": "Remove",
+      "states": {
+        "checking": "Checking...",
+        "ready": "Ready",
+        "notMap": "Not a map file",
+        "tooBig": "Larger than 50 MB",
+        "noZip": "Can't open this .zip",
+        "inArchive": "Already in the archive",
+        "duplicate": "Duplicate",
+        "sending": "Sending...",
+        "sent": "Sent",
+        "failed": "Could not send",
+        "exists": "Already shared"
+      },
+      "thanks_one": "Thank you! {count} map was sent for review.",
+      "thanks_other": "Thank you! {count} maps were sent for review.",
+      "nick": "Your nick (optional)",
+      "ready_one": "{count} map ready to send. Maps already in the archive are skipped.",
+      "ready_other": "{count} maps ready to send. Maps already in the archive are skipped.",
+      "progress": "Sending {done} of {total}...",
+      "full": "The server has no room for more maps right now. Try the rest later.",
+      "captcha": "Confirm that you're not a bot, then press Send again."
+    }
   },
   "models": {
     "title": "KoGaMa Models - OpenKogama",

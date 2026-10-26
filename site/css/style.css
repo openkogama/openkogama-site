@@ -463,3 +463,24 @@ footer .language {
   .arrow.prev { left: 6px; }
   .arrow.next { right: 6px; }
 }
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+:root .button:focus-visible {
+  outline: none;
+  --dark: var(--accent);
+  --edge: 3px;
+}
+
+:root .button:is(.accent, .donate, .download, .play):focus-visible {
+  --dark: var(--heading);
+}
+
+.feature:focus-visible {
+  outline: none;
+  --edge: 3px;
+  background: var(--accent);
+}
