@@ -2,6 +2,8 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://openkogama.org/</loc></url>
   <url><loc>https://openkogama.org/play/</loc></url>
+  <url><loc>https://openkogama.org/plugins/</loc></url>
+  <url><loc>https://openkogama.org/archive/</loc></url>
   <url><loc>https://openkogama.org/maps/</loc></url>
   <url><loc>https://openkogama.org/avatars/</loc></url>
   <url><loc>https://openkogama.org/models/</loc></url>

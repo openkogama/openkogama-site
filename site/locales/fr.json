@@ -3,7 +3,10 @@
     "nav": {
       "maps": "Mondes",
       "avatars": "Avatars",
-      "models": "Modèles"
+      "models": "Modèles",
+      "versions": "Versions",
+      "plugins": "Plugins",
+      "archive": "Archives"
     },
     "download": "Télécharger",
     "notAffiliated": "Non affilié à Multiverse ApS.",
@@ -56,7 +59,9 @@
       "touch": "Faites glisser pour faire pivoter, pincez pour zoomer",
       "mouseAnimated": "Faites glisser pour faire pivoter, faites défiler pour zoomer, cliquez pour changer l’animation",
       "touchAnimated": "Faites glisser pour faire pivoter, pincez pour zoomer, touchez pour changer l’animation"
-    }
+    },
+    "by": "par {author}",
+    "source": "Code source"
   },
   "home": {
     "title": "OpenKogama - Rejouez au KoGaMa classique",
@@ -65,7 +70,11 @@
     "donate": "Faire un don",
     "tagline": "Une renaissance du KoGaMa classique, créée par des fans et en open source. Hébergez votre propre serveur, construisez des mondes et jouez avec vos amis.",
     "videos": {
+      "scientist": "Scientifique de Half-Life dans KoGaMa : présentation du plugin",
       "deadzone": "Serveur OpenKogama : présentation du plugin deadzone avec des PNJ",
+      "badApple": "Bad Apple! joué dans KoGaMa !",
+      "blessing": "[GLOBAL TOP 25] Obscure Blessing",
+      "embarrassment": "[OpenKogama TOP 1] Obscure Embarassment",
       "zelda": "OpenKogama : parkour Zelda à 2 joueurs",
       "loxley": "OpenKogama Loxley Vale"
     },
@@ -80,16 +89,17 @@
         "title": "600+ versions",
         "text": "KoGaMa, de 2012 à 2026. Plus de 500 versions jouables directement dans le navigateur."
       },
-      "maps": {
-        "title": "28 000+ mondes",
-        "text": "Mondes KoGaMa archivés avec leurs vignettes. Recherche par nom, auteur ou identifiant."
+      "plugins": {
+        "title": "Plugins",
+        "text": "Modes de jeu et commandes pour votre serveur."
       },
-      "models": {
-        "title": "1 000 000+ modèles",
-        "text": "Modèles issus des mondes KoGaMa archivés, avec aperçus en direct et téléchargements."
+      "archive": {
+        "title": "Archives",
+        "text": "Plus de 28 000 mondes, un million de modèles et des avatars du KoGaMa classique."
       },
-      "avatars": {
-        "text": "Avatars KoGaMa archivés, avec aperçus en direct et animations."
+      "host": {
+        "title": "Héberger un serveur",
+        "text": "Hébergez votre propre serveur open source avec des plugins et jouez avec vos amis."
       }
     },
     "faq": {
@@ -138,6 +148,8 @@
       "likes": "Les plus aimés",
       "new": "Les plus récents",
       "old": "Les plus anciens",
+      "big": "Les plus grands",
+      "small": "Les plus petits",
       "name": "Nom"
     },
     "showEveryone": "Afficher les mondes de tout le monde",
@@ -374,5 +386,47 @@
     "exportFailed": "Impossible d'exporter {name}",
     "confirmDelete": "Confirmer la suppression",
     "worldOpen": "Ce monde est ouvert, veuillez d'abord le fermer"
+  },
+  "archive": {
+    "title": "Archives - OpenKogama",
+    "description": "Tout ce qui a été sauvé du KoGaMa classique : plus de 28 000 mondes, un million de modèles, des avatars et plus de 600 versions du jeu.",
+    "heading": "Archives",
+    "tagline": "Mondes, modèles, avatars et versions du jeu sauvés du KoGaMa classique.",
+    "maps": {
+      "title": "28 000+ mondes",
+      "text": "Mondes KoGaMa archivés avec leurs vignettes. Recherche par nom, auteur ou identifiant."
+    },
+    "models": {
+      "title": "1 000 000+ modèles",
+      "text": "Modèles issus des mondes KoGaMa archivés, avec aperçus en direct et téléchargements."
+    },
+    "avatars": {
+      "text": "Avatars KoGaMa archivés, avec aperçus en direct et animations."
+    }
+  },
+  "plugins": {
+    "title": "Plugins - OpenKogama",
+    "description": "Téléchargez des plugins pour les serveurs OpenKogama : modes de jeu, commandes et plus encore.",
+    "heading": "Plugins",
+    "intro": "Modes de jeu, commandes et plus encore pour les serveurs OpenKogama. Chaque plugin est compilé à partir de son code source public.",
+    "installHeading": "Installation",
+    "steps": {
+      "download": "Téléchargez le fichier .dll du plugin.",
+      "folder": "Placez-le dans le dossier plugins de votre serveur. Dans le launcher : File > Server settings > Open folder, puis le dossier plugins.",
+      "reload": "Redémarrez le serveur ou tapez !reload dans le chat."
+    },
+    "downloads_one": "{count} téléchargement",
+    "downloads_other": "{count} téléchargements",
+    "facts": {
+      "version": "Version",
+      "api": "API des plugins",
+      "file": "Fichier",
+      "downloads": "Téléchargements"
+    },
+    "detailsHeading": "Détails",
+    "versionsHeading": "Versions",
+    "notReady": "Le fichier n'est pas encore prêt.",
+    "notFound": "Ce plugin n'existe pas.",
+    "empty": "Rien ici pour le moment."
   }
 }

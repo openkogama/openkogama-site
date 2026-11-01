@@ -3,7 +3,10 @@
     "nav": {
       "maps": "Maps",
       "avatars": "Avatars",
-      "models": "Models"
+      "models": "Models",
+      "versions": "Versions",
+      "plugins": "Plugins",
+      "archive": "Archive"
     },
     "download": "Download",
     "notAffiliated": "Not affiliated with Multiverse ApS.",
@@ -58,7 +61,9 @@
       "touch": "Drag to rotate, pinch to zoom",
       "mouseAnimated": "Drag to rotate, scroll to zoom, click to change the animation",
       "touchAnimated": "Drag to rotate, pinch to zoom, tap to change the animation"
-    }
+    },
+    "by": "by {author}",
+    "source": "Source"
   },
   "home": {
     "title": "OpenKogama - Play Classic KoGaMa Again",
@@ -67,8 +72,12 @@
     "donate": "Donate",
     "tagline": "An open-source, fan-made revival of classic KoGaMa. Host your own server, build worlds and play with friends.",
     "videos": {
-      "deadzone": "OpenKogama server: NPC deadzone plugin showcase",
+      "scientist": "Half-Life Scientist in KoGaMa Plugin Showcase",
       "alternative": "The best alternative to KoGaMa? (could have been better)",
+      "deadzone": "OpenKogama server: NPC deadzone plugin showcase",
+      "badApple": "Bad Apple! Played inside KoGaMa!",
+      "blessing": "[GLOBAL TOP 25] Obscure Blessing",
+      "embarrassment": "[OpenKogama TOP 1] Obscure Embarassment",
       "zelda": "OpenKogama: 2 player Zelda parkour",
       "loxley": "OpenKogama Loxley Vale"
     },
@@ -83,16 +92,17 @@
         "title": "600+ versions",
         "text": "KoGaMa from 2012 to 2026. Over 500 versions play right in the browser."
       },
-      "maps": {
-        "title": "28,000+ maps",
-        "text": "Archived KoGaMa maps with thumbnails. Search by name, author or id."
+      "plugins": {
+        "title": "Plugins",
+        "text": "Game modes and commands for your server."
       },
-      "models": {
-        "title": "1,000,000+ models",
-        "text": "Models from archived KoGaMa maps, with live previews and downloads."
+      "archive": {
+        "title": "Archive",
+        "text": "28,000+ maps, a million models and avatars from classic KoGaMa."
       },
-      "avatars": {
-        "text": "Archived KoGaMa avatars with live previews and animations."
+      "host": {
+        "title": "Host a server",
+        "text": "Run your own open-source server with plugins and play with friends."
       }
     },
     "faq": {
@@ -141,6 +151,8 @@
       "likes": "Most liked",
       "new": "Newest",
       "old": "Oldest",
+      "big": "Largest",
+      "small": "Smallest",
       "name": "Name"
     },
     "showEveryone": "Show maps by everyone",
@@ -430,5 +442,47 @@
     "exportFailed": "Cannot export {name}",
     "confirmDelete": "Confirm delete",
     "worldOpen": "This world is open, close it first"
+  },
+  "archive": {
+    "title": "Archive - OpenKogama",
+    "description": "Everything saved from classic KoGaMa: 28,000+ maps, a million models, avatars and 600+ game versions.",
+    "heading": "Archive",
+    "tagline": "Maps, models, avatars and game versions saved from classic KoGaMa.",
+    "maps": {
+      "title": "28,000+ maps",
+      "text": "Archived KoGaMa maps with thumbnails. Search by name, author or id."
+    },
+    "models": {
+      "title": "1,000,000+ models",
+      "text": "Models from archived KoGaMa maps, with live previews and downloads."
+    },
+    "avatars": {
+      "text": "Archived KoGaMa avatars with live previews and animations."
+    }
+  },
+  "plugins": {
+    "title": "Plugins - OpenKogama",
+    "description": "Download plugins for OpenKogama servers: game modes, commands and more.",
+    "heading": "Plugins",
+    "intro": "Game modes, commands and more for OpenKogama servers. Each plugin is built from its public source code.",
+    "installHeading": "How to install",
+    "steps": {
+      "download": "Download the plugin's .dll file.",
+      "folder": "Put it in the plugins folder of your server. In the launcher: File > Server settings > Open folder, then the plugins folder.",
+      "reload": "Restart the server or type !reload in chat."
+    },
+    "downloads_one": "{count} download",
+    "downloads_other": "{count} downloads",
+    "facts": {
+      "version": "Version",
+      "api": "Plugin API",
+      "file": "File",
+      "downloads": "Downloads"
+    },
+    "detailsHeading": "Details",
+    "versionsHeading": "Versions",
+    "notReady": "The file is not ready yet.",
+    "notFound": "There is no such plugin.",
+    "empty": "Nothing here yet."
   }
 }

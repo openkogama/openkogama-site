@@ -3,7 +3,10 @@
     "nav": {
       "maps": "Mapas",
       "avatars": "Avatares",
-      "models": "Modelos"
+      "models": "Modelos",
+      "versions": "Versiones",
+      "plugins": "Plugins",
+      "archive": "Archivo"
     },
     "download": "Descargar",
     "notAffiliated": "Sin afiliación con Multiverse ApS.",
@@ -56,7 +59,9 @@
       "touch": "Arrastra para girar y pellizca para hacer zoom",
       "mouseAnimated": "Arrastra para girar, usa la rueda para hacer zoom y haz clic para cambiar la animación",
       "touchAnimated": "Arrastra para girar, pellizca para hacer zoom y toca para cambiar la animación"
-    }
+    },
+    "by": "por {author}",
+    "source": "Código fuente"
   },
   "home": {
     "title": "OpenKogama - Vuelve a jugar al KoGaMa clásico",
@@ -65,7 +70,11 @@
     "donate": "Donar",
     "tagline": "Un proyecto de código abierto creado por fans para recuperar el KoGaMa clásico. Aloja tu propio servidor, construye mundos y juega con tus amigos.",
     "videos": {
+      "scientist": "Científico de Half-Life en KoGaMa: demostración del plugin",
       "deadzone": "Servidor de OpenKogama: demostración del plugin deadzone con NPC",
+      "badApple": "¡Bad Apple! reproducido dentro de KoGaMa",
+      "blessing": "[GLOBAL TOP 25] Obscure Blessing",
+      "embarrassment": "[OpenKogama TOP 1] Obscure Embarassment",
       "zelda": "OpenKogama: parkour de Zelda para 2 jugadores",
       "loxley": "OpenKogama Loxley Vale"
     },
@@ -80,16 +89,17 @@
         "title": "600+ versiones",
         "text": "KoGaMa de 2012 a 2026. Más de 500 versiones se juegan directamente en el navegador."
       },
-      "maps": {
-        "title": "28.000+ mapas",
-        "text": "Mapas archivados de KoGaMa con miniaturas. Busca por nombre, autor o ID."
+      "plugins": {
+        "title": "Plugins",
+        "text": "Modos de juego y comandos para tu servidor."
       },
-      "models": {
-        "title": "1.000.000+ modelos",
-        "text": "Modelos de mapas archivados de KoGaMa, con vistas previas interactivas y descargas."
+      "archive": {
+        "title": "Archivo",
+        "text": "Más de 28.000 mapas, un millón de modelos y avatares del KoGaMa clásico."
       },
-      "avatars": {
-        "text": "Avatares archivados de KoGaMa, con vistas previas interactivas y animaciones."
+      "host": {
+        "title": "Aloja un servidor",
+        "text": "Aloja tu propio servidor de código abierto con plugins y juega con tus amigos."
       }
     },
     "faq": {
@@ -138,6 +148,8 @@
       "likes": "Con más me gusta",
       "new": "Más recientes",
       "old": "Más antiguos",
+      "big": "Más grandes",
+      "small": "Más pequeños",
       "name": "Nombre"
     },
     "showEveryone": "Mostrar mapas de todos",
@@ -374,5 +386,47 @@
     "exportFailed": "No se pudo exportar {name}",
     "confirmDelete": "Confirmar eliminación",
     "worldOpen": "Este mundo está abierto, ciérralo primero"
+  },
+  "archive": {
+    "title": "Archivo - OpenKogama",
+    "description": "Todo lo que se salvó del KoGaMa clásico: más de 28.000 mapas, un millón de modelos, avatares y más de 600 versiones del juego.",
+    "heading": "Archivo",
+    "tagline": "Mapas, modelos, avatares y versiones del juego salvados del KoGaMa clásico.",
+    "maps": {
+      "title": "28.000+ mapas",
+      "text": "Mapas archivados de KoGaMa con miniaturas. Busca por nombre, autor o ID."
+    },
+    "models": {
+      "title": "1.000.000+ modelos",
+      "text": "Modelos de mapas archivados de KoGaMa, con vistas previas interactivas y descargas."
+    },
+    "avatars": {
+      "text": "Avatares archivados de KoGaMa, con vistas previas interactivas y animaciones."
+    }
+  },
+  "plugins": {
+    "title": "Plugins - OpenKogama",
+    "description": "Descarga plugins para servidores de OpenKogama: modos de juego, comandos y más.",
+    "heading": "Plugins",
+    "intro": "Modos de juego, comandos y más para servidores de OpenKogama. Cada plugin se compila a partir de su código fuente público.",
+    "installHeading": "Cómo instalar",
+    "steps": {
+      "download": "Descarga el archivo .dll del plugin.",
+      "folder": "Ponlo en la carpeta plugins de tu servidor. En el lanzador: Archivo > Ajustes del servidor > Abrir carpeta y luego la carpeta plugins.",
+      "reload": "Reinicia el servidor o escribe !reload en el chat."
+    },
+    "downloads_one": "{count} descarga",
+    "downloads_other": "{count} descargas",
+    "facts": {
+      "version": "Versión",
+      "api": "API de plugins",
+      "file": "Archivo",
+      "downloads": "Descargas"
+    },
+    "detailsHeading": "Detalles",
+    "versionsHeading": "Versiones",
+    "notReady": "El archivo todavía no está listo.",
+    "notFound": "Este plugin no existe.",
+    "empty": "Aquí todavía no hay nada."
   }
 }
