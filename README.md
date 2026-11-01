@@ -14,5 +14,5 @@ Made by nightus.
 - **Dylinn**: announcing OpenKogama on Regama
 - **Zpayer**: announcing OpenKogama
 - **loafio**: sharing OpenKogama on his server
-- **Limeen**: translating the website into French
+- **Limeen**: translating the website and the launcher into French
 - **lordscorpioni**: translating the website and the launcher into Spanish
