@@ -86,6 +86,8 @@ const ORDER = {
   likes: (a, b) => (b.likes ?? -1) - (a.likes ?? -1),
   new: (a, b) => (b.published || "").localeCompare(a.published || ""),
   old: (a, b) => (a.published || "￿").localeCompare(b.published || "￿"),
+  big: (a, b) => (b.size ?? -1) - (a.size ?? -1),
+  small: (a, b) => (a.size ?? Infinity) - (b.size ?? Infinity),
   name: (a, b) => a.folded.localeCompare(b.folded),
 };
 

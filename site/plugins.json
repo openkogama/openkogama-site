@@ -1,0 +1,66 @@
+[
+  {
+    "id": "welcome",
+    "name": "Welcome",
+    "author": "nightus",
+    "description": "Greets players when they join a world, with a configurable message and color.",
+    "source": "https://github.com/openkogama/openkogama-server/tree/mods/examples/welcome",
+    "versions": []
+  },
+  {
+    "id": "xp",
+    "name": "XP",
+    "author": "nightus",
+    "description": "Type xp in chat to collect a doubling XP reward.",
+    "source": "https://github.com/openkogama/openkogama-server/tree/mods/examples/xp",
+    "versions": []
+  },
+  {
+    "id": "sandbox",
+    "name": "Sandbox",
+    "author": "nightus",
+    "description": "A flat-island template with pos, gold, block and kills commands.",
+    "source": "https://github.com/openkogama/openkogama-server/tree/mods/examples/sandbox",
+    "versions": []
+  },
+  {
+    "id": "poison",
+    "name": "Poison",
+    "author": "nightus",
+    "description": "A poison-floor arena showing terrain kill zones.",
+    "source": "https://github.com/openkogama/openkogama-server/tree/mods/examples/poison",
+    "versions": []
+  },
+  {
+    "id": "deadzone",
+    "name": "Deadzone",
+    "author": "nightus",
+    "description": "A zombie survival mode with a day and night cycle and NPC waves.",
+    "source": "https://github.com/openkogama/openkogama-server/tree/mods/examples/deadzone",
+    "versions": []
+  },
+  {
+    "id": "portals",
+    "name": "Portals",
+    "author": "nightus",
+    "description": "Links trigger objects to other worlds, so players step through to travel.",
+    "source": "https://github.com/openkogama/openkogama-server/tree/mods/examples/portals",
+    "versions": []
+  },
+  {
+    "id": "worldgen",
+    "name": "Worldgen",
+    "author": "nightus",
+    "description": "Infinite terrain streamed around each player from a seed.",
+    "source": "https://github.com/openkogama/openkogama-server/tree/mods/examples/worldgen",
+    "versions": []
+  },
+  {
+    "id": "simonsays",
+    "name": "Simon Says",
+    "author": "imuarte",
+    "description": "A Simon Says minigame for OpenKogama servers.",
+    "source": "https://github.com/imuarte/simonsays",
+    "versions": []
+  }
+]

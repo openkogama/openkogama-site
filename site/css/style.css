@@ -538,3 +538,14 @@ footer .language {
   --edge: 3px;
   background: var(--accent);
 }
+
+.subsections {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 14px 0 4px;
+}
+
+@media (max-width: 600px) {
+  .subsections { justify-content: center; }
+}

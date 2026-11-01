@@ -1,0 +1,33 @@
+name: plugins
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: [site/plugins.json, tools/plugins.py]
+
+permissions:
+  contents: write
+
+concurrency: plugins
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+      - run: python3 tools/plugins.py "$RUNNER_TEMP/plugins"
+        env:
+          GH_TOKEN: ${{ github.token }}
+      - run: |
+          git diff --quiet site/plugins.json && exit 0
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add site/plugins.json
+          git commit -m "plugins follow their releases"
+          git push
