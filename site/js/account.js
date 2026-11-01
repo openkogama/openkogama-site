@@ -5,7 +5,7 @@
   const GUARDED = ["signin", "create", "forgot"];
   const widgets = {};
   const KEY = "openkogama-account";
-  const VIEWS = ["signin", "create", "confirm", "forgot", "reset", "email", "emailcode", "account"];
+  const VIEWS = ["signin", "create", "confirm", "forgot", "reset", "email", "emailcode", "account", "terms", "delete", "deleted"];
   const requested = new URLSearchParams(location.search).get("launcher") || "";
   const launcher = /^[A-Za-z0-9_-]{43}$/.test(requested) ? requested : null;
   let pending = "";
@@ -109,6 +109,10 @@
       show("signin");
       return;
     }
+    if (me.ok && me.data.terms === false) {
+      show("terms");
+      return;
+    }
     const panel = show("account");
     panel.querySelector(".name").textContent = me.ok ? me.data.name : session.name;
     const email = me.ok ? me.data.email || "" : "";
@@ -161,7 +165,7 @@
 
   form("create", async (fields, panel) => {
     const email = fields.email.value.trim();
-    const reply = await call("/register", { name: fields.name.value.trim(), email, password: fields.password.value, captcha: await human("create") });
+    const reply = await call("/register", { name: fields.name.value.trim(), email, password: fields.password.value, terms: fields.agree.checked, captcha: await human("create") });
     renew("create");
     if (reply.ok && reply.data.token) {
       await signedIn(reply, panel);
@@ -215,6 +219,28 @@
 
   form("reset", async (fields, panel) => {
     await signedIn(await call("/reset/confirm", { email: pending, code: fields.code.value.trim(), password: fields.password.value }), panel);
+  });
+
+  form("terms", async (fields, panel) => {
+    const session = saved();
+    const reply = await call("/terms", { token: session && session.token });
+    if (!reply.ok) {
+      fail(panel, message(reply));
+      return;
+    }
+    await showAccount();
+  });
+
+  form("delete", async (fields, panel) => {
+    const session = saved();
+    const reply = await call("/delete", { token: session && session.token, password: fields.password.value });
+    if (!reply.ok) {
+      fail(panel, message(reply));
+      return;
+    }
+    fields.password.value = "";
+    keep(null);
+    show("deleted");
   });
 
   document.querySelectorAll('a.link[href^="#"]').forEach(link => link.addEventListener("click", async event => {

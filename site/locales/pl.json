@@ -7,6 +7,8 @@
     },
     "download": "Pobierz",
     "notAffiliated": "Projekt niezwiązany z Multiverse ApS.",
+    "terms": "Regulamin",
+    "privacy": "Prywatność",
     "tooBig": "Plik za duży na podgląd",
     "previewUnavailable": "Podgląd niedostępny",
     "loading": "Wczytywanie",
@@ -326,6 +328,18 @@
     "passwordHint": "Co najmniej 8 znaków.",
     "email": "E-mail",
     "emailHint": "Opcjonalnie, ale bez niego nie zresetujesz zapomnianego hasła.",
+    "agree": "Mam co najmniej 13 lat i akceptuję {terms} oraz {privacy}.",
+    "terms": "regulamin",
+    "privacy": "politykę prywatności",
+    "delete": "Usuń konto",
+    "deleteInstead": "Wolę usunąć konto",
+    "deleteHeading": "Usunąć konto?",
+    "deleteSub": "Konto, adres email i sesje znikną od razu. Tego nie da się cofnąć.",
+    "deleteConfirm": "Usuń moje konto",
+    "deletedHeading": "Konto usunięte",
+    "deletedSub": "Twoje konto i sesje zniknęły. Żeby usunąć też profil z naszego serwera albo udostępnioną mapę, napisz na contact@openkogama.org.",
+    "termsHeading": "Regulamin i prywatność",
+    "termsSub": "OpenKogama ma teraz regulamin i politykę prywatności. Przeczytaj je i zaakceptuj, żeby dalej korzystać z konta.",
     "continue": "Dalej",
     "haveAccount": "Masz już konto?",
     "checkEmail": "Sprawdź pocztę",
@@ -357,6 +371,14 @@
       "offline": "Nie udało się połączyć z serwerem kont OpenKogama, sprawdź połączenie.",
       "status": "Coś poszło nie tak ({status}), spróbuj ponownie później."
     }
+  },
+  "terms": {
+    "title": "Regulamin - OpenKogama",
+    "description": "Zasady korzystania z OpenKogama, serwerów, listy publicznej i archiwum."
+  },
+  "privacy": {
+    "title": "Polityka prywatności - OpenKogama",
+    "description": "Jakie dane trzyma OpenKogama, po co, jak długo i jak je usunąć."
   },
   "join": {
     "title": "Dołącz - OpenKogama",

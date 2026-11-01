@@ -7,6 +7,8 @@
     },
     "download": "Download",
     "notAffiliated": "Not affiliated with Multiverse ApS.",
+    "terms": "Terms",
+    "privacy": "Privacy",
     "tooBig": "Too big to preview",
     "previewUnavailable": "Preview unavailable",
     "loading": "Loading",
@@ -312,6 +314,18 @@
     "passwordHint": "At least 8 characters.",
     "email": "Email",
     "emailHint": "Optional, but without it you can't reset a forgotten password.",
+    "agree": "I'm at least 13 years old and I accept the {terms} and the {privacy}.",
+    "terms": "Terms of Use",
+    "privacy": "Privacy Policy",
+    "delete": "Delete account",
+    "deleteInstead": "Delete my account instead",
+    "deleteHeading": "Delete your account?",
+    "deleteSub": "Your account, email and sign-ins are deleted right away. This can't be undone.",
+    "deleteConfirm": "Delete my account",
+    "deletedHeading": "Account deleted",
+    "deletedSub": "Your account and sign-ins are gone. To also remove your profile on our servers or a map you shared, write to contact@openkogama.org.",
+    "termsHeading": "Terms of Use and privacy",
+    "termsSub": "OpenKogama now has Terms of Use and a Privacy Policy. Read them and accept to keep using your account.",
     "continue": "Continue",
     "haveAccount": "Already have an account?",
     "checkEmail": "Check your email",
@@ -343,6 +357,14 @@
       "offline": "Could not reach OpenKogama accounts, check your connection.",
       "status": "Something went wrong ({status}), try again later."
     }
+  },
+  "terms": {
+    "title": "Terms of Use - OpenKogama",
+    "description": "The rules for using OpenKogama, its servers, the public server list and the archive."
+  },
+  "privacy": {
+    "title": "Privacy Policy - OpenKogama",
+    "description": "What data OpenKogama keeps, why, for how long and how to delete it."
   },
   "join": {
     "title": "Join - OpenKogama",
