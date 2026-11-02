@@ -173,7 +173,7 @@ select.line option {
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .card:not(.too-big, .failed) .picture:hover::before {
+  .card:not(.too-big, .failed, .map) .picture:hover::before {
     content: "";
   }
 }
