@@ -60,8 +60,7 @@
       "mouseAnimated": "Faites glisser pour faire pivoter, faites défiler pour zoomer, cliquez pour changer l’animation",
       "touchAnimated": "Faites glisser pour faire pivoter, pincez pour zoomer, touchez pour changer l’animation"
     },
-    "by": "par {author}",
-    "source": "Code source"
+    "by": "par {author}"
   },
   "home": {
     "title": "OpenKogama - Rejouez au KoGaMa classique",
@@ -391,30 +390,12 @@
     "title": "Archives - OpenKogama",
     "description": "Tout ce qui a été sauvé du KoGaMa classique : plus de 28 000 mondes, un million de modèles, des avatars et plus de 600 versions du jeu.",
     "heading": "Archives",
-    "tagline": "Mondes, modèles, avatars et versions du jeu sauvés du KoGaMa classique.",
-    "maps": {
-      "title": "28 000+ mondes",
-      "text": "Mondes KoGaMa archivés avec leurs vignettes. Recherche par nom, auteur ou identifiant."
-    },
-    "models": {
-      "title": "1 000 000+ modèles",
-      "text": "Modèles issus des mondes KoGaMa archivés, avec aperçus en direct et téléchargements."
-    },
-    "avatars": {
-      "text": "Avatars KoGaMa archivés, avec aperçus en direct et animations."
-    }
+    "tagline": "Mondes, modèles, avatars et versions du jeu sauvés du KoGaMa classique."
   },
   "plugins": {
     "title": "Plugins - OpenKogama",
     "description": "Téléchargez des plugins pour les serveurs OpenKogama : modes de jeu, commandes et plus encore.",
     "heading": "Plugins",
-    "intro": "Modes de jeu, commandes et plus encore pour les serveurs OpenKogama. Chaque plugin est compilé à partir de son code source public.",
-    "installHeading": "Installation",
-    "steps": {
-      "download": "Téléchargez le fichier .dll du plugin.",
-      "folder": "Placez-le dans le dossier plugins de votre serveur. Dans le launcher : File > Server settings > Open folder, puis le dossier plugins.",
-      "reload": "Redémarrez le serveur ou tapez !reload dans le chat."
-    },
     "downloads_one": "{count} téléchargement",
     "downloads_other": "{count} téléchargements",
     "facts": {
@@ -425,7 +406,6 @@
     },
     "detailsHeading": "Détails",
     "versionsHeading": "Versions",
-    "notReady": "Le fichier n'est pas encore prêt.",
     "notFound": "Ce plugin n'existe pas.",
     "empty": "Rien ici pour le moment."
   }

@@ -60,8 +60,7 @@
       "mouseAnimated": "Arrastra para girar, usa la rueda para hacer zoom y haz clic para cambiar la animación",
       "touchAnimated": "Arrastra para girar, pellizca para hacer zoom y toca para cambiar la animación"
     },
-    "by": "por {author}",
-    "source": "Código fuente"
+    "by": "por {author}"
   },
   "home": {
     "title": "OpenKogama - Vuelve a jugar al KoGaMa clásico",
@@ -391,30 +390,12 @@
     "title": "Archivo - OpenKogama",
     "description": "Todo lo que se salvó del KoGaMa clásico: más de 28.000 mapas, un millón de modelos, avatares y más de 600 versiones del juego.",
     "heading": "Archivo",
-    "tagline": "Mapas, modelos, avatares y versiones del juego salvados del KoGaMa clásico.",
-    "maps": {
-      "title": "28.000+ mapas",
-      "text": "Mapas archivados de KoGaMa con miniaturas. Busca por nombre, autor o ID."
-    },
-    "models": {
-      "title": "1.000.000+ modelos",
-      "text": "Modelos de mapas archivados de KoGaMa, con vistas previas interactivas y descargas."
-    },
-    "avatars": {
-      "text": "Avatares archivados de KoGaMa, con vistas previas interactivas y animaciones."
-    }
+    "tagline": "Mapas, modelos, avatares y versiones del juego salvados del KoGaMa clásico."
   },
   "plugins": {
     "title": "Plugins - OpenKogama",
     "description": "Descarga plugins para servidores de OpenKogama: modos de juego, comandos y más.",
     "heading": "Plugins",
-    "intro": "Modos de juego, comandos y más para servidores de OpenKogama. Cada plugin se compila a partir de su código fuente público.",
-    "installHeading": "Cómo instalar",
-    "steps": {
-      "download": "Descarga el archivo .dll del plugin.",
-      "folder": "Ponlo en la carpeta plugins de tu servidor. En el lanzador: Archivo > Ajustes del servidor > Abrir carpeta y luego la carpeta plugins.",
-      "reload": "Reinicia el servidor o escribe !reload en el chat."
-    },
     "downloads_one": "{count} descarga",
     "downloads_other": "{count} descargas",
     "facts": {
@@ -425,7 +406,6 @@
     },
     "detailsHeading": "Detalles",
     "versionsHeading": "Versiones",
-    "notReady": "El archivo todavía no está listo.",
     "notFound": "Este plugin no existe.",
     "empty": "Aquí todavía no hay nada."
   }

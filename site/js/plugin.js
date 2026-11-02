@@ -1,95 +1,551 @@
-import { catalog, downloadCount, downloads, el, likeButton, size } from "./catalog.js";
+import { date, DOWNLOAD_ICON, downloadUrl, editor, el, fileUrl, get, likeButton, message, post, save, session, size } from "./catalog.js";
 
 const view = document.getElementById("plugin");
+const slug = new URLSearchParams(location.search).get("id") || "";
+const SHARE_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 12 18 5.5M6 12l12 6.5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="6" cy="12" r="2.8" fill="currentColor"/><circle cx="18" cy="5.5" r="2.8" fill="currentColor"/><circle cx="18" cy="18.5" r="2.8" fill="currentColor"/></svg>';
+const PENCIL_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4"/><path d="M13.5 6.5l4 4"/></svg>';
+const CLOCK_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.8" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M12 7.2V12l3.2 2.2" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+const UNITS = [["year", 31536000], ["month", 2592000], ["week", 604800], ["day", 86400], ["hour", 3600], ["minute", 60]];
 
-function anchor(className, text, href) {
-  const link = el("a", className, text);
-  link.href = href;
-  link.target = "_blank";
-  link.rel = "noopener";
-  return link;
-}
-
-function line(label, value) {
-  if (!value) return null;
-  const row = el("div");
-  const data = el("dd");
-  if (value instanceof Node) data.append(value);
-  else data.textContent = value;
-  row.append(el("dt", null, label), data);
-  return row;
-}
-
-function section(heading, ...content) {
-  const block = el("section");
+function section(className, heading, ...content) {
+  const block = el("section", className);
   block.append(el("h2", null, heading), ...content);
   return block;
 }
 
-function render(plugin, counts) {
-  const latest = plugin.versions?.[0];
-  const count = downloadCount(plugin, counts);
-  const cover = el("div", "map");
-  cover.append(el("div", "picture"));
-  const info = el("div", "info");
-  info.append(el("h1", null, plugin.name));
-  if (plugin.author) info.append(el("p", "by", i18n.t("common.by", { author: plugin.author })));
-  if (count != null) info.append(el("p", "count", i18n.t("plugins.downloads", { count })));
-  if (plugin.description) info.append(el("p", "desc", plugin.description));
-  const actions = el("div", "actions");
-  actions.append(likeButton(plugin));
-  if (latest) {
-    const download = el("a", "button primary", i18n.t("common.download"));
-    download.href = latest.file;
-    actions.append(download);
-  }
-  if (plugin.source) actions.append(anchor("button secondary", i18n.t("common.source"), plugin.source));
-  info.append(actions);
-  if (!latest) info.append(el("p", "hint", i18n.t("plugins.notReady")));
-  const head = el("div", "head");
-  head.append(cover, info);
-
-  const steps = el("ol", "steps");
-  for (const key of ["download", "folder", "reload"]) steps.append(el("li", null, i18n.t(`plugins.steps.${key}`)));
-  const blocks = [head, section(i18n.t("plugins.installHeading"), steps)];
-
-  if (latest) {
-    const facts = el("dl");
-    facts.append(...[
-      line(i18n.t("plugins.facts.version"), latest.version),
-      line(i18n.t("plugins.facts.api"), latest.api + "+"),
-      line(i18n.t("plugins.facts.file"), `${size(latest.size)} .dll`),
-      line(i18n.t("plugins.facts.downloads"), count != null && count.toLocaleString(i18n.lang)),
-      line("SHA-256", latest.sha256),
-      line(i18n.t("common.source"), plugin.source && anchor(null, plugin.source.replace(/^https:\/\//, ""), plugin.source)),
-    ].filter(Boolean));
-    blocks.push(section(i18n.t("plugins.detailsHeading"), facts));
-  }
-
-  if (plugin.versions?.length > 1) {
-    const list = el("ul", "versions");
-    for (const version of plugin.versions) {
-      const item = el("li");
-      const link = el("a", null, version.version);
-      link.href = version.file;
-      item.append(link, ` · ${i18n.t("plugins.facts.api")} ${version.api}+ · ${size(version.size)}`);
-      list.append(item);
-    }
-    blocks.push(section(i18n.t("plugins.versionsHeading"), list));
-  }
-  view.replaceChildren(...blocks);
+function line(label, value, className) {
+  const row = el("div");
+  row.append(el("dt", null, label), el("dd", className, value));
+  return row;
 }
 
-i18n.ready.then(async () => {
-  const counting = downloads();
-  const id = new URLSearchParams(location.search).get("id");
-  const plugin = (await catalog()).find(item => item.id === id);
+function linked(text) {
+  const parts = [];
+  let last = 0;
+  for (const match of text.matchAll(/https?:\/\/[^\s<>"]+/g)) {
+    const url = match[0].replace(/[.,!?:;)\]]+$/, "");
+    if (match.index > last) parts.push(text.slice(last, match.index));
+    const link = el("a", null, url);
+    link.href = url;
+    link.target = "_blank";
+    link.rel = "nofollow noopener ugc";
+    parts.push(link);
+    last = match.index + url.length;
+  }
+  if (last < text.length) parts.push(text.slice(last));
+  return parts;
+}
+
+function prose(text) {
+  const box = el("div", "prose");
+  for (const block of text.split(/\n{2,}/)) {
+    const paragraph = el("p");
+    block.split("\n").forEach((row, index) => {
+      if (index) paragraph.append(el("br"));
+      paragraph.append(...linked(row));
+    });
+    box.append(paragraph);
+  }
+  return box;
+}
+
+function label(version) {
+  return /^\d/.test(version) ? `v${version}` : version;
+}
+
+function ago(seconds) {
+  const format = new Intl.RelativeTimeFormat(i18n.lang, { numeric: "auto" });
+  const diff = seconds - Date.now() / 1000;
+  for (const [unit, length] of UNITS) {
+    if (Math.abs(diff) >= length) return format.format(Math.round(diff / length), unit);
+  }
+  return format.format(0, "second");
+}
+
+function moment(seconds) {
+  const time = el("time", null, ago(seconds));
+  time.dateTime = new Date(seconds * 1000).toISOString();
+  time.title = date(seconds);
+  return time;
+}
+
+function image(name, className) {
+  const shot = el("img", className);
+  shot.src = fileUrl(name);
+  shot.alt = "";
+  return shot;
+}
+
+function fetcher(plugin, version, className) {
+  if (plugin.state === "public" || !plugin.state) {
+    const link = el("a", className);
+    link.href = downloadUrl(plugin.slug, version.version);
+    return link;
+  }
+  const button = el("button", className);
+  button.type = "button";
+  button.addEventListener("click", () => save(plugin.slug, version));
+  return button;
+}
+
+function downloadButton(plugin, version) {
+  const button = fetcher(plugin, version, "button accent big");
+  button.innerHTML = DOWNLOAD_ICON;
+  button.append(el("span", null, i18n.t("common.download")));
+  return button;
+}
+
+function shareButton() {
+  const button = el("button", "button secondary share-link");
+  button.type = "button";
+  button.innerHTML = SHARE_ICON;
+  const text = el("span", null, i18n.t("plugins.shareLink"));
+  text.setAttribute("aria-live", "polite");
+  button.append(text);
+  let timer;
+  button.addEventListener("click", async () => {
+    const url = location.href;
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: document.title, url });
+        return;
+      } catch (error) {
+        if (error.name === "AbortError") return;
+      }
+    }
+    try {
+      await navigator.clipboard.writeText(url);
+    } catch {
+      return;
+    }
+    text.textContent = i18n.t("plugins.copied");
+    clearTimeout(timer);
+    timer = setTimeout(() => { text.textContent = i18n.t("plugins.shareLink"); }, 2000);
+  });
+  return button;
+}
+
+function shareRow(plugin) {
+  const row = el("div", "share-row");
+  const heart = likeButton(plugin);
+  heart.classList.add("button", "secondary");
+  row.append(shareButton(), heart);
+  return row;
+}
+
+function creator(plugin) {
+  const box = el("div", "panel creator");
+  const initial = el("span", "initial", ([...(plugin.author || "").trim()][0] || "?").toLocaleUpperCase(i18n.lang));
+  initial.setAttribute("aria-hidden", "true");
+  const who = el("div", "who");
+  const link = el("a", null, plugin.author);
+  link.href = new URL(`../plugins/?q=${encodeURIComponent(plugin.author)}`, import.meta.url).href;
+  who.append(el("small", null, i18n.t("plugins.author")), link);
+  box.append(initial, who);
+  return box;
+}
+
+const SHIELD_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a12 12 0 0 0 8.5 3a12 12 0 0 1 -8.5 15a12 12 0 0 1 -8.5 -15a12 12 0 0 0 8.5 -3"/><path d="M9 12l2 2l4 -4"/></svg>';
+const SHIELD_X_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a12 12 0 0 0 8.5 3a12 12 0 0 1 -8.5 15a12 12 0 0 1 -8.5 -15a12 12 0 0 0 8.5 -3"/><path d="M10 10l4 4m0 -4l-4 4"/></svg>';
+
+function scanLine(version) {
+  const scan = version.scan;
+  if (!scan) return null;
+  const box = el("span", "scan");
+  if (scan.state !== "done") {
+    box.classList.add("pending");
+    box.innerHTML = SHIELD_ICON;
+    box.append(i18n.t("plugins.scan.pending"));
+    return box;
+  }
+  const flagged = scan.malicious + scan.suspicious;
+  box.classList.add(flagged ? "flagged" : "clean");
+  box.innerHTML = flagged ? SHIELD_X_ICON : SHIELD_ICON;
+  box.append(i18n.t(flagged ? "plugins.scan.flagged" : "plugins.scan.clean", { flagged, total: scan.total }), " ");
+  const link = el("a", null, i18n.t("plugins.scan.report"));
+  link.href = scan.url;
+  link.target = "_blank";
+  link.rel = "noopener";
+  box.append(link);
+  return box;
+}
+
+function scanBadge(version) {
+  const scan = version.scan;
+  if (!scan) return null;
+  if (scan.state !== "done") {
+    const wait = el("span", "scan-badge pending");
+    wait.innerHTML = SHIELD_ICON;
+    wait.title = i18n.t("plugins.scan.pending");
+    wait.setAttribute("aria-label", wait.title);
+    return wait;
+  }
+  const flagged = scan.malicious + scan.suspicious;
+  const link = el("a", "scan-badge " + (flagged ? "flagged" : "clean"));
+  link.href = scan.url;
+  link.target = "_blank";
+  link.rel = "noopener";
+  link.innerHTML = flagged ? SHIELD_X_ICON : SHIELD_ICON;
+  link.title = `${i18n.t(flagged ? "plugins.scan.flagged" : "plugins.scan.clean", { flagged, total: scan.total })} ${i18n.t("plugins.scan.report")}`;
+  link.setAttribute("aria-label", link.title);
+  return link;
+}
+
+function releases(plugin) {
+  const list = el("ul", "release-list");
+  const live = plugin.versions.find(version => !version.pending);
+  plugin.versions.forEach(version => {
+    const item = el("li");
+    const row = el("div", "release-row");
+    const text = el("div", "release-text");
+    const name = el("p", "release-name", label(version.version));
+    if (version.pending) name.append(" ", el("span", "current pending", i18n.t("plugins.states.pending")));
+    else if (version === live) name.append(" ", el("span", "current", i18n.t("plugins.current")));
+    const facts = [i18n.t("plugins.downloads", { count: version.downloads ?? 0 }), size(version.size), `${i18n.t("plugins.facts.api")} ${version.api}+`];
+    const age = el("p", "release-age");
+    age.append(moment(version.created));
+    text.append(name, el("p", "release-facts", facts.join(" · ")), age);
+
+    const get = fetcher(plugin, version, "icon release-get");
+    get.innerHTML = DOWNLOAD_ICON;
+    get.title = `${i18n.t("common.download")} ${label(version.version)}`;
+    get.setAttribute("aria-label", get.title);
+    const badge = scanBadge(version);
+    let approve = null;
+    if (plugin.admin && version.pending) {
+      approve = el("button", "button secondary approve", i18n.t("plugins.approve"));
+      approve.type = "button";
+      approve.addEventListener("click", async () => {
+        approve.disabled = true;
+        const reply = await post("version/approve", { slug, version: version.version });
+        if (reply.ok) show();
+        else {
+          approve.disabled = false;
+          alert(message(reply));
+        }
+      });
+    }
+    row.append(...[text, approve, badge, get].filter(Boolean));
+    item.append(row);
+    if (version.changes) {
+      const notes = el("details", "release-notes");
+      notes.append(el("summary", null, i18n.t("plugins.editor.changes")), prose(version.changes));
+      item.append(notes);
+    }
+    list.append(item);
+  });
+  return section("panel releases", i18n.t("plugins.allVersions"), list);
+}
+
+function reportForm() {
+  const form = el("form", "report");
+  form.hidden = true;
+  const reason = el("textarea");
+  reason.maxLength = 500;
+  reason.rows = 3;
+  reason.required = true;
+  reason.placeholder = i18n.t("plugins.reportReason");
+  const field = el("div", "box");
+  field.append(reason);
+  const status = el("p", "hint");
+  const send = el("button", "button secondary", i18n.t("plugins.reportSend"));
+  send.type = "submit";
+  form.append(field, send, status);
+  form.addEventListener("submit", async event => {
+    event.preventDefault();
+    send.disabled = true;
+    const reply = await post("report", { slug, reason: reason.value });
+    send.disabled = false;
+    status.textContent = reply.ok ? i18n.t("plugins.reported") : message(reply);
+    if (reply.ok) reason.value = "";
+  });
+  return form;
+}
+
+function adminButton(text, state) {
+  const button = el("button", "button secondary", text);
+  button.type = "button";
+  button.addEventListener("click", async () => {
+    button.disabled = true;
+    const reply = await post("state", { slug, state });
+    if (reply.ok) show();
+    else {
+      button.disabled = false;
+      alert(message(reply));
+    }
+  });
+  return button;
+}
+
+function editButton(plugin) {
+  if (!plugin.owner && !plugin.admin) return null;
+  const edit = el("a", "edit");
+  edit.href = editor(plugin.slug);
+  edit.innerHTML = PENCIL_ICON;
+  edit.title = i18n.t("plugins.edit");
+  edit.setAttribute("aria-label", edit.title);
+  return edit;
+}
+
+function moderation(plugin) {
+  if (!plugin.admin) return null;
+  const box = el("div", "panel moderation");
+  box.append(el("h2", null, i18n.t("plugins.moderation")), el("p", "state-line", i18n.t(`plugins.states.${plugin.state || "public"}`)));
+  const row = el("div", "manage");
+  if (plugin.state !== "public") row.append(adminButton(i18n.t("plugins.approve"), "public"));
+  if (plugin.state !== "hidden") row.append(adminButton(i18n.t("plugins.hide"), "hidden"));
+  box.append(row);
+  return box;
+}
+
+function reportLink(plugin) {
+  if (!session() || plugin.owner || (plugin.state && plugin.state !== "public")) return [];
+  const report = reportForm();
+  const open = el("button", "link report-link", i18n.t("plugins.reportThis"));
+  open.type = "button";
+  open.addEventListener("click", () => {
+    report.hidden = !report.hidden;
+    open.setAttribute("aria-expanded", String(!report.hidden));
+  });
+  return [open, report];
+}
+
+function banner(plugin) {
+  if (plugin.flagged) return el("p", "banner", i18n.t("plugins.banner.flagged"));
+  if (plugin.state === "hidden") return el("p", "banner", i18n.t("plugins.banner.hidden"));
+  if (plugin.state === "pending") return el("p", "banner", i18n.t(plugin.versions.length ? "plugins.banner.pending" : "plugins.banner.noVersion"));
+  return null;
+}
+
+function slides(plugin) {
+  const items = plugin.images.length ? plugin.images : plugin.video ? ["yt:" + plugin.video] : [];
+  return items.map(item => item.startsWith("yt:") ? { video: item.slice(3) } : { image: item });
+}
+
+function embed(plugin, id) {
+  const iframe = el("iframe");
+  iframe.src = `https://www.youtube-nocookie.com/embed/${encodeURIComponent(id)}`;
+  iframe.title = plugin.name;
+  iframe.allow = "accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
+  iframe.referrerPolicy = "strict-origin-when-cross-origin";
+  iframe.allowFullscreen = true;
+  return iframe;
+}
+
+function frame(plugin, items, index) {
+  const slide = items[index];
+  if (slide.video) return embed(plugin, slide.video);
+  const link = el("a");
+  link.href = fileUrl(slide.image);
+  link.target = "_blank";
+  link.rel = "noopener";
+  const shown = image(slide.image);
+  shown.alt = plugin.name;
+  link.append(shown);
+  link.addEventListener("click", event => {
+    event.preventDefault();
+    lightbox(plugin, items, index);
+  });
+  return link;
+}
+
+function arrows(target, step) {
+  for (const [className, direction, key] of [["prev", -1, "plugins.previous"], ["next", 1, "plugins.next"]]) {
+    const arrow = el("button", "arrow " + className);
+    arrow.type = "button";
+    arrow.title = i18n.t(key);
+    arrow.setAttribute("aria-label", arrow.title);
+    arrow.addEventListener("click", () => step(direction));
+    target.append(arrow);
+  }
+}
+
+function lightbox(plugin, items, start) {
+  const box = el("div", "lightbox");
+  const stage = el("div", "frame");
+  const count = el("p", "count");
+  const close = el("button", "close", "\u00d7");
+  close.type = "button";
+  close.title = i18n.t("common.close");
+  close.setAttribute("aria-label", close.title);
+  let current = start;
+  function show(index) {
+    current = (index + items.length) % items.length;
+    const slide = items[current];
+    const shown = slide.video ? embed(plugin, slide.video) : image(slide.image);
+    if (!slide.video) shown.alt = plugin.name;
+    stage.replaceChildren(shown);
+    count.textContent = `${current + 1} / ${items.length}`;
+  }
+  function end() {
+    box.remove();
+    document.documentElement.classList.remove("lightbox-open");
+    document.removeEventListener("keydown", keys);
+  }
+  function keys(event) {
+    if (event.key === "Escape") end();
+    else if (event.key === "ArrowLeft" && items.length > 1) show(current - 1);
+    else if (event.key === "ArrowRight" && items.length > 1) show(current + 1);
+    else return;
+    event.preventDefault();
+  }
+  close.addEventListener("click", end);
+  box.addEventListener("click", event => { if (event.target === box) end(); });
+  document.addEventListener("keydown", keys);
+  document.documentElement.classList.add("lightbox-open");
+  box.append(close, stage);
+  if (items.length > 1) {
+    arrows(box, direction => show(current + direction));
+    box.append(count);
+  }
+  document.body.append(box);
+  show(start);
+  close.focus();
+}
+
+function gallery(plugin) {
+  const items = slides(plugin);
+  const stage = el("div", "media");
+  const view = el("div", "view");
+  stage.append(view);
+  let current = 0;
+  const thumbs = el("div", "shots");
+  function go(index) {
+    current = (index + items.length) % items.length;
+    view.replaceChildren(frame(plugin, items, current));
+    [...thumbs.children].forEach((pick, i) => pick.setAttribute("aria-current", String(i === current)));
+  }
+  items.forEach((slide, index) => {
+    const pick = el("button", slide.video ? "clip" : null);
+    pick.type = "button";
+    pick.setAttribute("aria-label", slide.video ? i18n.t("plugins.video") : i18n.t("plugins.screenshot", { number: index + 1 }));
+    const small = el("img");
+    small.src = slide.video ? `https://i.ytimg.com/vi/${encodeURIComponent(slide.video)}/mqdefault.jpg` : fileUrl(slide.image);
+    small.alt = "";
+    small.loading = "lazy";
+    pick.append(small);
+    pick.addEventListener("click", () => go(index));
+    thumbs.append(pick);
+  });
+  if (items.length > 1) arrows(stage, direction => go(current + direction));
+  const box = el("div", "gallery-box");
+  box.tabIndex = 0;
+  box.addEventListener("keydown", event => {
+    if (items.length < 2) return;
+    if (event.key === "ArrowLeft") go(current - 1);
+    else if (event.key === "ArrowRight") go(current + 1);
+    else return;
+    event.preventDefault();
+  });
+  go(0);
+  box.append(stage);
+  if (items.length > 1) box.append(thumbs);
+  return [box];
+}
+
+function media(plugin) {
+  if (slides(plugin).length) return gallery(plugin);
+  const blank = el("div", "media blank");
+  if (plugin.icon) blank.append(image(plugin.icon, "logo"));
+  return [blank];
+}
+
+
+function figure(icon, value, caption) {
+  const item = el("div", "number");
+  item.innerHTML = icon;
+  const strong = el("strong");
+  strong.append(value);
+  item.append(strong, el("span", null, caption));
+  return item;
+}
+
+function numbers(plugin) {
+  const row = el("div", "numbers");
+  row.append(figure(DOWNLOAD_ICON, (plugin.downloads || 0).toLocaleString(i18n.lang), i18n.t("plugins.facts.downloads")));
+  if (plugin.updated) row.append(figure(CLOCK_ICON, moment(plugin.updated), i18n.t("plugins.facts.updated")));
+  return row;
+}
+
+function about(plugin) {
+  const text = (plugin.description || "").trim();
+  const lead = (plugin.summary || "").trim();
+  const parts = [];
+  if (lead && !text.startsWith(lead)) {
+    const intro = el("p", "lead");
+    intro.append(...linked(lead));
+    parts.push(intro);
+  }
+  if (text) parts.push(prose(text));
+  return parts.length ? section("panel writeup", i18n.t("plugins.about"), ...parts) : null;
+}
+
+function specs(plugin, latest) {
+  const facts = el("dl");
+  facts.append(
+    line(i18n.t("plugins.facts.version"), latest.version),
+    line(i18n.t("plugins.facts.api"), latest.api + "+"),
+    line(i18n.t("plugins.facts.file"), `${latest.name} · ${size(latest.size)}`),
+    line(i18n.t("plugins.facts.updated"), date(plugin.updated)),
+    line("SHA-256", latest.sha256, "hash"),
+  );
+  const scan = scanLine(latest);
+  if (scan) {
+    const row = el("div");
+    const data = el("dd");
+    data.append(scan);
+    row.append(el("dt", null, i18n.t("plugins.scan.heading")), data);
+    facts.append(row);
+  }
+  return section("panel specs", i18n.t("plugins.detailsHeading"), facts);
+}
+
+function render(plugin) {
+  const latest = plugin.versions[0];
+  const title = el("h1", null, plugin.name);
+  if (latest) title.append(" ", el("span", "release", label(latest.version)));
+  const masthead = el("header", "masthead");
+  if (plugin.icon && slides(plugin).length) masthead.append(image(plugin.icon, "mark"));
+  masthead.append(title);
+  const edit = editButton(plugin);
+  if (edit) masthead.append(edit);
+
+  const side = el("div", "side");
+  const mod = moderation(plugin);
+  if (mod) side.append(mod);
+  if (latest) side.append(downloadButton(plugin, latest));
+  side.append(shareRow(plugin), creator(plugin));
+  if (plugin.versions.length) side.append(releases(plugin));
+  side.append(...reportLink(plugin));
+
+  const content = el("div", "content");
+  content.append(...media(plugin), numbers(plugin));
+  const blocks = [about(plugin)];
+  if (latest) blocks.push(specs(plugin, latest));
+  content.append(...blocks.filter(Boolean));
+
+  const layout = el("div", "layout");
+  layout.append(side, content);
+  view.replaceChildren(...[masthead, banner(plugin), layout].filter(Boolean));
+}
+
+async function find() {
+  if (session()) {
+    const managed = await post("view", { slug });
+    if (managed.ok) return managed.data;
+  }
+  const open = await get("/" + encodeURIComponent(slug));
+  return open.ok ? open.data : null;
+}
+
+async function show() {
+  const plugin = slug ? await find() : null;
   if (!plugin) {
     view.replaceChildren(el("p", "note", i18n.t("plugins.notFound")));
     return;
   }
   document.title = `${plugin.name} - OpenKogama`;
-  render(plugin, null);
-  const counts = await counting;
-  if (counts) render(plugin, counts);
-});
+  render(plugin);
+}
+
+i18n.ready.then(show);

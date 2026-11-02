@@ -1,50 +1,79 @@
-import { catalog, downloadCount, downloads, el, likeButton, page, saveLink } from "./catalog.js";
+import { card, el, get, message, page, post, session } from "./catalog.js";
 
 const grid = document.getElementById("cards");
 const note = document.getElementById("note");
+const more = document.getElementById("more");
+const search = document.getElementById("search");
+const sort = document.getElementById("sort");
+let next = 0;
+let asked = 0;
+let typing;
 
-function meta(plugin, counts) {
-  const parts = [];
-  if (plugin.author) parts.push(plugin.author);
-  const count = downloadCount(plugin, counts);
-  if (count != null) parts.push(i18n.t("plugins.downloads", { count }));
-  return parts.join(" · ");
-}
-
-function entry(plugin) {
-  const href = page(plugin);
-  const article = el("article", "card map plugin");
-  const frame = el("div", "picture");
-  const open = el("a", "open");
-  open.href = href;
-  open.setAttribute("aria-label", plugin.name);
-  frame.append(open);
-  const latest = plugin.versions?.[0];
-  if (latest) {
-    const tools = el("div", "tools");
-    tools.append(saveLink(latest));
-    frame.append(tools);
-  }
-  frame.append(likeButton(plugin));
-  const title = el("p", "name");
-  const link = el("a", null, plugin.name);
-  link.href = href;
-  title.append(link);
-  title.title = plugin.name;
-  article.append(frame, title, el("p", "meta", meta(plugin, null)));
-  return article;
-}
-
-i18n.ready.then(async () => {
-  const counting = downloads();
-  const plugins = await catalog();
-  if (!plugins.length) {
-    note.textContent = i18n.t("plugins.empty");
+async function load(fresh) {
+  const ticket = ++asked;
+  if (fresh) next = 0;
+  more.hidden = true;
+  const params = new URLSearchParams({ page: String(next), sort: sort.value });
+  const words = search.value.trim();
+  if (words) params.set("q", words);
+  const reply = await get("?" + params);
+  if (ticket !== asked) return;
+  if (fresh) grid.replaceChildren();
+  if (!reply.ok) {
+    note.textContent = message(reply);
     note.hidden = false;
     return;
   }
-  const cards = plugins.map(entry);
-  grid.append(...cards);
-  const counts = await counting;
-  plugins.forEach((plugin, index) => { cards[index].querySelector(".meta").textContent = meta(plugin, counts); });
+  grid.append(...reply.data.plugins.map(card));
+  note.textContent = i18n.t(words ? "plugins.noResults" : "plugins.empty");
+  note.hidden = grid.children.length > 0;
+  more.hidden = !reply.data.more;
+  next++;
+}
+
+function shelf(id, plugins) {
+  const box = document.getElementById(id);
+  box.replaceChildren(...plugins.map(card));
+  box.closest(".shelf").hidden = plugins.length === 0;
+}
+
+function report(entry) {
+  const item = el("li");
+  const link = el("a", null, entry.name);
+  link.href = page(entry.slug);
+  const dismiss = el("button", "link", i18n.t("plugins.dismiss"));
+  dismiss.type = "button";
+  dismiss.addEventListener("click", async () => {
+    dismiss.disabled = true;
+    if ((await post("reports/clear", { slug: entry.slug })).ok) item.remove();
+    else dismiss.disabled = false;
+  });
+  item.append(link, ` · ${entry.reporter}: `, el("span", "reason", entry.reason), " ", dismiss);
+  return item;
+}
+
+async function personal() {
+  if (!session()) return;
+  const reply = await post("mine");
+  if (!reply.ok) return;
+  shelf("mine-cards", reply.data.plugins);
+  if (!reply.data.admin) return;
+  shelf("waiting-cards", reply.data.waiting);
+  const reports = document.getElementById("reports");
+  reports.replaceChildren(...reply.data.reports.map(report));
+  reports.closest(".shelf").hidden = reply.data.reports.length === 0;
+}
+
+i18n.ready.then(() => {
+  const asked = new URLSearchParams(location.search).get("q");
+  if (asked) search.value = asked;
+  document.getElementById("tools").addEventListener("submit", event => event.preventDefault());
+  search.addEventListener("input", () => {
+    clearTimeout(typing);
+    typing = setTimeout(() => load(true), 300);
+  });
+  sort.addEventListener("change", () => load(true));
+  more.addEventListener("click", () => load(false));
+  load(true);
+  personal();
 });

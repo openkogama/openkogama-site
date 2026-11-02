@@ -26,15 +26,42 @@
   <nav class="sections">
     <a class="button nav" href="./" aria-current="page" data-i18n="common.nav.plugins">Plugins</a>
     <a class="button nav" href="../archive/" data-i18n="common.nav.archive">Archive</a>
+    <a class="button nav" href="../play/" data-i18n="common.play">Play</a>
   </nav>
 </header>
-<main>
-  <div class="band-head">
-    <h2 data-i18n="plugins.heading">Plugins</h2>
-    <p data-i18n="plugins.intro">Game modes, commands and more for OpenKogama servers. Each plugin is built from its public source code.</p>
-  </div>
-  <div class="grid maps" id="cards"></div>
-  <p class="note" id="note" hidden></p>
+<main class="models">
+  <h1 data-i18n="plugins.heading">Plugins</h1>
+  <p class="summary" data-i18n="plugins.intro">Game modes, commands and more for OpenKogama servers, shared by the people who made them.</p>
+  <p class="share-cta">
+    <span data-i18n="plugins.shareQuestion">Made a plugin?</span>
+    <a class="link" href="edit/" data-i18n="plugins.share">Share it</a>
+  </p>
+  <form class="filters" id="tools">
+    <input class="line" type="search" id="search" placeholder="Search plugins" data-i18n-attr="placeholder:plugins.search" autocomplete="off">
+    <select class="line" id="sort" aria-label="Sort" data-i18n-attr="aria-label:plugins.sort">
+      <option value="popular" data-i18n="plugins.sorts.popular">Most downloaded</option>
+      <option value="new" data-i18n="plugins.sorts.new">Newest</option>
+      <option value="updated" data-i18n="plugins.sorts.updated">Recently updated</option>
+    </select>
+  </form>
+  <section class="shelf" hidden>
+    <h3 data-i18n="plugins.waiting">Waiting for approval</h3>
+    <div class="grid maps" id="waiting-cards"></div>
+  </section>
+  <section class="shelf" hidden>
+    <h3 data-i18n="plugins.reports">Reports</h3>
+    <ul class="reports" id="reports"></ul>
+  </section>
+  <section class="shelf" hidden>
+    <h3 data-i18n="plugins.mine">Your plugins</h3>
+    <div class="grid maps" id="mine-cards"></div>
+  </section>
+  <section class="everyone">
+    <h3 data-i18n="plugins.all">All plugins</h3>
+    <div class="grid maps" id="cards"></div>
+    <p class="status" id="note" hidden></p>
+    <button class="button secondary load-more" type="button" id="more" hidden data-i18n="plugins.more">Load more</button>
+  </section>
 </main>
 <footer>
   <div class="brand">
@@ -42,7 +69,9 @@
     <span>OPENKOGAMA</span>
   </div>
   <p data-i18n="common.notAffiliated">Not affiliated with Multiverse ApS.</p>
+  <p class="legal-links"><a href="../terms/" data-i18n="common.terms">Terms</a> · <a href="../privacy/" data-i18n="common.privacy">Privacy</a></p>
 </footer>
-<script src="../js/session.js"></script>
+<script src="../js/footer.js"></script>
+<script src="../js/header.js"></script>
 </body>
 </html>

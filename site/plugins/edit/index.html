@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<meta name="robots" content="noindex">
+<title data-i18n="plugins.editor.title">Share a plugin - OpenKogama</title>
+<link rel="icon" href="../../favicon.ico" sizes="16x16 32x32 48x48">
+<link rel="apple-touch-icon" href="../../apple-touch-icon.png">
+<link rel="stylesheet" href="../../css/style.css">
+<link rel="stylesheet" href="../../css/models.css">
+<link rel="stylesheet" href="../../css/maps.css">
+<link rel="stylesheet" href="../../css/plugins.css">
+<script src="../../js/i18n.js"></script>
+<script type="module" src="../../js/plugin-edit.js"></script>
+</head>
+<body class="list">
+<header class="top">
+  <a class="brand" href="../../"><img src="../../img/icon-192.png" alt="">OPENKOGAMA</a>
+  <nav class="sections">
+    <a class="button nav" href="../" aria-current="page" data-i18n="common.nav.plugins">Plugins</a>
+    <a class="button nav" href="../../archive/" data-i18n="common.nav.archive">Archive</a>
+    <a class="button nav" href="../../play/" data-i18n="common.play">Play</a>
+  </nav>
+</header>
+<main class="editor">
+  <p class="crumbs"><a href="../" data-i18n="common.nav.plugins">Plugins</a><span id="crumb-plugin" hidden> › <a id="crumb-link"></a></span></p>
+  <h1 id="heading" data-i18n="plugins.editor.newHeading">Share a plugin</h1>
+  <p class="banner" id="banner" hidden></p>
+  <div class="gate" id="signin" hidden>
+    <h2 data-i18n="plugins.editor.signInHeading">Share your plugin</h2>
+    <p data-i18n="plugins.editor.signIn">Sign in to share your plugins.</p>
+    <a class="button accent" href="../../account/" data-i18n="common.signIn">Sign in</a>
+  </div>
+  <p class="note" id="missing" hidden data-i18n="plugins.notFound">There is no such plugin.</p>
+
+  <div class="editor-body" id="editor-body" hidden>
+    <nav class="editor-nav">
+      <a href="#block-file" id="nav-file" data-i18n="plugins.editor.file">Plugin file</a>
+      <a href="#block-about" data-i18n="plugins.editor.about">About the plugin</a>
+      <a href="#block-media" data-i18n="plugins.editor.media">Images</a>
+      <a href="#danger" id="nav-danger" hidden data-i18n="plugins.editor.deleteHeading">Delete plugin</a>
+    </nav>
+    <div class="editor-main">
+
+  <form id="details">
+    <section class="block" id="block-file">
+      <h2 id="file-heading" data-i18n="plugins.editor.file">Plugin file</h2>
+      <label class="dropzone" id="dropzone">
+        <input type="file" id="version-file" accept=".dll">
+        <span class="dropzone-text"><strong data-i18n="plugins.editor.chooseDll">Choose .dll</strong> <span data-i18n="plugins.editor.dropHint">or drop it here</span></span>
+        <span class="dropzone-file" id="version-picked"></span>
+      </label>
+      <small data-i18n="plugins.editor.fileHint">A .dll built for the OpenKogama server, up to 10 MB.</small>
+      <div class="field">
+        <label for="version" data-i18n="plugins.editor.version">Version</label>
+        <div class="box"><input id="version" maxlength="32" autocomplete="off"></div>
+        <small data-i18n="plugins.editor.versionHint">Read from the file. Change it if you need to.</small>
+      </div>
+      <div class="field" id="changes-field" hidden>
+        <label for="changes" data-i18n="plugins.editor.changes">What changed</label>
+        <div class="box"><textarea id="changes" maxlength="2000" rows="4"></textarea></div>
+      </div>
+      <p class="error" id="version-error" role="alert"></p>
+      <p class="done" id="version-done" role="status"></p>
+      <button class="button primary" type="button" id="publish" hidden disabled data-i18n="plugins.editor.publish">Publish version</button>
+      <ul class="release-list" id="version-list"></ul>
+    </section>
+    <section class="block" id="block-about">
+      <h2 data-i18n="plugins.editor.about">About the plugin</h2>
+      <div class="field">
+        <label for="name" data-i18n="plugins.editor.name">Name</label>
+        <div class="box"><input id="name" maxlength="40" required></div>
+      </div>
+      <div class="field">
+        <label for="summary" data-i18n="plugins.editor.summary">Short description</label>
+        <div class="box"><input id="summary" maxlength="120" required></div>
+        <small data-i18n="plugins.editor.summaryHint">Shown on the plugin list.</small>
+      </div>
+      <div class="field">
+        <label for="description" data-i18n="plugins.editor.description">Description</label>
+        <div class="box"><textarea id="description" maxlength="5000" rows="10"></textarea></div>
+        <small data-i18n="plugins.editor.descriptionHint">What the plugin does, its commands and how to set it up. Links work.</small>
+      </div>
+    </section>
+    <section class="block" id="block-media">
+      <h2 data-i18n="plugins.editor.media">Images</h2>
+      <div class="field">
+        <span class="label" data-i18n="plugins.editor.icon">Icon</span>
+        <div class="images" id="icon"></div>
+        <label class="button secondary pick"><span data-i18n="plugins.editor.chooseImage">Choose image</span><input type="file" id="icon-file" accept="image/png,image/jpeg,image/webp"></label>
+        <small data-i18n="plugins.editor.imageHint">PNG, JPG or WebP, up to 1 MB.</small>
+      </div>
+      <div class="field">
+        <span class="label" data-i18n="plugins.editor.gallery">Gallery</span>
+        <div class="gallery-list" id="images"></div>
+        <label class="button secondary pick"><span data-i18n="plugins.editor.addScreenshots">Add screenshots</span><input type="file" id="images-file" accept="image/png,image/jpeg,image/webp" multiple></label>
+        <div class="video-row">
+          <div class="box"><input id="video" placeholder="https://youtu.be/..." autocomplete="off" aria-label="YouTube video" data-i18n-attr="aria-label:plugins.editor.video"></div>
+          <button class="button secondary" type="button" id="add-video" data-i18n="plugins.editor.addVideo">Add video</button>
+        </div>
+        <small data-i18n="plugins.editor.galleryHint">Up to 6 screenshots (PNG, JPG or WebP, up to 1 MB each) and 2 YouTube videos. The arrows set the order, the first item is the cover.</small>
+        <p class="error" id="media-error" role="alert"></p>
+        <p class="done" id="media-done" role="status"></p>
+      </div>
+    </section>
+    <div class="buttons">
+      <button class="button primary" type="submit" id="save" data-i18n="plugins.editor.publishPlugin">Publish plugin</button>
+      <a class="button secondary" id="open" hidden data-i18n="plugins.editor.view">View page</a>
+      <p class="error" id="details-error" role="alert"></p>
+      <p class="done" id="details-done" role="status"></p>
+    </div>
+  </form>
+
+  <section id="danger" hidden>
+    <h2 data-i18n="plugins.editor.deleteHeading">Delete plugin</h2>
+    <p data-i18n="plugins.editor.deleteText">This removes the page and every version for good.</p>
+    <button class="button control" type="button" id="delete" data-i18n="plugins.editor.delete">Delete plugin</button>
+  </section>
+    </div>
+  </div>
+</main>
+<footer>
+  <div class="brand">
+    <img src="../../img/icon-192.png" alt="">
+    <span>OPENKOGAMA</span>
+  </div>
+  <p data-i18n="common.notAffiliated">Not affiliated with Multiverse ApS.</p>
+  <p class="legal-links"><a href="../../terms/" data-i18n="common.terms">Terms</a> · <a href="../../privacy/" data-i18n="common.privacy">Privacy</a></p>
+</footer>
+<script src="../../js/footer.js"></script>
+<script src="../../js/header.js"></script>
+</body>
+</html>
