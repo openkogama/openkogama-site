@@ -4,6 +4,7 @@ on:
   push:
     branches: [video-showcase]
     paths: [site/**, .github/workflows/screenshot.yml]
+  workflow_dispatch:
 
 jobs:
   shot:
