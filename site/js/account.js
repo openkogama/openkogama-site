@@ -100,7 +100,7 @@
   async function showAccount() {
     const session = saved();
     if (!session) {
-      show("signin");
+      show(location.hash === "#create" ? "create" : "signin");
       return;
     }
     const me = await call("/me", { token: session.token });
@@ -241,6 +241,10 @@
     fields.password.value = "";
     keep(null);
     show("deleted");
+  });
+
+  window.addEventListener("hashchange", () => {
+    if (location.hash === "#create" && !saved()) show("create");
   });
 
   document.querySelectorAll('a.link[href^="#"]').forEach(link => link.addEventListener("click", async event => {

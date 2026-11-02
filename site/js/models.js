@@ -42,6 +42,8 @@ const DOWNLOAD_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 
 const RUN_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="15" cy="4" r="2.3" fill="currentColor"/><path d="M13.5 7.5 11 13M13 8.6l-3.6 1.6M13 8.6l3.4 3M11 13l3 3-.6 4.6M11 13l-2.6 3.4H4.6" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 const HEART_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.3 4.4 12.9a4.8 4.8 0 0 1 6.8-6.8l.8.8.8-.8a4.8 4.8 0 0 1 6.8 6.8z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg>';
 const OPEN_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4h6v6M20 4l-8 8M18 14v6H4V6h6" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+const MAP_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7l6-3 6 3 6-3v13l-6 3-6-3-6 3zM9 4v13M15 7v13" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"/></svg>';
+const CUBE_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9zM12 12l8-4.5M12 12v9M12 12L4 7.5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"/></svg>';
 
 const grid = document.getElementById("grid");
 const status = document.getElementById("status");
@@ -720,16 +722,40 @@ function card(row) {
       openInspector(row, article, picture);
     }
   });
-  picture.append(likeButton(row), tools);
+  picture.append(likeButton(row), tools, stats(row));
+  const caption = document.createElement("div");
+  caption.className = "caption";
   const title = document.createElement("p");
   title.className = "name";
-  title.textContent = "\u00a0";
+  title.textContent = " ";
+  caption.append(title);
   const meta = document.createElement("p");
   meta.className = "meta";
-  meta.textContent = `${mapCount(row)} · ${counts(row)}`;
-  article.append(picture, title, meta);
+  meta.textContent = KIND.detail(row);
+  article.append(picture, caption, meta);
   article.model = row;
   return article;
+}
+
+function short(value) {
+  if (value >= 1e6) return `${(value / 1e6).toFixed(value >= 1e7 ? 0 : 1)}M`;
+  if (value >= 1e3) return `${(value / 1e3).toFixed(value >= 1e4 ? 0 : 1)}K`;
+  return String(value);
+}
+
+function stat(icon, value, title) {
+  const item = document.createElement("span");
+  item.innerHTML = icon;
+  item.append(short(value));
+  item.title = title;
+  return item;
+}
+
+function stats(row) {
+  const box = document.createElement("div");
+  box.className = "stats";
+  box.append(stat(MAP_ICON, row.maps, mapCount(row)), stat(CUBE_ICON, row.cubes, i18n.t("common.cubes", { count: row.cubes })));
+  return box;
 }
 
 function drain() {

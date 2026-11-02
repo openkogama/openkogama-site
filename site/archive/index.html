@@ -22,6 +22,7 @@
   <nav class="sections">
     <a class="button nav" href="../plugins/" data-i18n="common.nav.plugins">Plugins</a>
     <a class="button nav" href="./" aria-current="page" data-i18n="common.nav.archive">Archive</a>
+    <a class="button nav" href="../play/" data-i18n="common.play">Play</a>
   </nav>
 </header>
 <main>
@@ -30,20 +31,19 @@
     <p data-i18n="archive.tagline">Maps, models, avatars and game versions saved from classic KoGaMa.</p>
     <div class="features">
       <a class="feature" href="../maps/">
-        <h3 data-i18n="archive.maps.title">28,000+ maps</h3>
-        <p data-i18n="archive.maps.text">Archived KoGaMa maps with thumbnails. Search by name, author or id.</p>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7l6 -3l6 3l6 -3v13l-6 3l-6 -3l-6 3v-13"/><path d="M9 4v13"/><path d="M15 7v13"/></svg>
+        <h3 data-i18n="common.nav.maps">Maps</h3>
+        <span class="count" data-i18n="archive.count" data-i18n-args='{"count":28000}'>28,000+</span>
       </a>
       <a class="feature" href="../models/">
-        <h3 data-i18n="archive.models.title">1,000,000+ models</h3>
-        <p data-i18n="archive.models.text">Models from archived KoGaMa maps, with live previews and downloads.</p>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 4.5l0 9l-8 4.5l-8 -4.5l0 -9l8 -4.5"/><path d="M12 12l8 -4.5"/><path d="M12 12l0 9"/><path d="M12 12l-8 -4.5"/></svg>
+        <h3 data-i18n="common.nav.models">Models</h3>
+        <span class="count" data-i18n="archive.count" data-i18n-args='{"count":1000000}'>1,000,000+</span>
       </a>
       <a class="feature" href="../avatars/">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0"/><path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"/></svg>
         <h3 data-i18n="common.nav.avatars">Avatars</h3>
-        <p data-i18n="archive.avatars.text">Archived KoGaMa avatars with live previews and animations.</p>
-      </a>
-      <a class="feature" href="../play/">
-        <h3 data-i18n="home.features.versions.title">600+ versions</h3>
-        <p data-i18n="home.features.versions.text">KoGaMa from 2012 to 2026. Over 500 versions play right in the browser.</p>
+        <span class="count" data-i18n="archive.count" data-i18n-args='{"count":15000}'>15,000+</span>
       </a>
     </div>
   </section>
@@ -54,7 +54,9 @@
     <span>OPENKOGAMA</span>
   </div>
   <p data-i18n="common.notAffiliated">Not affiliated with Multiverse ApS.</p>
+  <p class="legal-links"><a href="../terms/" data-i18n="common.terms">Terms</a> · <a href="../privacy/" data-i18n="common.privacy">Privacy</a></p>
 </footer>
-<script src="../js/session.js"></script>
+<script src="../js/footer.js"></script>
+<script src="../js/header.js"></script>
 </body>
 </html>

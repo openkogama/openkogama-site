@@ -17,7 +17,8 @@
 <link rel="stylesheet" href="../css/style.css">
 <script src="../js/i18n.js"></script>
 <style>
-  body { justify-content: center; align-items: center; gap: 12px; padding: 16px; }
+  body { justify-content: center; align-items: center; gap: 12px; padding: 24px 16px 16px; }
+  .top { align-self: stretch; }
   #game { position: relative; width: min(940px, 100%); aspect-ratio: 940 / 482; background: #000; box-shadow: var(--window-shadow); }
   #unity, #unity canvas, #canvas { display: block; width: 100%; height: 100%; }
   :root { --window: radial-gradient(circle at 50% 45%, #ffffff, #e6e6e6 85%); --window-text: #5f5f5f; --window-heading: #0f0f0f; --window-line: rgba(0, 0, 0, .35); --window-hint: rgba(0, 0, 0, .5); --window-scroll: rgba(0, 0, 0, .25); --window-scroll-hover: rgba(0, 0, 0, .4); --window-shadow: 0 0 0 1px rgba(0, 0, 0, .1), 0 10px 40px rgba(0, 0, 0, .12); --bar: #f2f2f2; --bar-text: #0f0f0f; }
@@ -25,14 +26,15 @@
   #launch, .panel { position: absolute; inset: 0; background: var(--window); }
   #launch { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; }
   #launch[hidden], .panel[hidden], [hidden].toolbar, #world-form[hidden] { display: none; }
-  #launch h2, .panel h2 { margin: 0; font: 400 3.2rem/1 "OpenKogama", system-ui, sans-serif; color: var(--window-heading); }
+  #launch h2, .panel h2 { margin: 0; color: var(--window-heading); }
+  #launch h2 { font: 400 3.2rem/1 "OpenKogama", system-ui, sans-serif; }
   #current { margin-top: -6px; font-size: 1.1rem; color: var(--window-text); }
   #game .button { border: 0; cursor: pointer; }
   #game .button:disabled { opacity: .5; cursor: default; filter: none; }
   #game .button:disabled::before { background: var(--fill); }
   .panel { z-index: 2; display: flex; flex-direction: column; gap: 14px; padding: 20px 24px; }
   .panel header { display: flex; gap: 12px; align-items: center; }
-  .panel h2 { flex: 1; font-size: 2rem; }
+  .panel h2 { flex: 1; font-size: 1.5rem; font-weight: 700; line-height: 1.2; }
   .line { width: 220px; padding: 4px 2px; font: inherit; font-size: .95rem; color: var(--window-heading); background: none; border: 0; border-bottom: 1px solid var(--window-line); outline: 0; }
   .line::placeholder { color: var(--window-hint); }
   .line:focus { border-bottom-color: var(--window-heading); }
@@ -44,7 +46,7 @@
   .scroll::-webkit-scrollbar-track { background: transparent; }
   .scroll::-webkit-scrollbar-thumb { background: var(--window-scroll); }
   .scroll::-webkit-scrollbar-thumb:hover { background: var(--window-scroll-hover); }
-  #list h3 { margin: 14px 0 8px; font: 400 1.4rem/1 "OpenKogama", system-ui, sans-serif; color: var(--window-heading); }
+  #list h3 { margin: 14px 0 8px; font-size: 1.05rem; font-weight: 700; line-height: 1.2; color: var(--window-heading); }
   #list h3:first-child { margin-top: 0; }
   #world-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); align-content: start; gap: 16px 12px; }
   .tile { display: grid; gap: 6px; padding: 0; font: inherit; font-size: .95rem; color: var(--window-heading); text-align: center; background: none; border: 0; cursor: pointer; }
@@ -69,7 +71,7 @@
   .note { min-height: 1.4em; margin: 0; font-size: .9rem; color: var(--window-heading); }
   #below { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 12px; width: min(940px, 100%); min-height: 1.8em; }
   #below #back { justify-self: end; }
-  #below .brand { position: absolute; top: 24px; left: 16px; height: 33px; font-size: 1.3rem; text-decoration: none; }
+  #below .brand { display: none; font-size: 1.3rem; text-decoration: none; }
   .versions { display: grid; grid-template-columns: repeat(auto-fill, minmax(118px, 1fr)); gap: 8px; }
   .versions .button { justify-content: center; padding: 6px 8px; }
   .empty { color: var(--window-text); }
@@ -95,19 +97,19 @@
   html.full, html.full body { overflow: hidden; }
   html.full #game, #game:fullscreen { position: fixed; inset: 0; z-index: 50; width: 100%; height: 100%; max-width: none; aspect-ratio: auto; box-shadow: none; }
   #game { margin-top: auto; }
-  body > footer { margin-top: auto; }
+  body > footer { align-self: stretch; margin-top: auto; margin-bottom: -16px; }
   #rotate { display: none; margin: 0; padding: 0 16px; font-size: .9rem; text-align: center; color: var(--heading); }
   @media (max-width: 700px), (max-height: 520px) and (pointer: coarse) {
     #game { margin-top: 0; }
-    body > footer { display: none; }
+    body > footer, .top { display: none; }
     body { justify-content: flex-start; gap: 0; padding: 0; }
     #game { width: 100%; height: calc(100dvh - 48px); aspect-ratio: auto; box-shadow: none; }
     #below { width: 100%; height: 48px; padding: 0 12px; color: var(--bar-text); background: var(--bar); }
     #below .brand, #below a, #below button { color: var(--bar-text); }
-    #below .brand { position: static; height: auto; font-size: 1.1rem; }
+    #below .brand { display: inline-flex; font-size: 1.1rem; }
     .panel { gap: 10px; padding: 14px 14px 12px; }
     .panel header { flex-wrap: wrap; row-gap: 8px; }
-    .panel h2 { font-size: 1.7rem; }
+    .panel h2 { font-size: 1.3rem; }
     .panel header .line { order: 3; width: 100%; }
     #launch h2 { font-size: 2.4rem; }
     #world-list { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px 10px; }
@@ -131,6 +133,14 @@
 </style>
 </head>
 <body>
+<header class="top">
+  <a class="brand" href="../"><img src="../img/icon-192.png" alt="">OPENKOGAMA</a>
+  <nav class="sections">
+    <a class="button nav" href="../plugins/" data-i18n="common.nav.plugins">Plugins</a>
+    <a class="button nav" href="../archive/" data-i18n="common.nav.archive">Archive</a>
+    <a class="button nav" href="../play/" aria-current="page" data-i18n="common.play">Play</a>
+  </nav>
+</header>
 <div id="game">
   <div id="unity"></div>
   <button class="fullscreen" id="leave" type="button" aria-label="Exit fullscreen" title="Exit fullscreen" data-i18n-attr="aria-label:play.exitFullscreen;title:play.exitFullscreen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M9 4v5H4M20 9h-5V4M15 20v-5h5M4 15h5v5"/></svg></button>
@@ -911,5 +921,7 @@
     return (bytes / 1e6).toLocaleString(i18n.lang, { minimumFractionDigits: digits, maximumFractionDigits: digits });
   }
 </script>
+<script src="../js/footer.js"></script>
+<script src="../js/header.js"></script>
 </body>
 </html>

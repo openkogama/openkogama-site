@@ -1,5 +1,6 @@
 (() => {
   const KEY = "lang";
+  const CACHE = "i18n";
   const root = new URL("../", document.currentScript.src);
   const query = new URLSearchParams(location.search);
   const state = { lang: "en", languages: ["en"], english: {}, strings: {} };
@@ -104,7 +105,7 @@
       url.searchParams.delete(KEY);
       location.href = url.href;
     });
-    footer.append(select);
+    (footer.querySelector(".language-slot") || footer).append(select);
   }
 
   function load(path) {
@@ -113,19 +114,61 @@
 
   const dom = new Promise(resolve => document.readyState === "loading" ? document.addEventListener("DOMContentLoaded", resolve, { once: true }) : resolve());
 
-  const ready = (async () => {
-    const english = load("locales/en.json").catch(() => ({}));
-    state.languages = await load("locales.json").then(list => Array.isArray(list) && list.length ? list : ["en"]).catch(() => ["en"]);
+  function choose(languages) {
     const asked = query.get(KEY);
-    if (asked && state.languages.some(language => same(language, asked))) store(pick(state.languages, [asked]));
-    state.lang = pick(state.languages, [asked, stored(), ...(navigator.languages || [navigator.language])]);
-    const strings = state.lang === "en" ? null : load("locales/" + state.lang + ".json").catch(() => ({}));
-    state.english = await english;
-    state.strings = (await strings) || state.english;
-    await dom;
+    if (asked && languages.some(language => same(language, asked))) store(pick(languages, [asked]));
+    return pick(languages, [asked, stored(), ...(navigator.languages || [navigator.language])]);
+  }
+
+  function cached() {
+    try {
+      const saved = JSON.parse(localStorage.getItem(CACHE));
+      return saved && Array.isArray(saved.languages) && saved.english && saved.strings ? saved : null;
+    } catch {
+      return null;
+    }
+  }
+
+  function remember() {
+    try {
+      localStorage.setItem(CACHE, JSON.stringify({ languages: state.languages, lang: state.lang, english: state.english, strings: state.strings }));
+    } catch {}
+  }
+
+  async function fetchAll() {
+    const english = load("locales/en.json").catch(() => ({}));
+    const languages = await load("locales.json").then(list => Array.isArray(list) && list.length ? list : ["en"]).catch(() => ["en"]);
+    const lang = choose(languages);
+    const strings = lang === "en" ? english : load("locales/" + lang + ".json").catch(() => ({}));
+    return { languages, lang, english: await english, strings: await strings };
+  }
+
+  function show() {
     document.documentElement.lang = tag(state.lang);
     apply();
+    document.querySelector("body > footer > .language")?.remove();
     picker();
+  }
+
+  const ready = (async () => {
+    const saved = cached();
+    const fresh = fetchAll();
+    if (saved && saved.lang === choose(saved.languages)) {
+      Object.assign(state, saved);
+      await dom;
+      show();
+      fresh.then(data => {
+        if (JSON.stringify(data) === JSON.stringify(saved)) return;
+        Object.assign(state, data);
+        remember();
+        show();
+      }).catch(() => {});
+      return;
+    }
+    Object.assign(state, await fresh);
+    remember();
+    await dom;
+    show();
   })();
 
   window.i18n = {

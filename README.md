@@ -16,3 +16,5 @@ Made by nightus.
 - **loafio**: sharing OpenKogama on his server
 - **Limeen**: translating the website and the launcher into French
 - **lordscorpioni**: translating the website and the launcher into Spanish
+
+Icons from [Tabler Icons](https://tabler.io/icons) (MIT).

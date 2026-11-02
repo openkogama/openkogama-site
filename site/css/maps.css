@@ -11,7 +11,7 @@
   aspect-ratio: 350 / 194;
   overflow: hidden;
   cursor: pointer;
-  background: rgb(0 0 0 / 0.06) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-opacity='.25' stroke-width='1.6'%3E%3Cpath d='M12 3 3 7.5v9L12 21l9-4.5v-9z M3 7.5 12 12l9-4.5M12 12v9'/%3E%3C/svg%3E") center / 40px no-repeat;
+  background: var(--bar) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-opacity='.25' stroke-width='1.6'%3E%3Cpath d='M12 3 3 7.5v9L12 21l9-4.5v-9z M3 7.5 12 12l9-4.5M12 12v9'/%3E%3C/svg%3E") center / 40px no-repeat;
   clip-path: polygon(
     var(--cut) 0, calc(100% - var(--cut)) 0,
     100% var(--cut), 100% calc(100% - var(--cut)),
@@ -22,7 +22,7 @@
 
 @media (prefers-color-scheme: dark) {
   .map .picture {
-    background: rgb(0 0 0 / 0.18) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-opacity='.3' stroke-width='1.6'%3E%3Cpath d='M12 3 3 7.5v9L12 21l9-4.5v-9z M3 7.5 12 12l9-4.5M12 12v9'/%3E%3C/svg%3E") center / 40px no-repeat;
+    background: var(--bar) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-opacity='.3' stroke-width='1.6'%3E%3Cpath d='M12 3 3 7.5v9L12 21l9-4.5v-9z M3 7.5 12 12l9-4.5M12 12v9'/%3E%3C/svg%3E") center / 40px no-repeat;
   }
 }
 
@@ -32,19 +32,6 @@
 
 .map .picture > img {
   object-fit: cover;
-}
-
-.map .picture .tools,
-.map .picture .like {
-  top: 0;
-}
-
-.map .picture .tools {
-  right: 0;
-}
-
-.map .picture .like {
-  left: 0;
 }
 
 .map .picture .icon {
@@ -224,7 +211,6 @@
 
 .share-cta {
   margin: -8px 0 20px;
-  text-align: center;
   font-size: 0.95rem;
   color: var(--tagline);
 }
@@ -390,4 +376,14 @@
 
 .inspector.share .actions .button:disabled {
   cursor: default;
+}
+
+.map .picture:not(.blank) .stats span {
+  color: #fff;
+  text-shadow: 0 1px 2px rgb(0 0 0 / 0.75);
+  filter: none;
+}
+
+.map .picture:not(.blank) .stats svg {
+  filter: drop-shadow(0 1px 1px rgb(0 0 0 / 0.75));
 }

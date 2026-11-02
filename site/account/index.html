@@ -18,7 +18,7 @@
 <script src="../js/i18n.js"></script>
 <style>
   :root { --card: var(--secondary); --card-edge: var(--secondary-edge); --field: #ffffff; --title: var(--heading); --label: var(--text);
-    --sub: color-mix(in srgb, var(--text) 68%, transparent); --link: var(--brand); --danger: var(--donate); }
+    --sub: color-mix(in srgb, var(--text) 68%, transparent); --danger: var(--donate); }
   @media (prefers-color-scheme: dark) {
     :root { --field: #1c1c1c; }
   }
@@ -87,6 +87,7 @@
   <nav class="sections">
     <a class="button nav" href="../plugins/" data-i18n="common.nav.plugins">Plugins</a>
     <a class="button nav" href="../archive/" data-i18n="common.nav.archive">Archive</a>
+    <a class="button nav" href="../play/" data-i18n="common.play">Play</a>
   </nav>
 </header>
 <main class="account">
@@ -244,7 +245,8 @@
   <p data-i18n="common.notAffiliated">Not affiliated with Multiverse ApS.</p>
   <p class="legal-links"><a href="../terms/" data-i18n="common.terms">Terms</a> · <a href="../privacy/" data-i18n="common.privacy">Privacy</a></p>
 </footer>
-<script src="../js/session.js"></script>
+<script src="../js/footer.js"></script>
+<script src="../js/header.js"></script>
 <script src="../js/account.js"></script>
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=openkogamaCaptcha" async defer></script>
 </body>
