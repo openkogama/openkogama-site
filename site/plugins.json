@@ -4,7 +4,7 @@
     "name": "Welcome",
     "author": "nightus",
     "description": "Greets players when they join a world, with a configurable message and color.",
-    "source": "https://github.com/openkogama/openkogama-server/tree/mods/examples/welcome",
+    "source": "https://github.com/openkogama/openkogama-server/tree/main/examples/welcome",
     "versions": []
   },
   {
@@ -12,7 +12,7 @@
     "name": "XP",
     "author": "nightus",
     "description": "Type xp in chat to collect a doubling XP reward.",
-    "source": "https://github.com/openkogama/openkogama-server/tree/mods/examples/xp",
+    "source": "https://github.com/openkogama/openkogama-server/tree/main/examples/xp",
     "versions": []
   },
   {
@@ -20,7 +20,7 @@
     "name": "Sandbox",
     "author": "nightus",
     "description": "A flat-island template with pos, gold, block and kills commands.",
-    "source": "https://github.com/openkogama/openkogama-server/tree/mods/examples/sandbox",
+    "source": "https://github.com/openkogama/openkogama-server/tree/main/examples/sandbox",
     "versions": []
   },
   {
@@ -28,7 +28,7 @@
     "name": "Poison",
     "author": "nightus",
     "description": "A poison-floor arena showing terrain kill zones.",
-    "source": "https://github.com/openkogama/openkogama-server/tree/mods/examples/poison",
+    "source": "https://github.com/openkogama/openkogama-server/tree/main/examples/poison",
     "versions": []
   },
   {
@@ -36,7 +36,7 @@
     "name": "Deadzone",
     "author": "nightus",
     "description": "A zombie survival mode with a day and night cycle and NPC waves.",
-    "source": "https://github.com/openkogama/openkogama-server/tree/mods/examples/deadzone",
+    "source": "https://github.com/openkogama/openkogama-server/tree/main/examples/deadzone",
     "versions": []
   },
   {
@@ -44,7 +44,7 @@
     "name": "Portals",
     "author": "nightus",
     "description": "Links trigger objects to other worlds, so players step through to travel.",
-    "source": "https://github.com/openkogama/openkogama-server/tree/mods/examples/portals",
+    "source": "https://github.com/openkogama/openkogama-server/tree/main/examples/portals",
     "versions": []
   },
   {
@@ -52,7 +52,7 @@
     "name": "Worldgen",
     "author": "nightus",
     "description": "Infinite terrain streamed around each player from a seed.",
-    "source": "https://github.com/openkogama/openkogama-server/tree/mods/examples/worldgen",
+    "source": "https://github.com/openkogama/openkogama-server/tree/main/examples/worldgen",
     "versions": []
   },
   {
