@@ -338,19 +338,18 @@ html.inspecting body {
 }
 
 .inspector .close {
-    position: absolute;
-    top: 6px;
-    right: 12px;
-    z-index: 2;
-    padding: 0 4px;
-    font-size: 2rem;
-    line-height: 1;
-    color: var(--card-text);
-    background: none;
-    border: 0;
-    cursor: pointer;
-    opacity: 0.8;
-    outline: none;
+  position: absolute;
+  top: 6px;
+  right: 12px;
+  z-index: 2;
+  padding: 0 4px;
+  font-size: 2rem;
+  line-height: 1;
+  color: var(--card-text);
+  background: none;
+  border: 0;
+  cursor: pointer;
+  opacity: 0.8;
 }
 
 .inspector .close:hover {
