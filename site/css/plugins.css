@@ -2101,3 +2101,46 @@ html.lightbox-open body {
 .editor .done {
   color: var(--tagline);
 }
+
+.plugin-page .rate {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px 12px;
+}
+
+.plugin-page .rate-label {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--tagline);
+}
+
+.plugin-page .stars {
+  display: flex;
+  gap: 2px;
+}
+
+.plugin-page .star {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  color: var(--control-edge);
+  background: none;
+  border: 0;
+  cursor: pointer;
+  transition: color 0.1s;
+}
+
+.plugin-page .star svg {
+  width: 24px;
+  height: 24px;
+}
+
+.plugin-page .star.on {
+  color: #f0b429;
+}
+
+.plugin-page .rate.own .star {
+  cursor: default;
+}

@@ -1,5 +1,5 @@
 import { inline, render as markdown } from "./markdown.js";
-import { date, DOWNLOAD_ICON, downloadUrl, editor, el, fileUrl, get, likeButton, message, PENCIL_ICON, post, save, scanLine, session, SHIELD_ICON, SHIELD_X_ICON, size } from "./catalog.js";
+import { date, DOWNLOAD_ICON, downloadUrl, editor, el, fileUrl, get, likeButton, message, PENCIL_ICON, post, save, scanLine, session, SHIELD_ICON, SHIELD_X_ICON, size, STAR_ICON } from "./catalog.js";
 
 const view = document.getElementById("plugin");
 const slug = /^\/plugins\/([^/]+)\/?$/.exec(location.pathname)?.[1] || new URLSearchParams(location.search).get("id") || "";
@@ -411,7 +411,50 @@ function numbers(plugin) {
   const row = el("div", "numbers");
   row.append(figure(DOWNLOAD_ICON, (plugin.downloads || 0).toLocaleString(i18n.lang), i18n.t("plugins.facts.downloads")));
   if (plugin.updated) row.append(figure(CLOCK_ICON, moment(plugin.updated), i18n.t("plugins.facts.updated")));
+  if (plugin.rating != null) row.append(figure(STAR_ICON, plugin.rating.toLocaleString(i18n.lang, { minimumFractionDigits: 1, maximumFractionDigits: 1 }), i18n.t("plugins.ratings", { count: plugin.ratings || 0 })));
   return row;
+}
+
+function rateBox(plugin) {
+  if (!plugin.state && !session()) return null;
+  const box = el("div", "panel rate");
+  const label = el("p", "rate-label", i18n.t("plugins.rate"));
+  const row = el("div", "stars");
+  const buttons = [];
+  let mine = 0;
+  let own = false;
+  function paint(hover) {
+    const shown = hover || mine;
+    buttons.forEach((button, index) => button.classList.toggle("on", index < shown));
+    label.textContent = own ? i18n.t("plugins.ownPlugin") : mine ? i18n.t("plugins.yourRating", { stars: mine }) : i18n.t("plugins.rate");
+  }
+  for (let value = 1; value <= 5; value++) {
+    const button = el("button", "star");
+    button.type = "button";
+    button.innerHTML = STAR_ICON;
+    button.title = `${value}/5`;
+    button.setAttribute("aria-label", button.title);
+    button.addEventListener("mouseenter", () => { if (!own) paint(value); });
+    button.addEventListener("mouseleave", () => paint(0));
+    button.addEventListener("click", async () => {
+      if (own) return;
+      const reply = await post("rate", { slug, stars: value });
+      if (!reply.ok) return alert(message(reply));
+      mine = reply.data.mine;
+      paint(0);
+    });
+    buttons.push(button);
+    row.append(button);
+  }
+  box.append(label, row);
+  post("rating", { slug }).then(reply => {
+    if (!reply.ok) return;
+    mine = reply.data.mine || 0;
+    own = reply.data.own;
+    if (own) box.classList.add("own");
+    paint(0);
+  });
+  return box;
 }
 
 function about(plugin) {
@@ -463,7 +506,7 @@ function render(plugin) {
   const mod = moderation(plugin);
   if (mod) side.append(mod);
   if (latest) side.append(downloadButton(plugin, latest));
-  side.append(shareRow(plugin), creator(plugin));
+  side.append(...[shareRow(plugin), rateBox(plugin), creator(plugin)].filter(Boolean));
   if (plugin.versions.length) side.append(releases(plugin));
   side.append(...reportLink(plugin));
 

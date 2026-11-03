@@ -499,7 +499,8 @@
     "sorts": {
       "popular": "Najczęściej pobierane",
       "new": "Najnowsze",
-      "updated": "Ostatnio zaktualizowane"
+      "updated": "Ostatnio zaktualizowane",
+      "rated": "Najlepiej oceniane"
     },
     "more": "Pokaż więcej",
     "noResults": "Żaden plugin nie pasuje do wyszukiwania.",
@@ -612,7 +613,14 @@
       "flagged": "Wykryty przez {flagged}/{total} silników",
       "report": "Raport"
     },
-    "versionDetails": "Szczegóły"
+    "versionDetails": "Szczegóły",
+    "rate": "Oceń ten plugin",
+    "yourRating": "Twoja ocena: {stars}/5",
+    "ownPlugin": "Twój własny plugin",
+    "ratings_one": "{count} ocena",
+    "ratings_few": "{count} oceny",
+    "ratings_many": "{count} ocen",
+    "ratings_other": "{count} oceny"
   },
   "footer": {
     "tagline": "Klasyczna KoGaMa przywrócona przez fanów.",

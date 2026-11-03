@@ -4,6 +4,7 @@ const LOCAL = ["localhost", "127.0.0.1"].includes(location.hostname);
 const API = (LOCAL ? "http://127.0.0.1:8098" : "https://accounts.openkogama.org") + "/plugins";
 const KEY = "openkogama-account";
 const HEART_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.3 4.4 12.9a4.8 4.8 0 0 1 6.8-6.8l.8.8.8-.8a4.8 4.8 0 0 1 6.8 6.8z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg>';
+export const STAR_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.8l2.8 6 6.5.8-4.8 4.5 1.3 6.5L12 17.4l-5.8 3.2 1.3-6.5L2.7 9.6l6.5-.8z" fill="currentColor"/></svg>';
 export const DOWNLOAD_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m-5-5 5 5 5-5M4 16v4h16v-4" fill="none" stroke="currentColor" stroke-width="2.5"/></svg>';
 export const PENCIL_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4"/><path d="M13.5 6.5l4 4"/></svg>';
 export const SHIELD_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a12 12 0 0 0 8.5 3a12 12 0 0 1 -8.5 15a12 12 0 0 1 -8.5 -15a12 12 0 0 0 8.5 -3"/><path d="M9 12l2 2l4 -4"/></svg>';
@@ -156,6 +157,13 @@ function stats(plugin) {
   item.append(count(downloads));
   item.title = i18n.t("plugins.downloads", { count: downloads });
   box.append(item);
+  if (plugin.rating != null) {
+    const stars = el("span");
+    stars.innerHTML = STAR_ICON;
+    stars.append(plugin.rating.toLocaleString(i18n.lang, { minimumFractionDigits: 1, maximumFractionDigits: 1 }));
+    stars.title = i18n.t("plugins.ratings", { count: plugin.ratings || 0 });
+    box.append(stars);
+  }
   return box;
 }
 

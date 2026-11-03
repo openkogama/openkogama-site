@@ -477,7 +477,8 @@
     "sorts": {
       "popular": "Most downloaded",
       "new": "Newest",
-      "updated": "Recently updated"
+      "updated": "Recently updated",
+      "rated": "Top rated"
     },
     "more": "Load more",
     "noResults": "No plugins match your search.",
@@ -590,7 +591,12 @@
       "flagged": "Flagged by {flagged}/{total} engines",
       "report": "Report"
     },
-    "versionDetails": "Details"
+    "versionDetails": "Details",
+    "rate": "Rate this plugin",
+    "yourRating": "Your rating: {stars}/5",
+    "ownPlugin": "Your own plugin",
+    "ratings_one": "{count} rating",
+    "ratings_other": "{count} ratings"
   },
   "footer": {
     "tagline": "Classic KoGaMa, brought back by fans.",
