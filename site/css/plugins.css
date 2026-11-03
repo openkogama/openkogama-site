@@ -1264,7 +1264,7 @@ html.lightbox-open body {
   counter-reset: step;
 }
 
-.editor-body:not(.tabbed) .block h2::before {
+.editor-body:not(.tabbed) .block > h2::before {
   counter-increment: step;
   content: counter(step);
   flex: none;
@@ -2143,4 +2143,103 @@ html.lightbox-open body {
 
 .plugin-page .rate.own .star {
   cursor: default;
+}
+
+.editor .preview h2,
+.editor .preview h3,
+.editor .preview h4 {
+  display: block;
+  margin: 18px 0 8px;
+  font-size: 1.15rem;
+  counter-increment: none;
+}
+
+.editor .preview h3 { font-size: 1.05rem; }
+.editor .preview h4 { font-size: 1rem; }
+
+.editor .preview h2::before,
+.editor .preview h3::before,
+.editor .preview h4::before {
+  content: none;
+}
+
+.editor .preview > :first-child {
+  margin-top: 0;
+}
+
+.starbar {
+  position: relative;
+  display: inline-block;
+  height: 1em;
+  line-height: 0;
+  vertical-align: -0.15em;
+  white-space: nowrap;
+}
+
+.starbar .base,
+.starbar .fill {
+  display: inline-block;
+  height: 1em;
+  white-space: nowrap;
+}
+
+.starbar .base {
+  color: var(--control-edge);
+}
+
+.starbar .fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  overflow: hidden;
+  color: #f0b429;
+}
+
+.starbar svg {
+  width: 1em;
+  height: 1em;
+}
+
+.picture .stats .rated .starbar {
+  margin-right: 4px;
+  font-size: 11px;
+}
+
+.plugin-page .number.rating .starbar {
+  margin-right: 4px;
+  font-size: 1rem;
+}
+
+.plugin-page .number.rating .starbar {
+  margin-right: 6px;
+  font-size: 1.3rem;
+}
+
+.plugin-page .number.rating strong {
+  display: inline-flex;
+  align-items: center;
+}
+
+.plugin-page .number.rating {
+  grid-template-columns: auto;
+}
+
+.plugin-page .number.rating .starbar span {
+  font-size: inherit;
+  line-height: 0;
+}
+
+.plugin-page .number.rating .starbar .base {
+  color: var(--control-edge);
+}
+
+.plugin-page .number.rating .starbar .fill {
+  color: #f0b429;
+}
+
+.plugin-page .number.rating .starbar svg {
+  grid-row: auto;
+  width: 1em;
+  height: 1em;
+  color: inherit;
 }

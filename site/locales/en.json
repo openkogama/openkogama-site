@@ -334,7 +334,7 @@
     "delete": "Delete account",
     "deleteInstead": "Delete my account instead",
     "deleteHeading": "Delete your account?",
-    "deleteSub": "Your account, email and sign-ins are deleted right away. This can't be undone.",
+    "deleteSub": "Your account, email, sign-ins and plugins are deleted right away. This can't be undone.",
     "deleteConfirm": "Delete my account",
     "deletedHeading": "Account deleted",
     "deletedSub": "Your account and sign-ins are gone. To also remove your profile on our servers or a map you shared, write to contact@openkogama.org.",
@@ -596,7 +596,9 @@
     "yourRating": "Your rating: {stars}/5",
     "ownPlugin": "Your own plugin",
     "ratings_one": "{count} rating",
-    "ratings_other": "{count} ratings"
+    "ratings_other": "{count} ratings",
+    "noLikedYet": "You have not liked any plugins yet. Tap the heart on a plugin to keep it here.",
+    "noLikedGone": "The plugins you liked are no longer available."
   },
   "footer": {
     "tagline": "Classic KoGaMa, brought back by fans.",

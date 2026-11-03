@@ -350,7 +350,7 @@
     "delete": "Usuń konto",
     "deleteInstead": "Wolę usunąć konto",
     "deleteHeading": "Usunąć konto?",
-    "deleteSub": "Konto, adres email i sesje znikną od razu. Tego nie da się cofnąć.",
+    "deleteSub": "Konto, adres email, sesje i twoje pluginy znikną od razu. Tego nie da się cofnąć.",
     "deleteConfirm": "Usuń moje konto",
     "deletedHeading": "Konto usunięte",
     "deletedSub": "Twoje konto i sesje zniknęły. Żeby usunąć też profil z naszego serwera albo udostępnioną mapę, napisz na contact@openkogama.org.",
@@ -620,7 +620,9 @@
     "ratings_one": "{count} ocena",
     "ratings_few": "{count} oceny",
     "ratings_many": "{count} ocen",
-    "ratings_other": "{count} oceny"
+    "ratings_other": "{count} oceny",
+    "noLikedYet": "Nie polubiłeś jeszcze żadnego pluginu. Kliknij serduszko przy pluginie, żeby go tu mieć.",
+    "noLikedGone": "Polubione pluginy nie są już dostępne."
   },
   "footer": {
     "tagline": "Klasyczna KoGaMa przywrócona przez fanów.",

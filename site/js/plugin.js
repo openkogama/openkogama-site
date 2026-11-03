@@ -1,5 +1,5 @@
 import { inline, render as markdown } from "./markdown.js";
-import { date, DOWNLOAD_ICON, downloadUrl, editor, el, fileUrl, get, likeButton, message, PENCIL_ICON, post, save, scanLine, session, SHIELD_ICON, SHIELD_X_ICON, size, STAR_ICON } from "./catalog.js";
+import { date, DOWNLOAD_ICON, downloadUrl, editor, el, fileUrl, get, likeButton, message, PENCIL_ICON, post, save, scanLine, session, SHIELD_ICON, SHIELD_X_ICON, size, STAR_ICON, starBar } from "./catalog.js";
 
 const view = document.getElementById("plugin");
 const slug = /^\/plugins\/([^/]+)\/?$/.exec(location.pathname)?.[1] || new URLSearchParams(location.search).get("id") || "";
@@ -411,7 +411,13 @@ function numbers(plugin) {
   const row = el("div", "numbers");
   row.append(figure(DOWNLOAD_ICON, (plugin.downloads || 0).toLocaleString(i18n.lang), i18n.t("plugins.facts.downloads")));
   if (plugin.updated) row.append(figure(CLOCK_ICON, moment(plugin.updated), i18n.t("plugins.facts.updated")));
-  if (plugin.rating != null) row.append(figure(STAR_ICON, plugin.rating.toLocaleString(i18n.lang, { minimumFractionDigits: 1, maximumFractionDigits: 1 }), i18n.t("plugins.ratings", { count: plugin.ratings || 0 })));
+  if (plugin.rating != null) {
+    const item = el("div", "number rating");
+    const strong = el("strong");
+    strong.append(starBar(plugin.rating), " ", plugin.rating.toLocaleString(i18n.lang, { minimumFractionDigits: 1, maximumFractionDigits: 1 }));
+    item.append(strong, el("span", null, i18n.t("plugins.ratings", { count: plugin.ratings || 0 })));
+    row.append(item);
+  }
   return row;
 }
 

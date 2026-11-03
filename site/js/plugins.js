@@ -1,3 +1,4 @@
+import { likedList } from "./likes.js";
 import { card, el, get, message, page, post, session } from "./catalog.js";
 
 const grid = document.getElementById("cards");
@@ -5,6 +6,8 @@ const note = document.getElementById("note");
 const more = document.getElementById("more");
 const search = document.getElementById("search");
 const sort = document.getElementById("sort");
+const favorites = document.getElementById("favorites");
+let onlyLiked = location.hash === "#liked";
 let next = 0;
 let asked = 0;
 let typing;
@@ -13,6 +16,17 @@ async function load(fresh) {
   const ticket = ++asked;
   if (fresh) next = 0;
   more.hidden = true;
+  if (onlyLiked) {
+    const slugs = likedList("plugins");
+    const replies = await Promise.all(slugs.map(slug => get("/" + encodeURIComponent(slug))));
+    if (ticket !== asked) return;
+    const words = search.value.trim().toLowerCase();
+    const found = replies.filter(reply => reply.ok).map(reply => reply.data).filter(plugin => !words || `${plugin.name} ${plugin.summary} ${plugin.author}`.toLowerCase().includes(words));
+    grid.replaceChildren(...found.map(card));
+    note.textContent = i18n.t(slugs.length ? (words ? "plugins.noResults" : "plugins.noLikedGone") : "plugins.noLikedYet");
+    note.hidden = found.length > 0;
+    return;
+  }
   const params = new URLSearchParams({ page: String(next), sort: sort.value });
   const words = search.value.trim();
   if (words) params.set("q", words);
@@ -77,6 +91,22 @@ i18n.ready.then(() => {
     typing = setTimeout(() => load(true), 300);
   });
   sort.addEventListener("change", () => load(true));
+  function paintLiked() {
+    favorites.setAttribute("aria-pressed", String(onlyLiked));
+    favorites.querySelector(".count").textContent = likedList("plugins").length || "";
+  }
+  favorites.addEventListener("click", () => {
+    onlyLiked = !onlyLiked;
+    history.replaceState(null, "", onlyLiked ? "#liked" : location.pathname + location.search);
+    paintLiked();
+    load(true);
+  });
+  document.addEventListener("liked", ({ detail }) => {
+    if (detail.kind !== "plugins") return;
+    paintLiked();
+    if (onlyLiked && !detail.liked) load(true);
+  });
+  paintLiked();
   more.addEventListener("click", () => load(false));
   load(true);
   personal();

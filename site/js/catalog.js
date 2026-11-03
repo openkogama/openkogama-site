@@ -149,6 +149,18 @@ function count(value) {
   return String(value);
 }
 
+export function starBar(rating) {
+  const bar = el("span", "starbar");
+  const base = el("span", "base");
+  base.innerHTML = STAR_ICON.repeat(5);
+  const fill = el("span", "fill");
+  fill.innerHTML = STAR_ICON.repeat(5);
+  fill.style.width = `${Math.max(0, Math.min(5, rating)) / 5 * 100}%`;
+  bar.append(base, fill);
+  bar.setAttribute("aria-hidden", "true");
+  return bar;
+}
+
 function stats(plugin) {
   const box = el("div", "stats");
   const downloads = plugin.downloads || 0;
@@ -158,7 +170,7 @@ function stats(plugin) {
   item.title = i18n.t("plugins.downloads", { count: downloads });
   box.append(item);
   if (plugin.rating != null) {
-    const stars = el("span");
+    const stars = el("span", "rated");
     stars.innerHTML = STAR_ICON;
     stars.append(plugin.rating.toLocaleString(i18n.lang, { minimumFractionDigits: 1, maximumFractionDigits: 1 }));
     stars.title = i18n.t("plugins.ratings", { count: plugin.ratings || 0 });
