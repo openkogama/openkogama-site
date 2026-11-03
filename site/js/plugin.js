@@ -111,13 +111,11 @@ function shareRow(plugin) {
 
 function creator(plugin) {
   const box = el("div", "panel creator");
-  const initial = el("span", "initial", ([...(plugin.author || "").trim()][0] || "?").toLocaleUpperCase(i18n.lang));
-  initial.setAttribute("aria-hidden", "true");
   const who = el("div", "who");
   const link = el("a", null, plugin.author);
   link.href = new URL(`../plugins/?q=${encodeURIComponent(plugin.author)}`, import.meta.url).href;
   who.append(el("small", null, i18n.t("plugins.author")), link);
-  box.append(initial, who);
+  box.append(who);
   return box;
 }
 

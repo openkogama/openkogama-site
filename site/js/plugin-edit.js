@@ -32,7 +32,6 @@ function dirty() {
 function changed() {
   if (slug) {
     $("save").disabled = !dirty();
-    $("save-bar").classList.toggle("floating", dirty());
     if (dirty()) say("details-done");
   }
   counters();

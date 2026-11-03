@@ -2091,3 +2091,13 @@ html.lightbox-open body {
   color: var(--tagline);
   border-top: 1px solid var(--secondary-edge);
 }
+
+.editor .save-bar {
+  margin: 24px 0 0;
+  padding: 16px 0 0;
+  border-top: 1px solid var(--secondary-edge);
+}
+
+.editor .done {
+  color: var(--tagline);
+}
