@@ -1,3 +1,4 @@
+import { render } from "./markdown.js";
 import { card, date, el, fileUrl, message, page, post, scanLine, session, size, stateOf, upload } from "./catalog.js";
 
 const MAX_IMAGES = 6;
@@ -474,6 +475,14 @@ window.addEventListener("hashchange", () => {
 
 window.addEventListener("beforeunload", event => {
   if (!body.hidden && (dirty() || picked)) event.preventDefault();
+});
+
+for (const button of document.querySelectorAll("#description-modes button")) button.addEventListener("click", () => {
+  const preview = button.dataset.mode === "preview";
+  for (const other of document.querySelectorAll("#description-modes button")) other.setAttribute("aria-pressed", String(other === button));
+  $("description-preview").hidden = !preview;
+  $("description").closest(".box").hidden = preview;
+  if (preview) $("description-preview").replaceChildren(render($("description").value));
 });
 
 i18n.ready.then(() => {

@@ -1,7 +1,8 @@
+import { inline, render as markdown } from "./markdown.js";
 import { date, DOWNLOAD_ICON, downloadUrl, editor, el, fileUrl, get, likeButton, message, PENCIL_ICON, post, save, scanLine, session, SHIELD_ICON, SHIELD_X_ICON, size } from "./catalog.js";
 
 const view = document.getElementById("plugin");
-const slug = new URLSearchParams(location.search).get("id") || "";
+const slug = /^\/plugins\/([^/]+)\/?$/.exec(location.pathname)?.[1] || new URLSearchParams(location.search).get("id") || "";
 const SHARE_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 12 18 5.5M6 12l12 6.5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="6" cy="12" r="2.8" fill="currentColor"/><circle cx="18" cy="5.5" r="2.8" fill="currentColor"/><circle cx="18" cy="18.5" r="2.8" fill="currentColor"/></svg>';
 const CLOCK_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.8" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M12 7.2V12l3.2 2.2" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 const UNITS = [["year", 31536000], ["month", 2592000], ["week", 604800], ["day", 86400], ["hour", 3600], ["minute", 60]];
@@ -18,33 +19,9 @@ function line(label, value, className) {
   return row;
 }
 
-function linked(text) {
-  const parts = [];
-  let last = 0;
-  for (const match of text.matchAll(/https?:\/\/[^\s<>"]+/g)) {
-    const url = match[0].replace(/[.,!?:;)\]]+$/, "");
-    if (match.index > last) parts.push(text.slice(last, match.index));
-    const link = el("a", null, url);
-    link.href = url;
-    link.target = "_blank";
-    link.rel = "nofollow noopener ugc";
-    parts.push(link);
-    last = match.index + url.length;
-  }
-  if (last < text.length) parts.push(text.slice(last));
-  return parts;
-}
-
 function prose(text) {
   const box = el("div", "prose");
-  for (const block of text.split(/\n{2,}/)) {
-    const paragraph = el("p");
-    block.split("\n").forEach((row, index) => {
-      if (index) paragraph.append(el("br"));
-      paragraph.append(...linked(row));
-    });
-    box.append(paragraph);
-  }
+  box.append(markdown(text));
   return box;
 }
 
@@ -445,7 +422,7 @@ function about(plugin) {
   const parts = [];
   if (lead && !text.startsWith(lead)) {
     const intro = el("p", "lead");
-    intro.append(...linked(lead));
+    intro.append(...inline(lead));
     parts.push(intro);
   }
   if (text) parts.push(prose(text));
@@ -504,6 +481,7 @@ function render(plugin) {
 }
 
 async function find() {
+  if (window.pluginPreload && window.pluginPreload.slug === slug && !session()) return { ok: true, status: 200, data: window.pluginPreload };
   if (session()) {
     const managed = await post("view", { slug });
     if (managed.ok || managed.status === 0) return managed;

@@ -88,7 +88,7 @@ export function downloadUrl(slug, version) {
 }
 
 export function page(slug) {
-  return new URL(`../plugin/?id=${encodeURIComponent(slug)}`, import.meta.url).href;
+  return new URL(`../plugins/${encodeURIComponent(slug)}/`, import.meta.url).href;
 }
 
 export function editor(slug) {

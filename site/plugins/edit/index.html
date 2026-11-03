@@ -92,8 +92,13 @@
           </div>
           <div class="field">
             <div class="label-row"><label for="description" data-i18n="plugins.editor.description">Description</label><span class="counter" data-for="description"></span></div>
-            <div class="box"><textarea id="description" maxlength="5000" rows="12"></textarea></div>
-            <small data-i18n="plugins.editor.descriptionHint">What the plugin does, its commands and how to set it up. Links work.</small>
+            <div class="modes" id="description-modes">
+              <button type="button" data-mode="write" aria-pressed="true" data-i18n="plugins.editor.write">Write</button>
+              <button type="button" data-mode="preview" aria-pressed="false" data-i18n="plugins.editor.preview">Preview</button>
+            </div>
+            <div class="box"><textarea id="description" maxlength="20000" rows="14"></textarea></div>
+            <div class="prose preview" id="description-preview" hidden></div>
+            <small data-i18n="plugins.editor.descriptionHint">What the plugin does, its commands and how to set it up. Markdown works: # heading, **bold**, *italic*, - list, `code`, ``` code block ```, [text](https://link).</small>
           </div>
         </section>
         <section class="block" id="block-media" data-tab="images">

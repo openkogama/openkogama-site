@@ -551,7 +551,7 @@
       "summary": "Krótki opis",
       "summaryHint": "Widać go na liście pluginów.",
       "description": "Opis",
-      "descriptionHint": "Co robi plugin, jakie ma komendy i jak go ustawić. Linki działają.",
+      "descriptionHint": "Co robi plugin, jakie ma komendy i jak go ustawić. Działa Markdown: # nagłówek, **pogrubienie**, *kursywa*, - lista, `kod`, ``` blok kodu ```, [tekst](https://link).",
       "video": "Film na YouTube",
       "icon": "Ikona",
       "chooseImage": "Wybierz obrazek",
@@ -598,7 +598,8 @@
       "moveRight": "Przesuń w prawo",
       "badVideo": "To nie wygląda na link do YouTube.",
       "tooManyVideos": "Plugin może mieć najwyżej 2 filmy.",
-      "galleryHint": "Do 6 zrzutów ekranu i 2 filmów z YouTube. Najlepiej w proporcji 16:9, np. 1920 x 1080. PNG, JPG lub WebP, każdy do 1 MB. Pierwszy jest okładką."
+      "galleryHint": "Do 6 zrzutów ekranu i 2 filmów z YouTube. Najlepiej w proporcji 16:9, np. 1920 x 1080. PNG, JPG lub WebP, każdy do 1 MB. Pierwszy jest okładką.",
+      "write": "Edycja"
     },
     "moderation": "Moderacja",
     "reportThis": "Zgłoś ten plugin",

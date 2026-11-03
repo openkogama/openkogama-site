@@ -1942,3 +1942,104 @@ html.lightbox-open body {
   font-size: 0.85rem;
   color: var(--text);
 }
+
+.prose h2,
+.prose h3,
+.prose h4 {
+  margin: 18px 0 8px;
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--heading);
+}
+
+.prose h2 { font-size: 1.25rem; }
+.prose h3 { font-size: 1.1rem; }
+.prose h4 { font-size: 1rem; }
+
+.prose > :first-child {
+  margin-top: 0;
+}
+
+.prose ul,
+.prose ol {
+  margin: 0 0 10px;
+  padding-left: 24px;
+}
+
+.prose li {
+  margin-bottom: 4px;
+}
+
+.prose code {
+  padding: 1px 5px;
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 0.9em;
+  background: var(--secondary-edge);
+}
+
+.prose pre {
+  margin: 0 0 10px;
+  padding: 10px 12px;
+  overflow-x: auto;
+  background: var(--secondary-edge);
+}
+
+.prose pre code {
+  padding: 0;
+  background: none;
+}
+
+.prose blockquote {
+  margin: 0 0 10px;
+  padding: 4px 14px;
+  color: var(--tagline);
+  border-left: 3px solid var(--secondary-edge);
+}
+
+.prose hr {
+  margin: 14px 0;
+  border: 0;
+  border-top: 1px solid var(--secondary-edge);
+}
+
+.editor .modes {
+  display: flex;
+  gap: 2px;
+  margin-bottom: 8px;
+}
+
+.editor .modes button {
+  padding: 4px 12px;
+  font: inherit;
+  font-size: 0.85rem;
+  color: var(--tagline);
+  background: none;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+}
+
+.editor .modes button:hover {
+  color: var(--heading);
+}
+
+.editor .modes button[aria-pressed="true"] {
+  color: var(--heading);
+  border-bottom-color: var(--accent);
+}
+
+.editor .preview {
+  min-height: 120px;
+  padding: 10px 12px;
+  background: var(--page);
+  border: 1px solid var(--control-edge);
+}
+
+.editor .preview[hidden],
+.editor .box[hidden] {
+  display: none;
+}
+
+.prerender {
+  display: none;
+}

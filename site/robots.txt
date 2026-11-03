@@ -2,3 +2,4 @@ User-agent: *
 Allow: /
 
 Sitemap: https://openkogama.org/sitemap.xml
+Sitemap: https://openkogama.org/sitemap-plugins.xml

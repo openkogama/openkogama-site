@@ -529,7 +529,7 @@
       "summary": "Short description",
       "summaryHint": "Shown on the plugin list.",
       "description": "Description",
-      "descriptionHint": "What the plugin does, its commands and how to set it up. Links work.",
+      "descriptionHint": "What the plugin does, its commands and how to set it up. Markdown works: # heading, **bold**, *italic*, - list, `code`, ``` code block ```, [text](https://link).",
       "video": "YouTube video",
       "icon": "Icon",
       "chooseImage": "Choose image",
@@ -576,7 +576,8 @@
       "moveRight": "Move right",
       "badVideo": "That does not look like a YouTube link.",
       "tooManyVideos": "A plugin can have at most 2 videos.",
-      "galleryHint": "Up to 6 screenshots and 2 YouTube videos. Best at 16:9, for example 1920 x 1080. PNG, JPG or WebP, up to 1 MB each. The first one is the cover."
+      "galleryHint": "Up to 6 screenshots and 2 YouTube videos. Best at 16:9, for example 1920 x 1080. PNG, JPG or WebP, up to 1 MB each. The first one is the cover.",
+      "write": "Write"
     },
     "moderation": "Moderation",
     "reportThis": "Report this plugin",
