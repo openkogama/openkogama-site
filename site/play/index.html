@@ -353,6 +353,7 @@
 
   async function start() {
     document.body.classList.add("playing");
+    document.title = "OpenKogama " + selected.version;
     const base = OpenKogamaOffline.buildUrl(selected.id, "");
     creep("data", i18n.t("play.loading"));
     if (selected.family === "5.3") {
@@ -437,7 +438,6 @@
   function choose(entry) {
     selected = entry;
     currentVersion.textContent = entry.version;
-    document.title = "OpenKogama " + entry.version;
   }
 
   async function loadVersions() {
