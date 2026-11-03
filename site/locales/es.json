@@ -130,7 +130,7 @@
     "title": "Archivo de mapas de KoGaMa - OpenKogama",
     "description": "Explora y juega a más de 28.000 mapas archivados de KoGaMa, conservados con sus miniaturas. Busca por nombre, autor o ID.",
     "noThumbnail": "Todavía sin miniatura",
-    "heading": "MAPAS",
+    "heading": "Mapas",
     "loading": "Cargando mapas",
     "search": "Buscar por nombre, autor o ID",
     "region": "Región",
@@ -182,7 +182,7 @@
   "models": {
     "title": "Modelos de KoGaMa - OpenKogama",
     "description": "Explora más de un millón de modelos de mapas archivados de KoGaMa, con vistas previas interactivas y descargas.",
-    "heading": "MODELOS",
+    "heading": "Modelos",
     "loading": "Cargando modelos",
     "search": "Buscar por nombre o mapa",
     "scale": "Escala",
@@ -223,7 +223,7 @@
   "avatars": {
     "title": "Avatares de KoGaMa - OpenKogama",
     "description": "Explora avatares archivados de KoGaMa con vistas previas interactivas, animaciones y descargas.",
-    "heading": "AVATARES",
+    "heading": "Avatares",
     "loading": "Cargando avatares",
     "search": "Buscar por nombre",
     "source": "Origen",

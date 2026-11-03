@@ -146,7 +146,7 @@
   function show() {
     document.documentElement.lang = tag(state.lang);
     apply();
-    document.querySelector("body > footer > .language")?.remove();
+    document.querySelector("body > footer .language")?.remove();
     picker();
   }
 

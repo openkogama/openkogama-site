@@ -1232,7 +1232,7 @@ html.lightbox-open body {
   position: absolute;
   inset: var(--edge);
   z-index: -1;
-  background: var(--secondary);
+  background: var(--bar);
 }
 
 .editor .block,
@@ -1247,10 +1247,6 @@ html.lightbox-open body {
     calc(100% - var(--cut)) 100%, var(--cut) 100%,
     0 calc(100% - var(--cut)), 0 var(--cut)
   );
-}
-
-.editor .block.danger {
-  background: color-mix(in srgb, var(--donate) 55%, var(--secondary-edge));
 }
 
 .editor .block h2 {
@@ -1443,10 +1439,13 @@ html.lightbox-open body {
 }
 
 .editor .save-bar.floating {
-  position: sticky;
+  position: fixed;
+  left: 0;
+  right: 0;
   bottom: 0;
-  z-index: 2;
-  padding: 12px 16px;
+  z-index: 9;
+  margin: 0;
+  padding: 12px max(16px, calc((100% - 1136px) / 2));
   background: var(--bar);
   border-top: 1px solid var(--secondary-edge);
   backdrop-filter: blur(8px);
@@ -1779,4 +1778,167 @@ html.lightbox-open body {
   .editor .gallery-list { grid-template-columns: repeat(auto-fill, minmax(132px, 1fr)); gap: 10px; }
   .editor .field.narrow { max-width: none; }
   .gate { padding: 22px 16px; }
+}
+
+.editor-body:has(.save-bar.floating) {
+  padding-bottom: 72px;
+}
+
+.editor .save-bar.floating {
+  background: var(--bar);
+  border-top: 1px solid var(--accent);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+.editor .save-bar.floating .unsaved {
+  font-weight: 600;
+  color: var(--heading);
+}
+
+.editor .save-bar.floating .button.primary {
+  --fill: var(--accent);
+  --dark: var(--accent-pressed);
+  --ink: #ffffff;
+}
+
+.editor .save-bar.floating .button.primary:hover {
+  --fill: var(--accent-hover);
+}
+
+.plugin-page details.specs > summary,
+.plugin-page .release-notes > summary {
+  cursor: pointer;
+  list-style: none;
+}
+
+.plugin-page details.specs > summary::-webkit-details-marker,
+.plugin-page .release-notes > summary::-webkit-details-marker {
+  display: none;
+}
+
+.plugin-page details.specs > summary {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--heading);
+}
+
+.plugin-page details.specs > summary::after,
+.plugin-page .release-notes > summary::after {
+  content: " +";
+  color: var(--tagline);
+}
+
+.plugin-page details.specs[open] > summary::after,
+.plugin-page .release-notes[open] > summary::after {
+  content: " \2212";
+}
+
+.plugin-page details.specs[open] > summary {
+  margin-bottom: 12px;
+}
+
+.plugin-page .release-notes > summary {
+  font-size: 0.8rem;
+  color: var(--tagline);
+}
+
+.plugin-page .release-notes .release-facts {
+  margin: 6px 0 4px;
+}
+
+.editor .tile.add {
+  font-weight: 400;
+  color: var(--tagline);
+  border: 2px dashed var(--control-edge);
+  clip-path: none;
+}
+
+.editor .tile.add:hover,
+.editor .tile.add:focus-within {
+  color: var(--heading);
+  border-color: var(--accent);
+}
+
+.editor .tile.add .plus,
+.editor .tile.add svg {
+  color: var(--tagline);
+}
+
+.plugin-page details.specs > summary,
+.plugin-page .release-notes > summary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.plugin-page details.specs > summary::after,
+.plugin-page .release-notes > summary::after {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border: solid currentColor;
+  border-width: 0 2px 2px 0;
+  transform: translateY(-3px) rotate(45deg);
+  transition: transform 0.2s;
+}
+
+.plugin-page details.specs[open] > summary::after,
+.plugin-page .release-notes[open] > summary::after {
+  content: "";
+  transform: translateY(3px) rotate(225deg);
+}
+
+.editor .dropzone,
+.editor .tile.add {
+  --cut: 8px;
+  background: var(--page);
+  border: 1px solid var(--control-edge);
+  clip-path: polygon(
+    var(--cut) 0, calc(100% - var(--cut)) 0,
+    100% var(--cut), 100% calc(100% - var(--cut)),
+    calc(100% - var(--cut)) 100%, var(--cut) 100%,
+    0 calc(100% - var(--cut)), 0 var(--cut)
+  );
+  transition: border-color 0.15s, background-color 0.15s;
+}
+
+.editor .dropzone {
+  gap: 6px;
+  padding: 26px 16px;
+}
+
+.editor .dropzone svg,
+.editor .tile.add .plus svg {
+  width: 28px;
+  height: 28px;
+  color: var(--tagline);
+}
+
+.editor .dropzone-text {
+  font-size: 0.95rem;
+  color: var(--text);
+}
+
+.editor .dropzone-text strong {
+  color: var(--link);
+}
+
+.editor .dropzone:hover,
+.editor .dropzone.over,
+.editor .dropzone:focus-within,
+.editor .tile.add:hover,
+.editor .tile.add:focus-within {
+  background: var(--secondary);
+  border-color: var(--accent);
+}
+
+.editor .dropzone.ready {
+  border-color: var(--accent);
+  border-style: solid;
+}
+
+.editor .tile.add {
+  font-size: 0.85rem;
+  color: var(--text);
 }

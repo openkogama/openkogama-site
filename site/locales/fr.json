@@ -130,7 +130,7 @@
     "title": "Archives des mondes KoGaMa - OpenKogama",
     "description": "Parcourez et jouez à plus de 28 000 mondes KoGaMa archivés, conservés avec leurs vignettes. Effectuez une recherche par nom, auteur ou identifiant.",
     "noThumbnail": "Aucune vignette pour l’instant",
-    "heading": "MONDES",
+    "heading": "Mondes",
     "loading": "Chargement des mondes",
     "search": "Rechercher par nom, auteur ou identifiant",
     "region": "Région",
@@ -182,7 +182,7 @@
   "models": {
     "title": "Modèles KoGaMa - OpenKogama",
     "description": "Explorez plus d'un million de modèles issus de mondes KoGaMa archivés, avec des aperçus en direct et des téléchargements.",
-    "heading": "MODÈLES",
+    "heading": "Modèles",
     "loading": "Chargement des modèles",
     "search": "Rechercher par nom ou par monde",
     "scale": "Échelle",
@@ -223,7 +223,7 @@
   "avatars": {
     "title": "Avatars KoGaMa - OpenKogama",
     "description": "Parcourez des avatars KoGaMa archivés avec des aperçus en direct, des animations et des téléchargements.",
-    "heading": "AVATARS",
+    "heading": "Avatars",
     "loading": "Chargement des avatars",
     "search": "Rechercher par nom",
     "source": "Source",

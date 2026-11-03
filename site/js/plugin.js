@@ -178,7 +178,7 @@ function releases(plugin) {
     const facts = [i18n.t("plugins.downloads", { count: version.downloads ?? 0 }), size(version.size), `${i18n.t("plugins.facts.api")}\u00a0${version.api}+`];
     const age = el("p", "release-age");
     age.append(moment(version.created));
-    text.append(name, el("p", "release-facts", facts.join(" · ")), age);
+    text.append(name, age);
 
     const get = fetcher(plugin, version, "icon release-get");
     get.innerHTML = DOWNLOAD_ICON;
@@ -201,11 +201,10 @@ function releases(plugin) {
     }
     row.append(...[text, approve, badge, get].filter(Boolean));
     item.append(row);
-    if (version.changes) {
-      const notes = el("details", "release-notes");
-      notes.append(el("summary", null, i18n.t("plugins.editor.changes")), prose(version.changes));
-      item.append(notes);
-    }
+    const notes = el("details", "release-notes");
+    notes.append(el("summary", null, i18n.t("plugins.versionDetails")), el("p", "release-facts", facts.join(" · ")));
+    if (version.changes) notes.append(prose(version.changes));
+    item.append(notes);
     list.append(item);
   });
   return section("panel releases", i18n.t("plugins.allVersions"), list);
@@ -470,7 +469,9 @@ function specs(plugin, latest) {
     row.append(el("dt", null, i18n.t("plugins.scan.heading")), data);
     facts.append(row);
   }
-  return section("panel specs", i18n.t("plugins.detailsHeading"), facts);
+  const block = el("details", "panel specs");
+  block.append(el("summary", null, i18n.t("plugins.detailsHeading")), facts);
+  return block;
 }
 
 function render(plugin) {

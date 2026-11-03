@@ -534,8 +534,19 @@ h1 {
 }
 
 .faq summary::-webkit-details-marker { display: none; }
-.faq summary::after { content: "+"; font-weight: 400; opacity: 0.7; }
-.faq details[open] summary::after { content: "\2212"; }
+.faq summary::after {
+  content: "";
+  flex: none;
+  width: 9px;
+  height: 9px;
+  margin: 0 6px 0 0;
+  border: solid currentColor;
+  border-width: 0 2px 2px 0;
+  opacity: 0.7;
+  transform: translateY(-3px) rotate(45deg);
+  transition: transform 0.2s;
+}
+.faq details[open] summary::after { transform: translateY(3px) rotate(225deg); }
 
 .faq details p { margin: 0 4px 16px; }
 .faq a { color: var(--link); }

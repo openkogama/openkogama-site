@@ -134,7 +134,7 @@
     "title": "KoGaMa Maps Archive - OpenKogama",
     "description": "Browse and play 28,000+ archived KoGaMa maps, preserved with thumbnails. Search by name, author or id.",
     "noThumbnail": "No thumbnail yet",
-    "heading": "MAPS",
+    "heading": "Maps",
     "loading": "Loading maps",
     "search": "Search by name, author or id",
     "region": "Region",
@@ -221,7 +221,7 @@
   "models": {
     "title": "KoGaMa Models - OpenKogama",
     "description": "Explore over a million models from archived KoGaMa maps, with live previews and downloads.",
-    "heading": "MODELS",
+    "heading": "Models",
     "loading": "Loading models",
     "search": "Search by name or map",
     "scale": "Scale",
@@ -262,7 +262,7 @@
   "avatars": {
     "title": "KoGaMa Avatars - OpenKogama",
     "description": "Browse archived KoGaMa avatars with live previews, animations and downloads.",
-    "heading": "AVATARS",
+    "heading": "Avatars",
     "loading": "Loading avatars",
     "search": "Search by name",
     "source": "Source",
@@ -468,7 +468,7 @@
       "downloads": "Downloads",
       "updated": "Updated"
     },
-    "detailsHeading": "Details",
+    "detailsHeading": "Technical details",
     "versionsHeading": "Versions",
     "notFound": "There is no such plugin.",
     "empty": "Nothing here yet.",
@@ -588,7 +588,8 @@
       "clean": "Clean ({flagged}/{total})",
       "flagged": "Flagged by {flagged}/{total} engines",
       "report": "Report"
-    }
+    },
+    "versionDetails": "Details"
   },
   "footer": {
     "tagline": "Classic KoGaMa, brought back by fans.",

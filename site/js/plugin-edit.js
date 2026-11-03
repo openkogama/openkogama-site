@@ -120,7 +120,7 @@ function move(index, step) {
   if (target < 0 || target >= images.length) return;
   [images[index], images[target]] = [images[target], images[index]];
   thumbs();
-  const moved = $("images").querySelectorAll(".tile")[target];
+  const moved = $("gallery").querySelectorAll(".tile")[target];
   const buttons = moved ? [...moved.querySelectorAll(".move")] : [];
   (buttons[step < 0 ? 0 : 1]?.disabled ? buttons[step < 0 ? 1 : 0] : buttons[step < 0 ? 0 : 1])?.focus();
 }
@@ -137,7 +137,7 @@ function thumbs() {
   $("icon-remove").hidden = !icon;
   const tiles = images.map(tile);
   if (images.filter(name => !name.startsWith("yt:")).length < MAX_IMAGES) tiles.push(adder());
-  $("images").replaceChildren(...tiles);
+  $("gallery").replaceChildren(...tiles);
   changed();
 }
 
@@ -279,6 +279,7 @@ function fill(data) {
   $("open").hidden = false;
   body.classList.add("tabbed");
   show(TABS.includes(location.hash.slice(1)) ? location.hash.slice(1) : "about");
+  if (location.hash) requestAnimationFrame(() => window.scrollTo(0, 0));
   body.hidden = false;
 }
 
@@ -389,7 +390,7 @@ $("version-file").addEventListener("change", event => {
   if (file) pick(file);
 });
 
-for (const [target, drop] of [[dropzone, files => files[0] && pick(files[0])], [$("images"), addImages]]) {
+for (const [target, drop] of [[dropzone, files => files[0] && pick(files[0])], [$("gallery"), addImages]]) {
   for (const type of ["dragenter", "dragover"]) target.addEventListener(type, event => {
     event.preventDefault();
     target.classList.add("over");

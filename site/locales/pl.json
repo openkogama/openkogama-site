@@ -138,7 +138,7 @@
     "title": "Archiwum map KoGaMy - OpenKogama",
     "description": "Przeglądaj ponad 28 000 zarchiwizowanych map KoGaMy z miniaturkami i graj na nich. Szukaj po nazwie, autorze lub ID.",
     "noThumbnail": "Jeszcze bez miniaturki",
-    "heading": "MAPY",
+    "heading": "Mapy",
     "loading": "Wczytywanie map",
     "search": "Szukaj po nazwie, autorze lub ID",
     "region": "Region",
@@ -233,7 +233,7 @@
   "models": {
     "title": "Modele z KoGaMy - OpenKogama",
     "description": "Przeglądaj ponad milion modeli z zarchiwizowanych map KoGaMy, z podglądem na żywo i do pobrania.",
-    "heading": "MODELE",
+    "heading": "Modele",
     "loading": "Wczytywanie modeli",
     "search": "Szukaj po nazwie lub mapie",
     "scale": "Skala",
@@ -276,7 +276,7 @@
   "avatars": {
     "title": "Awatary z KoGaMy - OpenKogama",
     "description": "Przeglądaj zarchiwizowane awatary z KoGaMy z podglądem na żywo, animacjami i do pobrania.",
-    "heading": "AWATARY",
+    "heading": "Awatary",
     "loading": "Wczytywanie awatarów",
     "search": "Szukaj po nazwie",
     "source": "Źródło",
@@ -490,7 +490,7 @@
       "downloads": "Pobrania",
       "updated": "Zaktualizowano"
     },
-    "detailsHeading": "Szczegóły",
+    "detailsHeading": "Szczegóły techniczne",
     "versionsHeading": "Wersje",
     "notFound": "Nie ma takiego pluginu.",
     "empty": "Na razie nic tu nie ma.",
@@ -610,7 +610,8 @@
       "clean": "Czysty ({flagged}/{total})",
       "flagged": "Wykryty przez {flagged}/{total} silników",
       "report": "Raport"
-    }
+    },
+    "versionDetails": "Szczegóły"
   },
   "footer": {
     "tagline": "Klasyczna KoGaMa przywrócona przez fanów.",
