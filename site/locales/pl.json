@@ -510,7 +510,8 @@
     "states": {
       "pending": "Czeka na akceptację",
       "public": "Publiczny",
-      "hidden": "Ukryty"
+      "hidden": "Ukryty",
+      "draft": "Szkic"
     },
     "banner": {
       "pending": "Ten plugin czeka na akceptację. Widzisz go tylko ty i moderatorzy.",
@@ -537,6 +538,11 @@
     "screenshot": "Zrzut ekranu {number}",
     "editor": {
       "title": "Udostępnij plugin - OpenKogama",
+      "tabs": {
+        "about": "Opis",
+        "images": "Obrazki",
+        "versions": "Wersje"
+      },
       "newHeading": "Udostępnij plugin",
       "editHeading": "Edycja pluginu",
       "signInHeading": "Udostępnij swój plugin",
@@ -550,7 +556,7 @@
       "icon": "Ikona",
       "chooseImage": "Wybierz obrazek",
       "addScreenshots": "Dodaj zrzuty ekranu",
-      "imageHint": "Kwadrat, co najmniej 256 x 256. PNG, JPG lub WebP, do 1 MB.",
+      "imageHint": "Kwadrat, co najmniej 256 x 256. PNG, JPG lub WebP, do 1 MB.",
       "remove": "Usuń",
       "uploading": "Wysyłanie...",
       "notImage": "Ten plik nie jest obrazkiem.",
@@ -573,21 +579,26 @@
       "confirmDelete": "Usunąć {name} i wszystkie jego wersje?",
       "file": "Plik pluginu",
       "dropHint": "albo upuść go tutaj",
-      "fileHint": "Plik .dll zbudowany pod serwer OpenKogama, do 10 MB.",
+      "fileHint": "Plik .dll zbudowany pod serwer OpenKogama, do 10 MB.",
       "versionHint": "Odczytana z pliku. Zmień, jeśli trzeba.",
       "about": "O pluginie",
       "media": "Obrazki",
       "newVersion": "Nowa wersja",
       "publishPlugin": "Opublikuj plugin",
       "saveChanges": "Zapisz zmiany",
+      "unsaved": "Masz niezapisane zmiany.",
       "fileRequired": "Najpierw wybierz plik pluginu.",
+      "nameLength": "Nazwa ma od 2 do 40 znaków.",
+      "summaryRequired": "Wpisz krótki opis.",
       "gallery": "Galeria",
+      "cover": "Okładka",
+      "preview": "Podgląd",
       "addVideo": "Dodaj film",
       "moveLeft": "Przesuń w lewo",
       "moveRight": "Przesuń w prawo",
       "badVideo": "To nie wygląda na link do YouTube.",
       "tooManyVideos": "Plugin może mieć najwyżej 2 filmy.",
-      "galleryHint": "Do 6 zrzutów ekranu i 2 filmów z YouTube. Najlepiej w proporcji 16:9, np. 1920 x 1080. PNG, JPG lub WebP, każdy do 1 MB. Strzałki ustawiają kolejność, pierwszy element jest okładką."
+      "galleryHint": "Do 6 zrzutów ekranu i 2 filmów z YouTube. Najlepiej w proporcji 16:9, np. 1920 x 1080. PNG, JPG lub WebP, każdy do 1 MB. Pierwszy jest okładką."
     },
     "moderation": "Moderacja",
     "reportThis": "Zgłoś ten plugin",

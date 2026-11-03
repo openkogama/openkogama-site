@@ -488,7 +488,8 @@
     "states": {
       "pending": "Waiting for approval",
       "public": "Public",
-      "hidden": "Hidden"
+      "hidden": "Hidden",
+      "draft": "Draft"
     },
     "banner": {
       "pending": "This plugin is waiting for approval. Only you and moderators can see it.",
@@ -515,6 +516,11 @@
     "screenshot": "Screenshot {number}",
     "editor": {
       "title": "Share a plugin - OpenKogama",
+      "tabs": {
+        "about": "About",
+        "images": "Images",
+        "versions": "Versions"
+      },
       "newHeading": "Share a plugin",
       "editHeading": "Edit plugin",
       "signInHeading": "Share your plugin",
@@ -528,7 +534,7 @@
       "icon": "Icon",
       "chooseImage": "Choose image",
       "addScreenshots": "Add screenshots",
-      "imageHint": "Square, 256 x 256 or larger. PNG, JPG or WebP, up to 1 MB.",
+      "imageHint": "Square, 256 x 256 or larger. PNG, JPG or WebP, up to 1 MB.",
       "remove": "Remove",
       "uploading": "Uploading...",
       "notImage": "That file is not an image.",
@@ -551,21 +557,26 @@
       "confirmDelete": "Delete {name} and all its versions?",
       "file": "Plugin file",
       "dropHint": "or drop it here",
-      "fileHint": "A .dll built for the OpenKogama server, up to 10 MB.",
+      "fileHint": "A .dll built for the OpenKogama server, up to 10 MB.",
       "versionHint": "Read from the file. Change it if you need to.",
       "about": "About the plugin",
       "media": "Images",
       "newVersion": "New version",
       "publishPlugin": "Publish plugin",
       "saveChanges": "Save changes",
+      "unsaved": "You have unsaved changes.",
       "fileRequired": "Choose the plugin file first.",
+      "nameLength": "A name has 2 to 40 characters.",
+      "summaryRequired": "Write a short description.",
       "gallery": "Gallery",
+      "cover": "Cover",
+      "preview": "Preview",
       "addVideo": "Add video",
       "moveLeft": "Move left",
       "moveRight": "Move right",
       "badVideo": "That does not look like a YouTube link.",
       "tooManyVideos": "A plugin can have at most 2 videos.",
-      "galleryHint": "Up to 6 screenshots and 2 YouTube videos. Best at 16:9, for example 1920 x 1080. PNG, JPG or WebP, up to 1 MB each. The arrows set the order, the first item is the cover."
+      "galleryHint": "Up to 6 screenshots and 2 YouTube videos. Best at 16:9, for example 1920 x 1080. PNG, JPG or WebP, up to 1 MB each. The first one is the cover."
     },
     "moderation": "Moderation",
     "reportThis": "Report this plugin",

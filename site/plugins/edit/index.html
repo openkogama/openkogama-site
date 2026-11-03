@@ -26,99 +26,121 @@
 </header>
 <main class="editor">
   <p class="crumbs"><a href="../" data-i18n="common.nav.plugins">Plugins</a><span id="crumb-plugin" hidden> › <a id="crumb-link"></a></span></p>
-  <h1 id="heading" data-i18n="plugins.editor.newHeading">Share a plugin</h1>
+  <header class="editor-head">
+    <div class="editor-title">
+      <span class="editor-icon" id="head-icon" hidden></span>
+      <h1 id="heading" data-i18n="plugins.editor.newHeading">Share a plugin</h1>
+      <span class="state" id="head-state" hidden></span>
+    </div>
+    <a class="button secondary" id="open" hidden data-i18n="plugins.editor.view">View page</a>
+  </header>
   <p class="banner" id="banner" hidden></p>
   <div class="gate" id="signin" hidden>
     <h2 data-i18n="plugins.editor.signInHeading">Share your plugin</h2>
     <p data-i18n="plugins.editor.signIn">Sign in to share your plugins.</p>
     <a class="button accent" href="../../account/" data-i18n="common.signIn">Sign in</a>
   </div>
-  <p class="note" id="missing" hidden data-i18n="plugins.notFound">There is no such plugin.</p>
+  <p class="note" id="missing" hidden><span data-i18n="plugins.notFound">There is no such plugin.</span> <a href="../" data-i18n="plugins.all">All plugins</a></p>
 
   <div class="editor-body" id="editor-body" hidden>
-    <nav class="editor-nav">
-      <a href="#block-file" id="nav-file" data-i18n="plugins.editor.file">Plugin file</a>
-      <a href="#block-about" data-i18n="plugins.editor.about">About the plugin</a>
-      <a href="#block-media" data-i18n="plugins.editor.media">Images</a>
-      <a href="#danger" id="nav-danger" hidden data-i18n="plugins.editor.deleteHeading">Delete plugin</a>
+    <nav class="editor-tabs" id="tabs" role="tablist" hidden>
+      <a href="#about" role="tab" data-target="about" data-i18n="plugins.editor.tabs.about">About</a>
+      <a href="#images" role="tab" data-target="images" data-i18n="plugins.editor.tabs.images">Images</a>
+      <a href="#versions" role="tab" data-target="versions"><span data-i18n="plugins.editor.tabs.versions">Versions</span><span class="count" id="version-count"></span></a>
     </nav>
     <div class="editor-main">
-
-  <form id="details">
-    <section class="block" id="block-file">
-      <h2 id="file-heading" data-i18n="plugins.editor.file">Plugin file</h2>
-      <label class="dropzone" id="dropzone">
-        <input type="file" id="version-file" accept=".dll">
-        <span class="dropzone-text"><strong data-i18n="plugins.editor.chooseDll">Choose .dll</strong> <span data-i18n="plugins.editor.dropHint">or drop it here</span></span>
-        <span class="dropzone-file" id="version-picked"></span>
-      </label>
-      <small data-i18n="plugins.editor.fileHint">A .dll built for the OpenKogama server, up to 10 MB.</small>
-      <div class="field">
-        <label for="version" data-i18n="plugins.editor.version">Version</label>
-        <div class="box"><input id="version" maxlength="32" autocomplete="off"></div>
-        <small data-i18n="plugins.editor.versionHint">Read from the file. Change it if you need to.</small>
-      </div>
-      <div class="field" id="changes-field" hidden>
-        <label for="changes" data-i18n="plugins.editor.changes">What changed</label>
-        <div class="box"><textarea id="changes" maxlength="2000" rows="4"></textarea></div>
-      </div>
-      <p class="error" id="version-error" role="alert"></p>
-      <p class="done" id="version-done" role="status"></p>
-      <button class="button primary" type="button" id="publish" hidden disabled data-i18n="plugins.editor.publish">Publish version</button>
-      <ul class="release-list" id="version-list"></ul>
-    </section>
-    <section class="block" id="block-about">
-      <h2 data-i18n="plugins.editor.about">About the plugin</h2>
-      <div class="field">
-        <label for="name" data-i18n="plugins.editor.name">Name</label>
-        <div class="box"><input id="name" maxlength="40" required></div>
-      </div>
-      <div class="field">
-        <label for="summary" data-i18n="plugins.editor.summary">Short description</label>
-        <div class="box"><input id="summary" maxlength="120" required></div>
-        <small data-i18n="plugins.editor.summaryHint">Shown on the plugin list.</small>
-      </div>
-      <div class="field">
-        <label for="description" data-i18n="plugins.editor.description">Description</label>
-        <div class="box"><textarea id="description" maxlength="5000" rows="10"></textarea></div>
-        <small data-i18n="plugins.editor.descriptionHint">What the plugin does, its commands and how to set it up. Links work.</small>
-      </div>
-    </section>
-    <section class="block" id="block-media">
-      <h2 data-i18n="plugins.editor.media">Images</h2>
-      <div class="field">
-        <span class="label" data-i18n="plugins.editor.icon">Icon</span>
-        <div class="images" id="icon"></div>
-        <label class="button secondary pick"><span data-i18n="plugins.editor.chooseImage">Choose image</span><input type="file" id="icon-file" accept="image/png,image/jpeg,image/webp"></label>
-        <small data-i18n="plugins.editor.imageHint">PNG, JPG or WebP, up to 1 MB.</small>
-      </div>
-      <div class="field">
-        <span class="label" data-i18n="plugins.editor.gallery">Gallery</span>
-        <div class="gallery-list" id="images"></div>
-        <label class="button secondary pick"><span data-i18n="plugins.editor.addScreenshots">Add screenshots</span><input type="file" id="images-file" accept="image/png,image/jpeg,image/webp" multiple></label>
-        <div class="video-row">
-          <div class="box"><input id="video" placeholder="https://youtu.be/..." autocomplete="off" aria-label="YouTube video" data-i18n-attr="aria-label:plugins.editor.video"></div>
-          <button class="button secondary" type="button" id="add-video" data-i18n="plugins.editor.addVideo">Add video</button>
+      <section class="block" id="block-file" data-tab="versions">
+        <h2 id="file-heading" data-i18n="plugins.editor.file">Plugin file</h2>
+        <label class="dropzone" id="dropzone">
+          <input type="file" id="version-file" accept=".dll">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15V4m-4.5 4.5L12 4l4.5 4.5M5 14v5h14v-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span class="dropzone-text"><strong data-i18n="plugins.editor.chooseDll">Choose .dll</strong> <span data-i18n="plugins.editor.dropHint">or drop it here</span></span>
+          <span class="dropzone-hint" data-i18n="plugins.editor.fileHint">A .dll built for the OpenKogama server, up to 10 MB.</span>
+          <span class="dropzone-file" id="version-picked"></span>
+        </label>
+        <div class="field narrow">
+          <label for="version" data-i18n="plugins.editor.version">Version</label>
+          <div class="box"><input id="version" maxlength="32" autocomplete="off"></div>
+          <small data-i18n="plugins.editor.versionHint">Read from the file. Change it if you need to.</small>
         </div>
-        <small data-i18n="plugins.editor.galleryHint">Up to 6 screenshots (PNG, JPG or WebP, up to 1 MB each) and 2 YouTube videos. The arrows set the order, the first item is the cover.</small>
-        <p class="error" id="media-error" role="alert"></p>
-        <p class="done" id="media-done" role="status"></p>
-      </div>
-    </section>
-    <div class="buttons">
-      <button class="button primary" type="submit" id="save" data-i18n="plugins.editor.publishPlugin">Publish plugin</button>
-      <a class="button secondary" id="open" hidden data-i18n="plugins.editor.view">View page</a>
-      <p class="error" id="details-error" role="alert"></p>
-      <p class="done" id="details-done" role="status"></p>
-    </div>
-  </form>
+        <div class="field" id="changes-field" hidden>
+          <div class="label-row"><label for="changes" data-i18n="plugins.editor.changes">What changed</label><span class="counter" data-for="changes"></span></div>
+          <div class="box"><textarea id="changes" maxlength="2000" rows="4"></textarea></div>
+        </div>
+        <p class="error" id="version-error" role="alert"></p>
+        <p class="done" id="version-done" role="status"></p>
+        <div class="publish-bar" id="publish-row" hidden>
+          <button class="button primary" type="button" id="publish" disabled data-i18n="plugins.editor.publish">Publish version</button>
+        </div>
+      </section>
+      <section class="block" id="block-versions" data-tab="versions" hidden>
+        <h2 data-i18n="plugins.versionsHeading">Versions</h2>
+        <ul class="release-list" id="version-list"></ul>
+      </section>
 
-  <section id="danger" hidden>
-    <h2 data-i18n="plugins.editor.deleteHeading">Delete plugin</h2>
-    <p data-i18n="plugins.editor.deleteText">This removes the page and every version for good.</p>
-    <button class="button control" type="button" id="delete" data-i18n="plugins.editor.delete">Delete plugin</button>
-  </section>
+      <form id="details" novalidate>
+        <section class="block" id="block-about" data-tab="about">
+          <h2 data-i18n="plugins.editor.about">About the plugin</h2>
+          <div class="field">
+            <div class="label-row"><label for="name" data-i18n="plugins.editor.name">Name</label><span class="counter" data-for="name"></span></div>
+            <div class="box"><input id="name" maxlength="40" required autocomplete="off"></div>
+          </div>
+          <div class="field">
+            <div class="label-row"><label for="summary" data-i18n="plugins.editor.summary">Short description</label><span class="counter" data-for="summary"></span></div>
+            <div class="box"><textarea id="summary" class="line" maxlength="120" rows="2" required></textarea></div>
+            <small data-i18n="plugins.editor.summaryHint">Shown on the plugin list.</small>
+          </div>
+          <div class="field">
+            <div class="label-row"><label for="description" data-i18n="plugins.editor.description">Description</label><span class="counter" data-for="description"></span></div>
+            <div class="box"><textarea id="description" maxlength="5000" rows="12"></textarea></div>
+            <small data-i18n="plugins.editor.descriptionHint">What the plugin does, its commands and how to set it up. Links work.</small>
+          </div>
+        </section>
+        <section class="block" id="block-media" data-tab="images">
+          <h2 data-i18n="plugins.editor.media">Images</h2>
+          <div class="field">
+            <span class="label" data-i18n="plugins.editor.icon">Icon</span>
+            <div class="icon-row">
+              <div class="icon-preview" id="icon"></div>
+              <div class="icon-tools">
+                <div class="icon-buttons">
+                  <label class="button secondary pick"><span data-i18n="plugins.editor.chooseImage">Choose image</span><input type="file" id="icon-file" accept="image/png,image/jpeg,image/webp"></label>
+                  <button class="button secondary" type="button" id="icon-remove" hidden data-i18n="plugins.editor.remove">Remove</button>
+                </div>
+                <small data-i18n="plugins.editor.imageHint">Square, 256 x 256 or larger. PNG, JPG or WebP, up to 1 MB.</small>
+              </div>
+            </div>
+          </div>
+          <div class="field">
+            <div class="label-row"><span class="label" data-i18n="plugins.editor.gallery">Gallery</span><span class="counter" id="gallery-count"></span></div>
+            <div class="gallery-list" id="images"></div>
+            <div class="video-row">
+              <div class="box"><input id="video" placeholder="https://youtu.be/..." autocomplete="off" aria-label="YouTube video" data-i18n-attr="aria-label:plugins.editor.video"></div>
+              <button class="button secondary" type="button" id="add-video" data-i18n="plugins.editor.addVideo">Add video</button>
+            </div>
+            <small data-i18n="plugins.editor.galleryHint">Up to 6 screenshots and 2 YouTube videos. Best at 16:9, for example 1920 x 1080. PNG, JPG or WebP, up to 1 MB each. The first one is the cover.</small>
+            <p class="error" id="media-error" role="alert"></p>
+            <p class="done" id="media-done" role="status"></p>
+          </div>
+        </section>
+        <div class="save-bar" id="save-bar" data-tab="about images">
+          <button class="button primary" type="submit" id="save" data-i18n="plugins.editor.publishPlugin">Publish plugin</button>
+          <p class="unsaved" data-i18n="plugins.editor.unsaved">You have unsaved changes.</p>
+          <p class="error" id="details-error" role="alert"></p>
+          <p class="done" id="details-done" role="status"></p>
+        </div>
+      </form>
+
+      <section class="block danger" id="danger" data-tab="about" hidden>
+        <h2 data-i18n="plugins.editor.deleteHeading">Delete plugin</h2>
+        <p data-i18n="plugins.editor.deleteText">This removes the page and every version for good.</p>
+        <button class="button control" type="button" id="delete" data-i18n="plugins.editor.delete">Delete plugin</button>
+      </section>
     </div>
+    <aside class="editor-side" id="side">
+      <p class="side-label" data-i18n="plugins.editor.preview">Preview</p>
+      <div class="grid maps" id="preview"></div>
+    </aside>
   </div>
 </main>
 <footer>

@@ -5,6 +5,9 @@ const API = (LOCAL ? "http://127.0.0.1:8098" : "https://accounts.openkogama.org"
 const KEY = "openkogama-account";
 const HEART_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.3 4.4 12.9a4.8 4.8 0 0 1 6.8-6.8l.8.8.8-.8a4.8 4.8 0 0 1 6.8 6.8z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg>';
 export const DOWNLOAD_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m-5-5 5 5 5-5M4 16v4h16v-4" fill="none" stroke="currentColor" stroke-width="2.5"/></svg>';
+export const PENCIL_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4"/><path d="M13.5 6.5l4 4"/></svg>';
+export const SHIELD_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a12 12 0 0 0 8.5 3a12 12 0 0 1 -8.5 15a12 12 0 0 1 -8.5 -15a12 12 0 0 0 8.5 -3"/><path d="M9 12l2 2l4 -4"/></svg>';
+export const SHIELD_X_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a12 12 0 0 0 8.5 3a12 12 0 0 1 -8.5 15a12 12 0 0 1 -8.5 -15a12 12 0 0 0 8.5 -3"/><path d="M10 10l4 4m0 -4l-4 4"/></svg>';
 
 export function el(tag, className, text) {
   const node = document.createElement(tag);
@@ -94,7 +97,11 @@ export function editor(slug) {
 
 export function size(bytes) {
   const kilobytes = Math.max(1, Math.round(bytes / 1024));
-  return new Intl.NumberFormat(i18n.lang, { style: "unit", unit: "kilobyte", unitDisplay: "short" }).format(kilobytes);
+  return new Intl.NumberFormat(i18n.lang, { style: "unit", unit: "kilobyte", unitDisplay: "short" }).format(kilobytes).replace(/ /g, "\u00a0");
+}
+
+export function stateOf(plugin) {
+  return plugin.state === "pending" && !plugin.version && !plugin.versions?.length ? "draft" : plugin.state;
 }
 
 export function date(seconds) {
@@ -152,7 +159,18 @@ function stats(plugin) {
   return box;
 }
 
-export function card(plugin) {
+function tool(className, href, title, icon) {
+  const tools = el("div", "tools");
+  const link = el("a", `icon ${className}`);
+  link.href = href;
+  link.title = title;
+  link.setAttribute("aria-label", title);
+  link.innerHTML = icon;
+  tools.append(link);
+  return tools;
+}
+
+export function card(plugin, editable) {
   const href = page(plugin.slug);
   const article = el("article", "card map plugin");
   const frame = picture(plugin);
@@ -161,17 +179,9 @@ export function card(plugin) {
   open.tabIndex = -1;
   open.setAttribute("aria-hidden", "true");
   frame.append(open);
-  if (plugin.state) frame.append(el("span", `state ${plugin.state}`, i18n.t(`plugins.states.${plugin.state}`)));
-  else if (plugin.version) {
-    const tools = el("div", "tools");
-    const link = el("a", "icon save");
-    link.href = downloadUrl(plugin.slug);
-    link.title = i18n.t("common.downloadFile", { extension: ".dll" });
-    link.setAttribute("aria-label", link.title);
-    link.innerHTML = DOWNLOAD_ICON;
-    tools.append(link);
-    frame.append(tools);
-  }
+  if (plugin.state) frame.append(el("span", `state ${stateOf(plugin)}`, i18n.t(`plugins.states.${stateOf(plugin)}`)));
+  if (editable === true) frame.append(tool("edit", editor(plugin.slug), i18n.t("plugins.edit"), PENCIL_ICON));
+  else if (!plugin.state && plugin.version) frame.append(tool("save", downloadUrl(plugin.slug), i18n.t("common.downloadFile", { extension: ".dll" }), DOWNLOAD_ICON));
   frame.append(likeButton(plugin), stats(plugin));
   const caption = el("div", "caption");
   const title = el("p", "name");
@@ -187,6 +197,28 @@ export function card(plugin) {
   meta.append(...i18n.parts("common.by", { author }));
   article.append(frame, caption, meta);
   return article;
+}
+
+export function scanLine(version) {
+  const scan = version.scan;
+  if (!scan) return null;
+  const box = el("span", "scan");
+  if (scan.state !== "done") {
+    box.classList.add("pending");
+    box.innerHTML = SHIELD_ICON;
+    box.append(i18n.t("plugins.scan.pending"));
+    return box;
+  }
+  const flagged = scan.malicious + scan.suspicious;
+  box.classList.add(flagged ? "flagged" : "clean");
+  box.innerHTML = flagged ? SHIELD_X_ICON : SHIELD_ICON;
+  box.append(i18n.t(flagged ? "plugins.scan.flagged" : "plugins.scan.clean", { flagged, total: scan.total }), " ");
+  const link = el("a", null, i18n.t("plugins.scan.report"));
+  link.href = scan.url;
+  link.target = "_blank";
+  link.rel = "noopener";
+  box.append(link);
+  return box;
 }
 
 document.addEventListener("liked", ({ detail }) => {

@@ -1,9 +1,8 @@
-import { date, DOWNLOAD_ICON, downloadUrl, editor, el, fileUrl, get, likeButton, message, post, save, session, size } from "./catalog.js";
+import { date, DOWNLOAD_ICON, downloadUrl, editor, el, fileUrl, get, likeButton, message, PENCIL_ICON, post, save, scanLine, session, SHIELD_ICON, SHIELD_X_ICON, size } from "./catalog.js";
 
 const view = document.getElementById("plugin");
 const slug = new URLSearchParams(location.search).get("id") || "";
 const SHARE_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 12 18 5.5M6 12l12 6.5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="6" cy="12" r="2.8" fill="currentColor"/><circle cx="18" cy="5.5" r="2.8" fill="currentColor"/><circle cx="18" cy="18.5" r="2.8" fill="currentColor"/></svg>';
-const PENCIL_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4"/><path d="M13.5 6.5l4 4"/></svg>';
 const CLOCK_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.8" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M12 7.2V12l3.2 2.2" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 const UNITS = [["year", 31536000], ["month", 2592000], ["week", 604800], ["day", 86400], ["hour", 3600], ["minute", 60]];
 
@@ -77,7 +76,7 @@ function image(name, className) {
 }
 
 function fetcher(plugin, version, className) {
-  if (plugin.state === "public" || !plugin.state) {
+  if ((plugin.state === "public" || !plugin.state) && !version.pending) {
     const link = el("a", className);
     link.href = downloadUrl(plugin.slug, version.version);
     return link;
@@ -145,31 +144,6 @@ function creator(plugin) {
   return box;
 }
 
-const SHIELD_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a12 12 0 0 0 8.5 3a12 12 0 0 1 -8.5 15a12 12 0 0 1 -8.5 -15a12 12 0 0 0 8.5 -3"/><path d="M9 12l2 2l4 -4"/></svg>';
-const SHIELD_X_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a12 12 0 0 0 8.5 3a12 12 0 0 1 -8.5 15a12 12 0 0 1 -8.5 -15a12 12 0 0 0 8.5 -3"/><path d="M10 10l4 4m0 -4l-4 4"/></svg>';
-
-function scanLine(version) {
-  const scan = version.scan;
-  if (!scan) return null;
-  const box = el("span", "scan");
-  if (scan.state !== "done") {
-    box.classList.add("pending");
-    box.innerHTML = SHIELD_ICON;
-    box.append(i18n.t("plugins.scan.pending"));
-    return box;
-  }
-  const flagged = scan.malicious + scan.suspicious;
-  box.classList.add(flagged ? "flagged" : "clean");
-  box.innerHTML = flagged ? SHIELD_X_ICON : SHIELD_ICON;
-  box.append(i18n.t(flagged ? "plugins.scan.flagged" : "plugins.scan.clean", { flagged, total: scan.total }), " ");
-  const link = el("a", null, i18n.t("plugins.scan.report"));
-  link.href = scan.url;
-  link.target = "_blank";
-  link.rel = "noopener";
-  box.append(link);
-  return box;
-}
-
 function scanBadge(version) {
   const scan = version.scan;
   if (!scan) return null;
@@ -201,7 +175,7 @@ function releases(plugin) {
     const name = el("p", "release-name", label(version.version));
     if (version.pending) name.append(" ", el("span", "current pending", i18n.t("plugins.states.pending")));
     else if (version === live) name.append(" ", el("span", "current", i18n.t("plugins.current")));
-    const facts = [i18n.t("plugins.downloads", { count: version.downloads ?? 0 }), size(version.size), `${i18n.t("plugins.facts.api")} ${version.api}+`];
+    const facts = [i18n.t("plugins.downloads", { count: version.downloads ?? 0 }), size(version.size), `${i18n.t("plugins.facts.api")}\u00a0${version.api}+`];
     const age = el("p", "release-age");
     age.append(moment(version.created));
     text.append(name, el("p", "release-facts", facts.join(" · ")), age);
@@ -238,7 +212,7 @@ function releases(plugin) {
 }
 
 function reportForm() {
-  const form = el("form", "report");
+  const form = el("form", "panel report");
   form.hidden = true;
   const reason = el("textarea");
   reason.maxLength = 500;
@@ -450,7 +424,6 @@ function media(plugin) {
   return [blank];
 }
 
-
 function figure(icon, value, caption) {
   const item = el("div", "number");
   item.innerHTML = icon;
@@ -501,7 +474,7 @@ function specs(plugin, latest) {
 }
 
 function render(plugin) {
-  const latest = plugin.versions[0];
+  const latest = plugin.versions.find(version => !version.pending) || plugin.versions[0];
   const title = el("h1", null, plugin.name);
   if (latest) title.append(" ", el("span", "release", label(latest.version)));
   const masthead = el("header", "masthead");
@@ -532,20 +505,24 @@ function render(plugin) {
 async function find() {
   if (session()) {
     const managed = await post("view", { slug });
-    if (managed.ok) return managed.data;
+    if (managed.ok || managed.status === 0) return managed;
   }
-  const open = await get("/" + encodeURIComponent(slug));
-  return open.ok ? open.data : null;
+  return get("/" + encodeURIComponent(slug));
 }
 
 async function show() {
-  const plugin = slug ? await find() : null;
-  if (!plugin) {
-    view.replaceChildren(el("p", "note", i18n.t("plugins.notFound")));
+  if (!view.children.length) view.replaceChildren(el("p", "note", i18n.t("common.loading")));
+  const reply = slug ? await find() : { ok: false, status: 404, data: {} };
+  if (!reply.ok) {
+    const note = el("p", "note", (reply.status === 404 ? i18n.t("plugins.notFound") : message(reply)) + " ");
+    const back = el("a", null, i18n.t("plugins.all"));
+    back.href = "../plugins/";
+    note.append(back);
+    view.replaceChildren(note);
     return;
   }
-  document.title = `${plugin.name} - OpenKogama`;
-  render(plugin);
+  document.title = `${reply.data.name} - OpenKogama`;
+  render(reply.data);
 }
 
 i18n.ready.then(show);

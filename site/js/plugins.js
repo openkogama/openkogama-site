@@ -33,22 +33,26 @@ async function load(fresh) {
 
 function shelf(id, plugins) {
   const box = document.getElementById(id);
-  box.replaceChildren(...plugins.map(card));
+  box.replaceChildren(...plugins.map(plugin => card(plugin, true)));
   box.closest(".shelf").hidden = plugins.length === 0;
 }
 
 function report(entry) {
   const item = el("li");
+  const text = el("div", "report-text");
+  const head = el("p", "who");
   const link = el("a", null, entry.name);
   link.href = page(entry.slug);
-  const dismiss = el("button", "link", i18n.t("plugins.dismiss"));
+  head.append(link, ` · ${entry.reporter}`);
+  text.append(head, el("p", "reason", entry.reason));
+  const dismiss = el("button", "button secondary dismiss", i18n.t("plugins.dismiss"));
   dismiss.type = "button";
   dismiss.addEventListener("click", async () => {
     dismiss.disabled = true;
     if ((await post("reports/clear", { slug: entry.slug })).ok) item.remove();
     else dismiss.disabled = false;
   });
-  item.append(link, ` · ${entry.reporter}: `, el("span", "reason", entry.reason), " ", dismiss);
+  item.append(text, dismiss);
   return item;
 }
 
