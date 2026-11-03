@@ -1014,6 +1014,10 @@ html.lightbox-open body {
   color: var(--donate);
 }
 
+:is(.plugin-page, .editor) .scan.weak svg {
+  color: var(--tagline);
+}
+
 :is(.plugin-page, .editor) .scan a {
   color: var(--link);
 }
@@ -1039,6 +1043,10 @@ html.lightbox-open body {
 
 .plugin-page .scan-badge.flagged {
   color: var(--donate);
+}
+
+.plugin-page .scan-badge.weak {
+  color: var(--tagline);
 }
 
 .plugin-page .scan-badge.pending {

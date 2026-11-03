@@ -1,5 +1,5 @@
 import { inline, render as markdown } from "./markdown.js";
-import { date, DOWNLOAD_ICON, downloadUrl, editor, el, fileUrl, get, likeButton, message, PENCIL_ICON, post, save, scanLine, session, SHIELD_ICON, SHIELD_X_ICON, size, STAR_ICON, starBar } from "./catalog.js";
+import { date, DOWNLOAD_ICON, downloadUrl, editor, el, fileUrl, get, likeButton, message, PENCIL_ICON, post, save, scanIcon, scanLine, scanState, scanText, session, SHIELD_ICON, size, STAR_ICON, starBar } from "./catalog.js";
 
 const view = document.getElementById("plugin");
 const slug = /^\/plugins\/([^/]+)\/?$/.exec(location.pathname)?.[1] || new URLSearchParams(location.search).get("id") || "";
@@ -129,13 +129,14 @@ function scanBadge(version) {
     wait.setAttribute("aria-label", wait.title);
     return wait;
   }
-  const flagged = scan.malicious + scan.suspicious;
-  const link = el("a", "scan-badge " + (flagged ? "flagged" : "clean"));
+  const state = scanState(scan);
+  const link = el("a", "scan-badge " + state);
   link.href = scan.url;
   link.target = "_blank";
   link.rel = "noopener";
-  link.innerHTML = flagged ? SHIELD_X_ICON : SHIELD_ICON;
-  link.title = `${i18n.t(flagged ? "plugins.scan.flagged" : "plugins.scan.clean", { flagged, total: scan.total })} ${i18n.t("plugins.scan.report")}`;
+  link.innerHTML = scanIcon(state);
+  const engines = scan.engines?.length ? ` (${scan.engines.join(", ")})` : "";
+  link.title = `${scanText(scan, state)}${engines}. ${i18n.t("plugins.scan.report")}`;
   link.setAttribute("aria-label", link.title);
   return link;
 }

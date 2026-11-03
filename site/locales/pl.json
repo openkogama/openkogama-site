@@ -611,6 +611,9 @@
       "pending": "Sprawdzanie...",
       "clean": "Czysty ({flagged}/{total})",
       "flagged": "Wykryty przez {flagged}/{total} silników",
+      "weak": "Wykryty przez {flagged}/{total} silników, najpewniej fałszywy alarm",
+      "engines": "Silniki: {engines}",
+      "checked": "Sprawdzone przez moderatora",
       "report": "Raport"
     },
     "versionDetails": "Szczegóły",

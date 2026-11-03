@@ -9,6 +9,20 @@ export const DOWNLOAD_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path 
 export const PENCIL_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4"/><path d="M13.5 6.5l4 4"/></svg>';
 export const SHIELD_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a12 12 0 0 0 8.5 3a12 12 0 0 1 -8.5 15a12 12 0 0 1 -8.5 -15a12 12 0 0 0 8.5 -3"/><path d="M9 12l2 2l4 -4"/></svg>';
 export const SHIELD_X_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a12 12 0 0 0 8.5 3a12 12 0 0 1 -8.5 15a12 12 0 0 1 -8.5 -15a12 12 0 0 0 8.5 -3"/><path d="M10 10l4 4m0 -4l-4 4"/></svg>';
+export const SHIELD_PLAIN_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a12 12 0 0 0 8.5 3a12 12 0 0 1 -8.5 15a12 12 0 0 1 -8.5 -15a12 12 0 0 0 8.5 -3"/></svg>';
+
+export function scanState(scan) {
+  if (!(scan.malicious + scan.suspicious)) return "clean";
+  return scan.weak ? "weak" : "flagged";
+}
+
+export function scanIcon(state) {
+  return state === "flagged" ? SHIELD_X_ICON : state === "weak" ? SHIELD_PLAIN_ICON : SHIELD_ICON;
+}
+
+export function scanText(scan, state) {
+  return i18n.t("plugins.scan." + state, { flagged: scan.malicious + scan.suspicious, total: scan.total });
+}
 
 export function el(tag, className, text) {
   const node = document.createElement(tag);
@@ -229,15 +243,17 @@ export function scanLine(version) {
     box.append(i18n.t("plugins.scan.pending"));
     return box;
   }
-  const flagged = scan.malicious + scan.suspicious;
-  box.classList.add(flagged ? "flagged" : "clean");
-  box.innerHTML = flagged ? SHIELD_X_ICON : SHIELD_ICON;
-  box.append(i18n.t(flagged ? "plugins.scan.flagged" : "plugins.scan.clean", { flagged, total: scan.total }), " ");
+  const state = scanState(scan);
+  box.classList.add(state);
+  box.innerHTML = scanIcon(state);
+  box.append(scanText(scan, state), " ");
+  if (scan.engines?.length) box.title = i18n.t("plugins.scan.engines", { engines: scan.engines.join(", ") });
   const link = el("a", null, i18n.t("plugins.scan.report"));
   link.href = scan.url;
   link.target = "_blank";
   link.rel = "noopener";
   box.append(link);
+  if (!version.pending) box.append(" · ", i18n.t("plugins.scan.checked"));
   return box;
 }
 

@@ -589,6 +589,9 @@
       "pending": "Scanning...",
       "clean": "Clean ({flagged}/{total})",
       "flagged": "Flagged by {flagged}/{total} engines",
+      "weak": "Flagged by {flagged}/{total} engines, most likely a false positive",
+      "engines": "Engines: {engines}",
+      "checked": "Checked by a moderator",
       "report": "Report"
     },
     "versionDetails": "Details",
