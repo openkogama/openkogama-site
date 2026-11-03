@@ -5,6 +5,6 @@
   "assets": {
     "directory": "./site",
     "binding": "ASSETS",
-    "run_worker_first": ["/plugins/*", "/sitemap-plugins.xml"]
+    "run_worker_first": ["/plugins/*", "/sitemap-plugins.xml", "/maps/*", "!/maps/", "!/maps/index.html", "!/maps/pages/*"]
   }
 }

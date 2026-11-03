@@ -10,6 +10,7 @@ const CLOSED = "2026-05-28";
 const HEART_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.3 4.4 12.9a4.8 4.8 0 0 1 6.8-6.8l.8.8.8-.8a4.8 4.8 0 0 1 6.8 6.8z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg>';
 const DOWNLOAD_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m-5-5 5 5 5-5M4 16v4h16v-4" fill="none" stroke="currentColor" stroke-width="2.5"/></svg>';
 const PLAY_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l12-7.5z" fill="currentColor"/></svg>';
+const PAGE_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4h6v6m0-6-9 9M18 14v6H4V6h6" fill="none" stroke="currentColor" stroke-width="2.4"/></svg>';
 
 const list = document.getElementById("list");
 const status = document.getElementById("status");
@@ -67,6 +68,7 @@ function load(index) {
     id: row[id],
     site: row[site],
     name: row[name] || untitled,
+    untitled: !row[name],
     author: row[author],
     authorId: row[authorId],
     plays: row[plays],
@@ -80,6 +82,35 @@ function load(index) {
     folded: fold(row[name] || ""),
     bare: bare(fold(row[name] || "")),
   }));
+}
+
+function hash(text) {
+  let value = 2166136261;
+  for (const byte of new TextEncoder().encode(text)) value = Math.imul(value ^ byte, 16777619) >>> 0;
+  return value;
+}
+
+const RANK = (a, b) => !a.image - !b.image || b.versions - a.versions || (a.format !== "kgmap") - (b.format !== "kgmap") || a.untitled - b.untitled || a.position - b.position;
+
+function slugs(list) {
+  const groups = new Map();
+  for (const map of list) {
+    const key = map.id ? (map.site ? `${map.site}-${map.id}` : map.id) : "f-" + hash(`${map.format}:${map.size}:${map.untitled ? "" : map.name}`).toString(16).padStart(8, "0");
+    if (!groups.has(key)) groups.set(key, []);
+    groups.get(key).push(map);
+  }
+  for (const [key, group] of groups) group.sort(RANK).forEach((map, i) => { map.slug = i ? `${key}-${map.size}` : key; });
+}
+
+function pageTitle(map) {
+  return `${map.untitled ? "Untitled map" : map.name} - KoGaMa map${map.author ? ` by ${map.author}` : ""} - OpenKogama`;
+}
+
+function address(path) {
+  const query = new URLSearchParams(location.search);
+  query.delete("map");
+  const text = query.toString();
+  return path + (text ? "?" + text : "") + location.hash;
 }
 
 const ORDER = {
@@ -316,12 +347,20 @@ function closeSheet() {
   document.documentElement.classList.remove("inspecting");
   document.removeEventListener("keydown", state.keys);
   state.opener?.focus();
-  const query = new URLSearchParams(location.search);
-  if (query.has("map")) {
-    query.delete("map");
-    replaceQuery(query);
-  }
+  if (location.pathname !== "/maps/" || new URLSearchParams(location.search).has("map")) history.replaceState(null, "", address("/maps/"));
 }
+
+function dismiss() {
+  if (history.state?.sheet) history.back();
+  else closeSheet();
+}
+
+addEventListener("popstate", () => {
+  const slug = /^\/maps\/([^/]+)\/$/.exec(location.pathname)?.[1];
+  const map = slug && maps.find(item => item.slug === slug);
+  if (map) openSheet(map, null);
+  else closeSheet();
+});
 
 function iconButton(className, label, icon) {
   const button = document.createElement("button");
@@ -369,7 +408,7 @@ function picture(map) {
   return image;
 }
 
-async function openSheet(map, opener) {
+async function openSheet(map, opener, push) {
   closeSheet();
   const element = document.createElement("div");
   element.className = "inspector";
@@ -406,7 +445,13 @@ async function openSheet(map, opener) {
   start.addEventListener("click", () => play(map, start));
   const save = iconButton("save", i18n.t("common.downloadFile", { extension: "." + map.format }), DOWNLOAD_ICON);
   save.addEventListener("click", () => download(map, save));
-  row.append(likeButton(map), start, save);
+  const page = document.createElement("a");
+  page.className = "icon page";
+  page.href = `/maps/${map.slug}/`;
+  page.title = i18n.t("common.openFullView");
+  page.setAttribute("aria-label", page.title);
+  page.innerHTML = PAGE_ICON;
+  row.append(likeButton(map), start, save, page);
   const box = document.createElement("div");
   box.className = "more";
   box.textContent = i18n.t("common.loading");
@@ -415,12 +460,13 @@ async function openSheet(map, opener) {
   element.append(panel);
   document.body.append(element);
   document.documentElement.classList.add("inspecting");
-  document.title = `${map.name} - OpenKogama`;
-  const state = { element, opener, keys: event => { if (event.key === "Escape") closeSheet(); } };
+  document.title = pageTitle(map);
+  const state = { element, opener, keys: event => { if (event.key === "Escape") dismiss(); } };
   inspecting = state;
+  if (push) history.pushState({ sheet: true }, "", address(`/maps/${map.slug}/`));
   document.addEventListener("keydown", state.keys);
-  element.addEventListener("click", event => { if (event.target === element) closeSheet(); });
-  close.addEventListener("click", closeSheet);
+  element.addEventListener("click", event => { if (event.target === element) dismiss(); });
+  close.addEventListener("click", dismiss);
   close.focus();
   try {
     const [info, inside] = await Promise.all([detail(map), contents]);
@@ -448,7 +494,7 @@ async function openSheet(map, opener) {
       line(i18n.t("maps.facts.likes"), map.likes != null ? map.likes.toLocaleString(i18n.lang) : ""),
       line(i18n.t("maps.facts.file"), `${size(map.size)} .${map.format}`),
       line(i18n.t("maps.facts.contents"), contentLinks(map, inside)),
-      line(i18n.t("maps.facts.author"), authorKey(map) ? authorLink(map, map.author ? `${map.author}${map.authorId ? " (" + map.authorId + ")" : ""}` : map.authorId) : ""),
+      line(i18n.t("maps.kogamaAuthor"), authorKey(map) ? authorLink(map, map.author ? `${map.author}${map.authorId ? " (" + map.authorId + ")" : ""}` : map.authorId) : ""),
       line(i18n.t("maps.facts.created"), date(info.created)),
       line(i18n.t("maps.facts.published"), date(info.publishedAt)),
       line(i18n.t("maps.facts.originalPage"), original),
@@ -488,11 +534,11 @@ function entry(map) {
   const image = picture(map);
   if (image) frame.append(image);
   else frame.classList.add("blank");
-  frame.addEventListener("click", () => openSheet(map, frame));
+  frame.addEventListener("click", () => openSheet(map, frame, true));
   frame.addEventListener("keydown", event => {
     if (event.target === frame && (event.key === "Enter" || event.key === " ")) {
       event.preventDefault();
-      openSheet(map, frame);
+      openSheet(map, frame, true);
     }
   });
   const tools = document.createElement("div");
@@ -506,10 +552,16 @@ function entry(map) {
   frame.append(likeButton(map), tools, stats(map));
   const caption = document.createElement("div");
   caption.className = "caption";
-  const title = document.createElement("p");
+  const title = document.createElement("a");
   title.className = "name";
+  title.href = `/maps/${map.slug}/`;
   title.textContent = map.name;
   title.title = map.name;
+  title.addEventListener("click", event => {
+    if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+    event.preventDefault();
+    openSheet(map, title, true);
+  });
   caption.append(title);
   if (map.published) {
     const tag = document.createElement("span");
@@ -618,6 +670,7 @@ async function start() {
       return null;
     });
     maps = load(await (await fetch(base + latest.index.path)).json());
+    slugs(maps);
     filter();
     deepLink();
   } catch (error) {

@@ -169,6 +169,11 @@
     "likes_other": "{value} likes",
     "openDetails": "Open details",
     "detailsUnavailable": "Details are not available right now",
+    "details": "Details",
+    "kogamaAuthor": "KoGaMa author",
+    "moreBy": "More by {name}",
+    "notFound": "This map is not in the archive.",
+    "all": "All maps",
     "facts": {
       "id": "Id",
       "region": "Region",

@@ -82,7 +82,7 @@
   content: var(--no-thumbnail, "No thumbnail yet");
 }
 
-.inspector .actions .save {
+.inspector .actions :is(.save, .page) {
   --cut: 7px;
   flex: none;
   width: 44px;
@@ -97,7 +97,7 @@
   );
 }
 
-.inspector .actions .save:hover {
+.inspector .actions :is(.save, .page):hover {
   background: var(--chip-hover);
 }
 
@@ -440,4 +440,39 @@
 .map .picture:not(.blank) .stats span {
   color: #fff;
   filter: none;
+}
+
+.map a.name {
+  text-decoration: none;
+}
+
+.map a.name:hover,
+.map a.name:focus-visible {
+  text-decoration: underline;
+}
+
+.map-page .share-row .save {
+  --corner: 7px;
+  flex: none;
+  width: 44px;
+  padding: 0;
+  background: var(--dark);
+  filter: none;
+}
+
+.map-page .share-row .save svg {
+  width: 20px;
+  height: 20px;
+}
+
+.map-page .description {
+  white-space: pre-line;
+}
+
+.map-page .more {
+  margin-top: 32px;
+}
+
+.map-page .more .picture {
+  display: block;
 }

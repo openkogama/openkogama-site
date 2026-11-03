@@ -177,6 +177,11 @@
     "likes_other": "{value} polubienia",
     "openDetails": "Otwórz szczegóły",
     "detailsUnavailable": "Szczegóły są teraz niedostępne",
+    "details": "Szczegóły",
+    "kogamaAuthor": "Autor w KoGaMie",
+    "moreBy": "Inne mapy autora {name}",
+    "notFound": "Tej mapy nie ma w archiwum.",
+    "all": "Wszystkie mapy",
     "facts": {
       "id": "ID",
       "region": "Region",
