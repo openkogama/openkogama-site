@@ -1,5 +1,6 @@
 User-agent: *
 Allow: /
+Disallow: /map/
 
 Sitemap: https://openkogama.org/sitemap.xml
 Sitemap: https://openkogama.org/sitemap-plugins.xml
