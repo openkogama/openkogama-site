@@ -551,7 +551,7 @@
       "summary": "Krótki opis",
       "summaryHint": "Widać go na liście pluginów.",
       "description": "Opis",
-      "descriptionHint": "Co robi plugin, jakie ma komendy i jak go ustawić. Działa Markdown: # nagłówek, **pogrubienie**, *kursywa*, - lista, `kod`, ``` blok kodu ```, [tekst](https://link).",
+      "descriptionHint": "Co robi plugin, jakie ma komendy i jak go ustawić. Działa Markdown: nagłówki, **pogrubienie**, listy, tabele, `kod`, linki, przypisy i obrazki z galerii jako ![nazwa](plik.png).",
       "video": "Film na YouTube",
       "icon": "Ikona",
       "chooseImage": "Wybierz obrazek",

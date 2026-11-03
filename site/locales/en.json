@@ -529,7 +529,7 @@
       "summary": "Short description",
       "summaryHint": "Shown on the plugin list.",
       "description": "Description",
-      "descriptionHint": "What the plugin does, its commands and how to set it up. Markdown works: # heading, **bold**, *italic*, - list, `code`, ``` code block ```, [text](https://link).",
+      "descriptionHint": "What the plugin does, its commands and how to set it up. Markdown works: headings, **bold**, lists, tables, `code`, links, footnotes, and images from the gallery as ![name](file.png).",
       "video": "YouTube video",
       "icon": "Icon",
       "chooseImage": "Choose image",

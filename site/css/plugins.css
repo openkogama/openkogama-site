@@ -2043,3 +2043,51 @@ html.lightbox-open body {
 .prerender {
   display: none;
 }
+
+.prose table {
+  margin: 0 0 12px;
+  border-collapse: collapse;
+  font-size: 0.92rem;
+}
+
+.prose th,
+.prose td {
+  padding: 5px 10px;
+  text-align: left;
+  border: 1px solid var(--secondary-edge);
+}
+
+.prose th {
+  background: var(--secondary-edge);
+}
+
+.prose img {
+  display: block;
+  max-width: 100%;
+  margin: 8px 0;
+}
+
+.prose li.task {
+  list-style: none;
+  margin-left: -20px;
+}
+
+.prose ul ul,
+.prose ol ol,
+.prose ul ol,
+.prose ol ul {
+  margin: 2px 0 4px;
+}
+
+.prose sup a {
+  color: var(--link);
+  text-decoration: none;
+}
+
+.prose .footnotes {
+  margin-top: 16px;
+  padding-top: 10px;
+  font-size: 0.85rem;
+  color: var(--tagline);
+  border-top: 1px solid var(--secondary-edge);
+}
