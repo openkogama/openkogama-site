@@ -56,7 +56,7 @@ def rude(name):
 
 def indexed(row):
     name = row["name"] or ""
-    return bool(row["image"] or not NEED_IMAGE) and (row["plays"] or 0) >= MIN_PLAYS and real(name) and not rude(name)
+    return bool(row["image"] or not NEED_IMAGE) and (row["plays"] or 0) >= MIN_PLAYS and real(name) and not rude(name) and not rude(row["author"] or "")
 
 
 def order(row):
