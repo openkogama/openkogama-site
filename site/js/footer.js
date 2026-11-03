@@ -31,7 +31,7 @@
 
   function column(title, key, links) {
     const box = el("div", "column");
-    const heading = el("h4", null, title);
+    const heading = el("h2", null, title);
     heading.dataset.i18n = key;
     const list = el("ul");
     for (const item of links) {
@@ -52,7 +52,7 @@
   brand.append(logo, "OPENKOGAMA");
   const tagline = el("p", null, "Classic KoGaMa, brought back by fans.");
   tagline.dataset.i18n = "footer.tagline";
-  const social = el("nav", "social");
+  const social = el("div", "social");
   for (const [name, href, label] of [["github", "https://github.com/openkogama", "GitHub"], ["discord", "https://discord.gg/u6tKuP3k4M", "Discord"], ["reddit", "https://www.reddit.com/r/OpenKogama/", "Reddit"]]) {
     const icon = link(href, "");
     icon.className = name;

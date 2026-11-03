@@ -36,13 +36,15 @@
     document.addEventListener("keydown", event => { if (event.key === "Escape") open(false); });
   }
 
+  const here = page.pathname === location.pathname;
+  const back = new URL(page);
+  back.searchParams.set("next", location.pathname + location.search + location.hash);
   const link = document.createElement("a");
   link.className = "button nav session";
-  link.href = page.pathname === location.pathname ? "./" : page.href;
-  if (page.pathname === location.pathname) link.setAttribute("aria-current", "page");
+  if (here) link.setAttribute("aria-current", "page");
   const register = document.createElement("a");
   register.className = "button nav register";
-  register.href = new URL("#create", page).href;
+  register.href = new URL("#create", here ? page : back).href;
 
   function name() {
     try {
@@ -55,6 +57,7 @@
 
   function render() {
     const signed = name();
+    link.href = here ? "./" : signed ? page.href : back.href;
     link.textContent = signed || i18n.t("common.signIn");
     link.classList.toggle("signin", !signed);
     link.title = signed ? i18n.t("common.yourAccount") : "";
@@ -62,8 +65,12 @@
     register.hidden = Boolean(signed);
   }
 
+  const account = document.createElement("div");
+  account.className = "account";
+
   i18n.ready.then(() => {
-    nav.append(link, register);
+    account.append(link, register);
+    nav.after(account);
     render();
   });
   window.addEventListener("storage", event => { if (event.key === KEY) render(); });

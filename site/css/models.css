@@ -695,7 +695,7 @@ html.inspecting body {
   color: #fff;
   white-space: nowrap;
   text-overflow: ellipsis;
-  background: rgb(0 0 0 / 0.45);
+  background: rgb(0 0 0 / 0.58);
 }
 
 .meta {
@@ -737,10 +737,14 @@ html.inspecting body {
 @media (max-width: 600px) {
   .grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
   .line { width: 100%; }
-  .filters { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 16px; }
+  .filters { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 10px; }
   .filters input.line { grid-column: 1 / -1; }
-  .filters select.line { width: 100%; }
+  .filters select.line { width: 100%; padding-inline: 0; font-size: 0.875rem; }
   .filters .favorites { justify-content: center; }
+}
+
+@media (max-width: 339px) {
+  .filters { grid-template-columns: minmax(0, 1fr); }
 }
 
 .name .badge {

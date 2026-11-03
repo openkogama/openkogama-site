@@ -39,6 +39,19 @@
   filter: drop-shadow(0 1px 1px rgb(0 0 0 / 0.6));
 }
 
+.map .picture.blank .icon {
+  color: var(--card-meta);
+  filter: none;
+}
+
+.map .picture.blank .icon:hover {
+  color: var(--card-text);
+}
+
+.map .picture.blank .icon.like.on {
+  color: var(--link);
+}
+
 .inspector .sheet:has(.map-stage) {
   grid-template-columns: minmax(0, 1fr) 300px;
   width: min(100%, 1040px);
@@ -111,19 +124,19 @@
 
 .inspector dl {
   display: grid;
-  gap: 3px;
+  grid-template-columns: fit-content(42%) minmax(0, 1fr);
+  gap: 3px 10px;
   margin: 0;
 }
 
 .inspector dl div {
-  display: flex;
-  gap: 8px;
-  min-width: 0;
+  display: contents;
 }
 
 .inspector dt {
-  flex: none;
-  width: 96px;
+  min-width: 88px;
+  overflow-wrap: break-word;
+  hyphens: auto;
 }
 
 .inspector dd {
@@ -190,22 +203,40 @@
   }
 }
 
+@media (max-width: 900px) and (min-height: 601px), (max-width: 700px) {
+  .inspector .sheet:has(.map-stage) {
+    grid-template-columns: minmax(0, 1fr);
+    width: min(100%, 600px);
+    overflow-y: auto;
+    touch-action: pan-y;
+  }
+
+  .inspector .sheet:has(.map-stage) .about {
+    contain: none;
+  }
+
+  .inspector .sheet:has(.map-stage) .more {
+    overflow: visible;
+    padding-bottom: 0;
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+}
+
 @media (max-width: 700px) {
   .inspector .sheet:has(.map-stage) {
-    grid-template-columns: 1fr;
     width: 100%;
   }
 
-  .inspector .map-stage {
+  .inspector .sheet:has(.map-stage) .map-stage {
+    flex: none;
+    aspect-ratio: 350 / 194;
+    container-type: normal;
     background: #000;
   }
 
   .inspector .map-stage img {
     object-fit: cover;
-  }
-
-  .inspector .more {
-    overflow: visible;
   }
 }
 
@@ -253,6 +284,16 @@
 
 .share .title {
   padding-right: 32px;
+}
+
+@media (max-width: 700px) {
+  .inspector.share .sheet {
+    padding: calc(18px + env(safe-area-inset-top)) 16px calc(20px + env(safe-area-inset-bottom));
+  }
+
+  .share .title {
+    padding-right: 52px;
+  }
 }
 
 .share .text {
@@ -316,14 +357,14 @@
 }
 
 .share .files li {
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto auto;
   align-items: center;
-  gap: 12px;
+  gap: 2px 12px;
   font-size: 0.9rem;
 }
 
 .share .files .name {
-  flex: 1;
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -364,6 +405,18 @@
   color: var(--card-text);
 }
 
+@media (max-width: 480px) {
+  .share .files li {
+    grid-template-columns: minmax(0, 1fr) auto auto;
+  }
+
+  .share .files .state {
+    grid-row: 2;
+    grid-column: 1 / -1;
+    white-space: normal;
+  }
+}
+
 .share .line {
   width: 100%;
 }
@@ -378,12 +431,13 @@
   cursor: default;
 }
 
-.map .picture:not(.blank) .stats span {
-  color: #fff;
-  text-shadow: 0 1px 2px rgb(0 0 0 / 0.75);
-  filter: none;
+.map .picture:not(.blank) .stats {
+  gap: 8px;
+  padding: 0 6px;
+  background: rgb(0 0 0 / 0.55);
 }
 
-.map .picture:not(.blank) .stats svg {
-  filter: drop-shadow(0 1px 1px rgb(0 0 0 / 0.75));
+.map .picture:not(.blank) .stats span {
+  color: #fff;
+  filter: none;
 }

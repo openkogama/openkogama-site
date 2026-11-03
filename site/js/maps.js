@@ -155,7 +155,9 @@ function filter() {
 }
 
 function size(bytes) {
-  return bytes >= 1e6 ? `${(bytes / 1e6).toFixed(1)} MB` : `${Math.max(1, Math.round(bytes / 1e3))} KB`;
+  const mega = bytes >= 1e6;
+  return new Intl.NumberFormat(i18n.lang, { style: "unit", unit: mega ? "megabyte" : "kilobyte", unitDisplay: "short", minimumFractionDigits: mega ? 1 : 0, maximumFractionDigits: mega ? 1 : 0 })
+    .format(mega ? bytes / 1e6 : Math.max(1, Math.round(bytes / 1e3))).replace(/ /g, "\u00a0");
 }
 
 function count(value) {

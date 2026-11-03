@@ -8,6 +8,14 @@
   const VIEWS = ["signin", "create", "confirm", "forgot", "reset", "email", "emailcode", "account", "terms", "delete", "deleted"];
   const requested = new URLSearchParams(location.search).get("launcher") || "";
   const launcher = /^[A-Za-z0-9_-]{43}$/.test(requested) ? requested : null;
+  const next = (() => {
+    try {
+      const url = new URL(new URLSearchParams(location.search).get("next") || "", location.href);
+      return url.origin === location.origin && url.pathname !== location.pathname ? url.href : null;
+    } catch {
+      return null;
+    }
+  })();
   let pending = "";
   let handedOff = false;
 
@@ -54,7 +62,7 @@
       widgets[id] = turnstile.render(document.querySelector("#" + id + " .captcha"), {
         sitekey: CAPTCHA,
         theme: "auto",
-        size: "flexible",
+        size: matchMedia("(max-width: 359px)").matches ? "compact" : "flexible",
       });
   };
 
@@ -94,6 +102,10 @@
       return;
     }
     keep({ token: reply.data.token, name: reply.data.name });
+    if (next && !launcher) {
+      location.href = next;
+      return;
+    }
     await showAccount();
   }
 

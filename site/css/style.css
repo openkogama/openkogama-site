@@ -160,8 +160,16 @@ body {
   box-shadow: inset 0 -3px 0 var(--accent);
 }
 
-.top .session {
+.top .account {
+  flex: none;
+  display: flex;
+  align-self: stretch;
+  gap: 4px;
   margin-left: auto;
+}
+
+.top .account .button.nav {
+  white-space: nowrap;
 }
 
 .top .signin,
@@ -175,9 +183,9 @@ body {
 
 body > main:not(.hero) {
   flex: 1 0 auto;
-  width: min(100%, 1200px);
+  width: min(100%, 1104px);
   margin: 0 auto;
-  padding: 32px;
+  padding: 32px 0;
 }
 
 body > main.legal > * {
@@ -189,10 +197,14 @@ main > .intro {
   margin-top: 0;
 }
 
-main > .intro h2,
+main > .intro :is(h1, h2),
 main > .intro > p {
   margin-left: 0;
   text-align: left;
+}
+
+.archive .intro h1 {
+  margin-bottom: 8px;
 }
 
 .screen {
@@ -208,7 +220,7 @@ main > .intro > p {
   flex-direction: column;
   justify-content: center;
   gap: 24px;
-  padding-bottom: 6vh;
+  padding: 24px 0 6vh;
 }
 
 .hero h1 {
@@ -457,7 +469,7 @@ h1 {
 
 .feature:hover { --fill: var(--control-hover); background: var(--control-hover-edge); }
 
-.feature h3 {
+.feature :is(h2, h3) {
   margin: 0 0 6px;
   font-size: 1.1rem;
   font-weight: 600;
@@ -490,13 +502,21 @@ h1 {
   color: var(--heading);
 }
 
-.archive .feature h3 {
+.archive .feature h2 {
   margin: 0 0 2px;
+  font-size: 1.1rem;
 }
 
 .archive .feature .count {
   font-size: 0.85rem;
   opacity: 0.7;
+}
+
+@media (max-width: 480px) {
+  .archive .features { grid-template-columns: minmax(0, 1fr); gap: 10px; }
+  .archive .feature { flex-direction: row; gap: 14px; padding: 14px 16px; text-align: left; }
+  .archive .feature svg { flex: none; width: 30px; height: 30px; margin: 0; }
+  .archive .feature h2 { flex: 1; margin: 0; }
 }
 
 .faq details { border-top: 1px solid var(--secondary-edge); }
@@ -617,7 +637,7 @@ footer .social svg {
   fill: currentColor;
 }
 
-footer h4 {
+footer h2 {
   margin: 0 0 10px;
   font-size: 0.8rem;
   font-weight: 700;
@@ -639,6 +659,7 @@ footer li {
 footer .column a {
   color: inherit;
   text-decoration: none;
+  overflow-wrap: break-word;
 }
 
 footer .column a:hover,
@@ -673,9 +694,13 @@ footer .language {
   cursor: pointer;
 }
 
+@media (max-width: 900px) {
+  footer .columns { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  footer .about { grid-column: 1 / -1; }
+}
+
 @media (max-width: 700px) {
   footer .columns { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  footer .about { grid-column: 1 / -1; }
 }
 
 .brand {
@@ -696,20 +721,26 @@ footer .language {
   .intro, .faq { margin-top: 56px; }
   .faq + footer { margin-top: 56px; }
   .top { flex-wrap: wrap; gap: 0 16px; padding-top: 8px; }
-  .sections { flex-basis: 100%; min-height: 40px; overflow-x: auto; }
-  .top .session { margin-left: 0; }
-  body > main:not(.hero) { padding: 20px 16px; }
+  .top > .brand { font-size: 1.55rem; }
+  .sections { order: 1; flex-basis: 100%; min-height: 40px; }
+  .top .account { min-height: 40px; }
+  body > main:not(.hero) { padding: 20px 0; }
   .hero { gap: 20px; }
   .screen { min-height: 0; }
   .screen .hero { flex: none; padding: 32px 0 40px; }
   .screen .hero h1 { margin-bottom: 16px; }
   .tagline { font-size: 1rem; }
-  .hero .actions { flex-wrap: nowrap; gap: 8px; }
+  .hero .actions { gap: 8px; }
   .hero .actions .button { flex: 1 1 auto; padding: 10px 12px; font-size: 0.9rem; }
+  .hero .actions .button.donate { flex-grow: 0; }
 }
 
 @media (max-width: 359px) {
-  .hero .actions { flex-wrap: wrap; }
+  .hero .actions .button { flex-basis: 100%; }
+}
+
+@media (max-width: 420px) {
+  .top .register { display: none; }
 }
 
 @media (max-width: 880px) {
@@ -783,9 +814,10 @@ body > footer {
   margin: 0;
   padding: 6px 0;
   list-style: none;
-  background: var(--bar);
+  background: var(--page);
   border: 1px solid var(--secondary-edge);
   border-top: 0;
+  box-shadow: 0 10px 24px rgb(0 0 0 / 0.12);
 }
 
 .top .menu.open ul {

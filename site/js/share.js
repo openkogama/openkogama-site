@@ -66,7 +66,9 @@
   }
 
   function size(bytes) {
-    return bytes < 1024 * 1024 ? Math.max(1, Math.round(bytes / 1024)) + " KB" : (bytes / 1024 / 1024).toFixed(1) + " MB";
+    const mega = bytes >= 1024 * 1024;
+    return new Intl.NumberFormat(i18n.lang, { style: "unit", unit: mega ? "megabyte" : "kilobyte", unitDisplay: "short", minimumFractionDigits: mega ? 1 : 0, maximumFractionDigits: mega ? 1 : 0 })
+      .format(mega ? bytes / 1024 / 1024 : Math.max(1, Math.round(bytes / 1024))).replace(/ /g, "\u00a0");
   }
 
   async function zipEntries(file) {
@@ -246,7 +248,7 @@
     if (captchaLoading || !CAPTCHA) return;
     captchaLoading = true;
     window.openkogamaShareCaptcha = () => {
-      widget = turnstile.render(captchaBox, { sitekey: CAPTCHA, theme: "auto", size: "flexible" });
+      widget = turnstile.render(captchaBox, { sitekey: CAPTCHA, theme: "auto", size: captchaBox.clientWidth && captchaBox.clientWidth < 300 ? "compact" : "flexible" });
     };
     const script = document.createElement("script");
     script.src = CAPTCHA_SCRIPT;
