@@ -1712,13 +1712,13 @@ html.lightbox-open body {
 .editor-side {
   grid-area: side;
   position: sticky;
-  top: 80px;
+  top: 72px;
   display: grid;
   gap: 8px;
 }
 
 .editor-body:not(.tabbed) .editor-side {
-  top: 24px;
+  top: 72px;
 }
 
 .editor-side .side-label {
@@ -2242,4 +2242,64 @@ html.lightbox-open body {
   width: 1em;
   height: 1em;
   color: inherit;
+}
+
+.editor .dropzone,
+.editor .tile.add {
+  --corner: 8px;
+  --edge: 1px;
+  --cut: var(--corner);
+  position: relative;
+  isolation: isolate;
+  border: 0;
+  background: var(--control-edge);
+}
+
+.editor .dropzone::before,
+.editor .tile.add::before {
+  --cut: calc(var(--corner) - 0.586 * var(--edge));
+  content: "";
+  position: absolute;
+  inset: var(--edge);
+  z-index: -1;
+  background: var(--page);
+  clip-path: polygon(
+    var(--cut) 0, calc(100% - var(--cut)) 0,
+    100% var(--cut), 100% calc(100% - var(--cut)),
+    calc(100% - var(--cut)) 100%, var(--cut) 100%,
+    0 calc(100% - var(--cut)), 0 var(--cut)
+  );
+}
+
+.editor .dropzone {
+  gap: 4px;
+  padding: 22px 16px;
+}
+
+.editor .dropzone svg {
+  width: 24px;
+  height: 24px;
+  margin-bottom: 2px;
+}
+
+.editor .dropzone:hover,
+.editor .dropzone.over,
+.editor .dropzone:focus-within,
+.editor .tile.add:hover,
+.editor .tile.add:focus-within {
+  --edge: 2px;
+  background: var(--accent);
+}
+
+.editor .dropzone:hover::before,
+.editor .dropzone.over::before,
+.editor .dropzone:focus-within::before,
+.editor .tile.add:hover::before,
+.editor .tile.add:focus-within::before {
+  background: var(--secondary);
+}
+
+.editor .dropzone.ready {
+  --edge: 2px;
+  background: var(--accent);
 }
