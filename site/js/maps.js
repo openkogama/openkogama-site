@@ -620,15 +620,18 @@ function stats(map) {
   return box;
 }
 
+const loader = new IntersectionObserver(entries => {
+  if (entries.some(item => item.isIntersecting)) more();
+}, { rootMargin: "2500px 0px" });
+loader.observe(sentinel);
+
 function more() {
   if (shown >= results.length) return;
   list.append(...results.slice(shown, shown + PAGE).map(entry));
   shown = Math.min(shown + PAGE, results.length);
+  loader.unobserve(sentinel);
+  loader.observe(sentinel);
 }
-
-new IntersectionObserver(entries => {
-  if (entries.some(item => item.isIntersecting)) more();
-}, { rootMargin: "1500px 0px" }).observe(sentinel);
 
 let typing;
 search.addEventListener("input", () => {

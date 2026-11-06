@@ -734,6 +734,12 @@ html.inspecting body {
   height: 1px;
 }
 
+.sentinel,
+.status,
+footer {
+  overflow-anchor: none;
+}
+
 @media (max-width: 600px) {
   .grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
   .line { width: 100%; }
