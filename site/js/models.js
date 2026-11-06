@@ -2,6 +2,7 @@ import { buildMesh, buildParts, createRenderer, fetchRange, loadBlob, loadModel 
 import { tint } from "./tint.js";
 import { createViewer } from "./viewer.js";
 import { closeInspector, inspect } from "./inspect.js";
+import { LAUNCHER_ICON, openInLauncher } from "./launcher.js";
 import { liked, likedList, mapKey, toggle } from "./likes.js";
 
 const SOURCES = { map: 1, build: 2, class: 4, world: 8, placed: 16 };
@@ -535,6 +536,20 @@ function saveButton(row, article) {
   return button;
 }
 
+function addButton(row, article) {
+  const button = iconButton("import", i18n.t("common.addToLauncher"), LAUNCHER_ICON);
+  button.addEventListener("click", () => openInLauncher({
+    kind: latest.kind === "avatars" ? "avatar" : "model",
+    name: article.avatarInfo?.[0] || article.mapName || "",
+    urls: [packUrl(row.pack)],
+    offset: row.offset,
+    length: row.length,
+    scale: latest.kind !== "avatars" && row.scale > 0 ? row.scale : undefined,
+    sha256: row.sha256,
+  }));
+  return button;
+}
+
 function kindName() {
   return latest.kind || "models";
 }
@@ -668,7 +683,7 @@ function openInspector(row, article, opener) {
     meta,
     description: article.avatarInfo?.[2] || "",
     tints: Object.fromEntries(["--tint", "--tint-edge", "--tint-light", "--tint-light-edge"].map(name => [name, article.style.getPropertyValue(name)])),
-    actions: [likeButton(row), save],
+    actions: [likeButton(row),addButton(row, article), save],
     sources: sources?.list,
     atlas: base + "atlas.png",
     materials: latest.materials,
@@ -712,7 +727,7 @@ function card(row) {
   const tools = document.createElement("div");
   tools.className = "tools";
   if (latest.kind === "avatars") tools.append(animateButton(article));
-  tools.append(saveButton(row, article));
+  tools.append(addButton(row, article),saveButton(row, article));
   picture.tabIndex = 0;
   picture.setAttribute("role", "button");
   picture.setAttribute("aria-label", i18n.t("common.openFullView"));

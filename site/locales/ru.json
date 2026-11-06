@@ -40,6 +40,7 @@
     "like": "Лайкнуть",
     "unlike": "Снять лайк",
     "downloadFile": "Скачать {extension}",
+    "addToLauncher": "Добавить в лаунчер",
     "untitledMap": "Безымянная карта",
     "mapCount_one": "{count} карта",
     "mapCount_few": "{count} карты",

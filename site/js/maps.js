@@ -1,3 +1,4 @@
+import { LAUNCHER_ICON, openInLauncher } from "./launcher.js";
 import { liked, likedList, mapKey, toggle } from "./likes.js";
 
 const DATA = new URL(new URLSearchParams(location.search).get("data") || "https://cdn.openkogama.org/maps/v1/", location.href).href;
@@ -242,6 +243,20 @@ function fileName(map, version) {
     .slice(0, 60).join("").replace(/[. ]+$/, "");
   return `${title || "map"}${map.id ? " " + map.id : ""}${version.index ? " v" + (version.index + 1) : ""}.${version.format}`;
 }
+async function sendToLauncher(map, button, index = 0) {
+  button.disabled = true;
+  button.classList.remove("error");
+  try {
+    const version = { ...(await detail(map)).versions[index], index };
+    if (!openInLauncher({ kind: "map", name: map.name, urls: version.urls, sha256: version.sha256 }))
+      throw new Error("Map link is too long");
+  } catch (error) {
+    button.classList.add("error");
+    console.warn(map.id, error);
+  } finally {
+    button.disabled = false;
+  }
+}
 
 async function download(map, button, index = 0) {
   button.disabled = true;
@@ -443,6 +458,8 @@ async function openSheet(map, opener, push) {
   start.className = "button primary";
   start.textContent = i18n.t("common.play");
   start.addEventListener("click", () => play(map, start));
+  const add = iconButton("save import", i18n.t("common.addToLauncher"), LAUNCHER_ICON);
+  add.addEventListener("click", () => sendToLauncher(map, add));
   const save = iconButton("save", i18n.t("common.downloadFile", { extension: "." + map.format }), DOWNLOAD_ICON);
   save.addEventListener("click", () => download(map, save));
   const page = document.createElement("a");
@@ -543,12 +560,17 @@ function entry(map) {
   });
   const tools = document.createElement("div");
   tools.className = "tools";
+  const add = iconButton("import", i18n.t("common.addToGame"), LAUNCHER_ICON);
+  add.addEventListener("click", event => {
+    event.stopPropagation();
+    sendToLauncher(map, add);
+  });
   const save = iconButton("save", i18n.t("common.downloadFile", { extension: "." + map.format }), DOWNLOAD_ICON);
   save.addEventListener("click", event => {
     event.stopPropagation();
     download(map, save);
   });
-  tools.append(save);
+  tools.append(add,save);
   frame.append(likeButton(map), tools, stats(map));
   const caption = document.createElement("div");
   caption.className = "caption";

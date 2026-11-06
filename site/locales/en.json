@@ -43,6 +43,7 @@
     "like": "Like",
     "unlike": "Unlike",
     "downloadFile": "Download {extension}",
+    "addToLauncher": "Add to Launcher",
     "untitledMap": "Untitled map",
     "mapCount_one": "{count} map",
     "mapCount_other": "{count} maps",

@@ -43,6 +43,7 @@
     "like": "Polub",
     "unlike": "Cofnij polubienie",
     "downloadFile": "Pobierz {extension}",
+    "addToLauncher": "Dodaj do launchera",
     "untitledMap": "Mapa bez nazwy",
     "mapCount_one": "{count} mapa",
     "mapCount_few": "{count} mapy",

@@ -40,6 +40,7 @@
     "like": "Aimer",
     "unlike": "Ne plus aimer",
     "downloadFile": "Télécharger {extension}",
+    "addToLauncher": "Ajouter au launcher",
     "untitledMap": "Monde sans titre",
     "mapCount_one": "{count} monde",
     "mapCount_other": "{count} mondes",
