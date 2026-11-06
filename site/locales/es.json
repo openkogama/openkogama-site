@@ -40,6 +40,7 @@
     "like": "Me gusta",
     "unlike": "Ya no me gusta",
     "downloadFile": "Descargar {extension}",
+    "addToLauncher": "Agregar al lanzador",
     "untitledMap": "Mapa sin título",
     "mapCount_one": "{count} mapa",
     "mapCount_other": "{count} mapas",
