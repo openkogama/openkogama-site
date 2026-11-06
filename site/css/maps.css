@@ -82,7 +82,7 @@
   content: var(--no-thumbnail, "No thumbnail yet");
 }
 
-.inspector .actions :is(.save, .page) {
+.inspector .actions :is(.save, .import, .page) {
   --cut: 7px;
   flex: none;
   width: 44px;
@@ -97,7 +97,7 @@
   );
 }
 
-.inspector .actions :is(.save, .page):hover {
+.inspector .actions :is(.save, .import, .page):hover {
   background: var(--chip-hover);
 }
 

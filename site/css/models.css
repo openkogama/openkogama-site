@@ -796,7 +796,7 @@ html.inspecting body {
   outline-offset: -2px;
 }
 
-.inspector .actions :is(.like, .save):focus-visible {
+.inspector .actions :is(.like, .save, .import):focus-visible {
   outline: none;
   box-shadow: inset 0 -3px 0 var(--accent);
 }

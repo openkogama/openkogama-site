@@ -243,6 +243,7 @@ function fileName(map, version) {
     .slice(0, 60).join("").replace(/[. ]+$/, "");
   return `${title || "map"}${map.id ? " " + map.id : ""}${version.index ? " v" + (version.index + 1) : ""}.${version.format}`;
 }
+
 async function sendToLauncher(map, button, index = 0) {
   button.disabled = true;
   button.classList.remove("error");
@@ -458,7 +459,7 @@ async function openSheet(map, opener, push) {
   start.className = "button primary";
   start.textContent = i18n.t("common.play");
   start.addEventListener("click", () => play(map, start));
-  const add = iconButton("save import", i18n.t("common.addToLauncher"), LAUNCHER_ICON);
+  const add = iconButton("import", i18n.t("common.addToLauncher"), LAUNCHER_ICON);
   add.addEventListener("click", () => sendToLauncher(map, add));
   const save = iconButton("save", i18n.t("common.downloadFile", { extension: "." + map.format }), DOWNLOAD_ICON);
   save.addEventListener("click", () => download(map, save));
@@ -468,7 +469,7 @@ async function openSheet(map, opener, push) {
   page.title = i18n.t("common.openFullView");
   page.setAttribute("aria-label", page.title);
   page.innerHTML = PAGE_ICON;
-  row.append(likeButton(map), start, save, page);
+  row.append(likeButton(map), start, add, save, page);
   const box = document.createElement("div");
   box.className = "more";
   box.textContent = i18n.t("common.loading");
@@ -560,7 +561,7 @@ function entry(map) {
   });
   const tools = document.createElement("div");
   tools.className = "tools";
-  const add = iconButton("import", i18n.t("common.addToGame"), LAUNCHER_ICON);
+  const add = iconButton("import", i18n.t("common.addToLauncher"), LAUNCHER_ICON);
   add.addEventListener("click", event => {
     event.stopPropagation();
     sendToLauncher(map, add);
@@ -570,7 +571,7 @@ function entry(map) {
     event.stopPropagation();
     download(map, save);
   });
-  tools.append(add,save);
+  tools.append(add, save);
   frame.append(likeButton(map), tools, stats(map));
   const caption = document.createElement("div");
   caption.className = "caption";
