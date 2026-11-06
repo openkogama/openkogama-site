@@ -17,6 +17,7 @@
     }
   })();
   let pending = "";
+  let pendingPassword = "";
   let handedOff = false;
 
   function saved() {
@@ -87,6 +88,7 @@
 
   function show(id) {
     for (const view of VIEWS) document.getElementById(view).hidden = view !== id;
+    if (id !== "emailcode") pendingPassword = "";
     const panel = document.getElementById(id);
     fail(panel, "");
     if (id === "confirm" || id === "emailcode") panel.querySelector(".sent").textContent = i18n.t("account.codeSent", { email: pending });
@@ -194,12 +196,14 @@
   form("email", async (fields, panel) => {
     const session = saved();
     const email = fields.email.value.trim();
-    const reply = await call("/email", { token: session && session.token, email });
+    const reply = await call("/email", { token: session && session.token, email, password: fields.password.value });
     if (!reply.ok) {
       fail(panel, message(reply));
       return;
     }
     pending = email;
+    pendingPassword = fields.password.value;
+    fields.password.value = "";
     show("emailcode");
   });
 
@@ -273,7 +277,7 @@
     const again = target === "resend-email";
     const panel = document.getElementById(again ? "emailcode" : "confirm");
     const session = saved();
-    const reply = again ? await call("/email", { token: session && session.token, email: pending }) : await call("/resend", { email: pending });
+    const reply = again ? await call("/email", { token: session && session.token, email: pending, password: pendingPassword }) : await call("/resend", { email: pending });
     fail(panel, reply.ok ? "" : message(reply));
     if (reply.ok) panel.querySelector(".sent").textContent = i18n.t("account.newCodeSent", { email: pending });
   }));
