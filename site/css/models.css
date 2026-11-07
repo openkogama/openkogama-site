@@ -425,7 +425,7 @@ html.inspecting body {
   cursor: pointer;
 }
 
-.inspector .actions .like {
+.inspector .actions :is(.like, .import) {
   --cut: 7px;
   flex: none;
   width: 44px;
@@ -440,7 +440,7 @@ html.inspecting body {
   );
 }
 
-.inspector .actions .like:hover {
+.inspector .actions :is(.like, .import):hover {
   background: var(--chip-hover);
 }
 
