@@ -564,7 +564,7 @@
       "confirmDelete": "Delete {name} and all its versions?",
       "file": "Plugin file",
       "dropHint": "or drop it here",
-      "fileHint": "A .dll built for the OpenKogama server, or a .zip with the .dll and its files, up to 32 MB.",
+      "fileHint": "A .dll built for the OpenKogama server, or a .zip with the .dll and its files. The file can be up to 32 MB, and the .dll inside a .zip up to 128 MB unpacked.",
       "versionHint": "Read from the file. Change it if you need to.",
       "about": "About the plugin",
       "media": "Images",

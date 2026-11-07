@@ -586,7 +586,7 @@
       "confirmDelete": "Usunąć {name} i wszystkie jego wersje?",
       "file": "Plik pluginu",
       "dropHint": "albo upuść go tutaj",
-      "fileHint": "Plik .dll zbudowany pod serwer OpenKogama albo .zip z tym plikiem i jego danymi, do 32 MB.",
+      "fileHint": "Plik .dll zbudowany pod serwer OpenKogama albo .zip z tym plikiem i jego danymi. Plik może mieć do 32 MB, a .dll w .zipie do 128 MB po rozpakowaniu.",
       "versionHint": "Odczytana z pliku. Zmień, jeśli trzeba.",
       "about": "O pluginie",
       "media": "Obrazki",
